@@ -1150,96 +1150,98 @@ function renderVariance() {
 function renderVarianceTable() {
   const tbody = document.getElementById('variance-tbody');
 
-  // Sub-item definitions: [label, budget, certifiedTotal(cumul to IPC3)]
-  // certifiedTotal is from the certs — will be overridden by actual entries when available
+  // Sub-item definitions: [label, budget, certifiedCumulative]
+  // Certified amounts from QS Certs (cumulative to IPC3)
   const SUB_ITEMS = {
     B1: [
-      ['Drawings & Scaffolding',                       622925.07],
-      ['Constructional Plant',                        1504950.00],
-      ['Temp Lightning & Power',                       812500.00],
-      ['Site Management & Supervision',               1054042.00],
-      ['Worker Amenities & Site Security',            1033045.96],
-      ['Hoardings, Temp Buildings & Consultant Office', 432210.00],
-      ['Insurance & Performance Bond',                 104940.64],
-      ['CIDB, Stamp Duty, Qlassic',                    144550.00],
-      ['Other Prelim Items',                          1080068.54],
+      // Certified amounts estimated proportionally from B1 total cert 1,085,354.92
+      // (QS Cert does not split B1 at sub-item level — uses recurring % formula)
+      ['Drawings & Scaffolding',                         622925.07,   99583.39],
+      ['Constructional Plant',                          1504950.00,  240587.57],
+      ['Temp Lightning & Power',                         812500.00,  129889.63],
+      ['Site Management & Supervision',                 1054042.00,  168503.54],
+      ['Worker Amenities & Site Security',              1033045.96,  165147.03],
+      ['Hoardings, Temp Buildings & Consultant Office',  432210.00,   69094.89],
+      ['Insurance & Performance Bond',                   104940.64,   16776.25],
+      ['CIDB, Stamp Duty, Qlassic',                      144550.00,   23108.36],
+      ['Other Prelim Items',                            1080068.54,  172664.26],
     ],
     B2: [
-      ['Precast RC Piles — Supply & Drive',           2702895.93],
-      ['Pile Cap',                                     534721.39],
-      ['Column Stump, Liftpit Wall & Shearwall',       212549.70],
+      ['Precast RC Piles — Supply & Drive (150/300/400mm)', 2702895.93, 1897313.80],
+      ['Pile Cap (Main Building, Guard House, TNB)',          534721.39,  356096.25],
+      ['Column Stump, Liftpit Wall & Shearwall',             212549.70,   41611.68],
     ],
     B3: [
-      ['A — Work Below Lowest Floor Level',           1850981.54],
-      ['B — Frame',                                   2148729.60],
-      ['C — Staircase',                                124066.31],
-      ['D — Staircase Finishes',                        99875.37],
-      ['E — Upper Floor Construction',                4289446.06],
-      ['F — Roof',                                    1728176.37],
-      ['G — External Wall',                            321802.42],
-      ['H — Internal Wall',                            397170.37],
-      ['J — Doors',                                    240636.15],
-      ['K — Window & Curtain Wall',                   2413055.81],
-      ['L — Ironmongeries',                             68399.91],
-      ['M — External Wall Finishes',                   146153.04],
-      ['N — Internal Wall Finishes',                   560809.11],
-      ['P — Floor Finishes',                          2247759.17],
-      ['Q — Ceiling Finishes',                         878130.74],
-      ['R — Painting',                                 293040.76],
-      ['S — Sanitary Fittings',                        541835.42],
-      ['T — Steel Roof Construction',                 2190373.95],
-      ['U — Wall Cladding',                            766048.63],
-      ['V — Miscellaneous',                             22397.53],
+      ['A — Work Below Lowest Floor Level', 1850981.54, 206770.14],
+      ['B — Frame',                         2148729.60,       0],
+      ['C — Staircase',                      124066.31,       0],
+      ['D — Staircase Finishes',              99875.37,       0],
+      ['E — Upper Floor Construction',      4289446.06,       0],
+      ['F — Roof',                          1728176.37,       0],
+      ['G — External Wall',                  321802.42,       0],
+      ['H — Internal Wall',                  397170.37,       0],
+      ['J — Doors',                          240636.15,       0],
+      ['K — Window & Curtain Wall',         2413055.81,       0],
+      ['L — Ironmongeries',                   68399.91,       0],
+      ['M — External Wall Finishes',         146153.04,       0],
+      ['N — Internal Wall Finishes',         560809.11,       0],
+      ['P — Floor Finishes',               2247759.17,       0],
+      ['Q — Ceiling Finishes',              878130.74,       0],
+      ['R — Painting',                       293040.76,       0],
+      ['S — Sanitary Fittings',              541835.42,       0],
+      ['T — Steel Roof Construction',      2190373.95,       0],
+      ['U — Wall Cladding',                  766048.63,       0],
+      ['V — Miscellaneous',                   22397.53,       0],
     ],
     B4: [
-      ['A — Earthwork',                                932111.09],
-      ['B — Road Works (Within)',                      863885.11],
-      ['C — Road Works (Outside)',                     346160.84],
-      ['D — Surface Water Drainage',                   622159.89],
-      ['E — Water Reticulation',                       269681.50],
-      ['F1 — Sewerage (Within)',                       174662.40],
-      ['F2 — Sewerage (Outside)',                       60375.26],
-      ['G — Guard House',                              728138.28],
-      ['H — Fencing',                                  120895.28],
-      ['J — Retaining Wall',                           475821.88],
-      ['K — TNB Substation',                           125842.29],
-      ['L — Crusher Run Parking',                      253746.90],
+      ['A — Earthwork',               932111.09, 211275.56],
+      ['B — Road Works (Within)',     863885.11,       0],
+      ['C — Road Works (Outside)',    346160.84,       0],
+      ['D — Surface Water Drainage',  622159.89,       0],
+      ['E — Water Reticulation',      269681.50,       0],
+      ['F1 — Sewerage (Within)',      174662.40,       0],
+      ['F2 — Sewerage (Outside)',      60375.26,       0],
+      ['G — Guard House',             728138.28,       0],
+      ['H — Fencing',                 120895.28,       0],
+      ['J — Retaining Wall',          475821.88,       0],
+      ['K — TNB Substation',          125842.29,  25168.46],
+      ['L — Crusher Run Parking',     253746.90,       0],
     ],
     B5a: [
-      ['01 — Preliminaries',                            36724.00],
-      ['02 — Cold Water System',                       655564.74],
-      ['03 — Sanitary Plumbing',                       102509.06],
+      ['01 — Preliminaries',                             36724.00,  0],
+      ['02 — Cold Water System (incl. Rain & Irrigation)',655564.74, 0],
+      ['03 — Sanitary Plumbing System',                  102509.06,  0],
     ],
     B5b: [
-      ['Electrical — 01 Preliminaries',                 63969.00],
-      ['Electrical — 02 External & TNB Incoming',      358729.00],
-      ['Electrical — 03 LV Switchboards & Cabling',   3865096.00],
-      ['Electrical — 03 Lighting & Power Points',     1074547.00],
-      ['Electrical — 04-05 Telephone Works',           110345.00],
-      ['Electrical — 06 Standby Generator',            144533.00],
-      ['Electrical — 07 Network Infrastructure',       113126.00],
-      ['Electrical — 08 TNB Substation',                38725.00],
-      ['ELV — Barrier Gate & Access Control',          524631.00],
-      ['ELV — CCTV System',                            384600.00],
-      ['ELV — Public Address System',                  159704.00],
-      ['ELV — Preliminaries',                           97065.00],
+      ['Electrical — 01 Preliminaries',                   63969.00,  0],
+      ['Electrical — 02 External & TNB Incoming',        358729.00,  0],
+      ['Electrical — 03 LV Switchboards & Cabling',     3865096.00,  0],
+      ['Electrical — 03 Lighting & Power Points',       1074547.00,  0],
+      ['Electrical — 04-05 Telephone Works',             110345.00,  0],
+      ['Electrical — 06 Standby Generator (350KVA)',     144533.00,  0],
+      ['Electrical — 07 Network Infrastructure',         113126.00,  0],
+      ['Electrical — 08 TNB Substation Works',            38725.00,  0],
+      ['ELV — Barrier Gate & Access Control',            524631.00,  0],
+      ['ELV — CCTV System',                              384600.00,  0],
+      ['ELV — Public Address System',                    159704.00,  0],
+      ['ELV — Preliminaries',                             97065.00,  0],
     ],
     B5c: [
-      ['01 — Preliminaries',                            39200.00],
-      ['02 — Auto Sprinkler System',                  1214920.00],
-      ['03 — Hose Reel System',                        218497.00],
-      ['04 — Portable Extinguishers',                    8345.00],
-      ['05 — Gas Suppression (FK & CO₂)',               80068.00],
-      ['06 — Fire Alarm System',                       208153.00],
-      ['07 — Fire Hydrant',                              6317.00],
+      ['01 — Preliminaries',                              39200.00,  0],
+      ['02 — Auto Sprinkler System (AV1/2/3)',          1214920.00,  0],
+      ['03 — Hose Reel System',                          218497.00,  0],
+      ['04 — Portable Fire Extinguishers',                 8345.00,  0],
+      ['05 — Gas Suppression (FK-5-1-12 & CO₂)',          80068.00,  0],
+      ['06 — Addressable Fire Alarm System',              208153.00,  0],
+      ['07 — Fire Hydrant System',                          6317.00,  0],
     ],
     B6: [
-      ['PC — Lift Installation (Eita)',               1280000.00],
-      ['PC — ACMV (Heross Sdn Bhd)',                  6000949.75],
-      ['Profit & Attendance (1%+1%)',                   145619.00],
-      ['Provisional — Signage',                        150000.00],
-      ['Provisional — Road Louvers',                    40000.00],
-      ['Provisional — Contingencies',                  300000.00],
+      ['PC — Lift Installation (Eita Elevator)',        1280000.00,  95000.00],
+      ['PC — ACMV Installation (Heross Sdn Bhd)',      6000949.75,       0],
+      ['Profit & Attendance on PC (1%+1%)',              145619.00,   1900.00],
+      ['Provisional — Signage',                          150000.00,       0],
+      ['Provisional — Road Louvers',                      40000.00,       0],
+      ['Provisional — Contingencies Sum',                300000.00,       0],
     ],
   };
 
@@ -1277,21 +1279,42 @@ function renderVarianceTable() {
     // Sub-rows (hidden by default)
     if (SUB_ITEMS[k]) {
       html += `<tr id="${subId}" style="display:none;"><td colspan="6" style="padding:0;">
-        <table style="width:100%;border-collapse:collapse;">`;
-      SUB_ITEMS[k].forEach(([label, subBudget]) => {
-        const subPct = subBudget / budget * 100;
-        html += `<tr style="background:rgba(41,171,226,0.03);">
-          <td style="padding:6px 12px 6px 48px;font-size:11px;color:var(--muted);width:45%;border-bottom:1px solid rgba(100,120,160,0.08);">
+        <table style="width:100%;border-collapse:collapse;">
+        <thead><tr style="background:rgba(41,171,226,0.05);">
+          <th style="padding:5px 12px 5px 48px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:left;font-weight:500;">Element</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Budget (RM)</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Certified (RM)</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Remaining (RM)</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">% Spent</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Variance</th>
+        </tr></thead>`;
+      SUB_ITEMS[k].forEach(([label, subBudget, subCertified]) => {
+        const cert    = subCertified || 0;
+        const rem     = subBudget - cert;
+        const spentPct = cert / subBudget * 100;
+        const barW    = Math.min(100, Math.max(0, spentPct));
+        const barCol  = spentPct > 100 ? '#c0392b' : spentPct > 80 ? '#e67e22' : '#29ABE2';
+        const remCol  = rem >= 0 ? '#1a6fa8' : '#c0392b';
+        const varSign = rem >= 0 ? '+' : '';
+        const varCol  = rem >= 0 ? '#1a8c5a' : '#c0392b';
+        const subPctOfBill = subBudget / budget * 100;
+        html += `<tr style="background:rgba(41,171,226,0.02);" onmouseover="this.style.background='rgba(41,171,226,0.06)'" onmouseout="this.style.background='rgba(41,171,226,0.02)'">
+          <td style="padding:7px 12px 7px 48px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(100,120,160,0.08);">
             ${label}
+            <span style="font-family:var(--mono);font-size:9px;color:var(--border);margin-left:6px;">${subPctOfBill.toFixed(1)}% of bill</span>
           </td>
-          <td style="text-align:right;font-family:var(--mono);font-size:10px;padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:18%;">${fmt(subBudget)}</td>
-          <td style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--muted);padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:12%;">—</td>
-          <td style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--muted);padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:12%;">${fmt(subBudget)}</td>
-          <td style="padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:13%;">
-            <div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-align:right;">${subPct.toFixed(1)}% of bill</div>
-            <div style="height:3px;background:var(--border);border-radius:2px;margin-top:3px;"><div style="height:100%;width:${Math.min(100,subPct)}%;background:#c8d4e3;border-radius:2px;"></div></div>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:var(--text);">${fmt(subBudget)}</td>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${cert>0?'var(--accent2)':'var(--muted)'};">${cert > 0 ? fmt(cert) : '—'}</td>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${remCol};">${fmt(Math.abs(rem))}</td>
+          <td style="padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);min-width:100px;">
+            <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+              <div style="font-family:var(--mono);font-size:10px;color:${cert>0?barCol:'var(--muted)'};">${cert > 0 ? spentPct.toFixed(1) + '%' : '0.0%'}</div>
+              <div style="width:60px;height:4px;background:var(--border);border-radius:2px;flex-shrink:0;">
+                <div style="height:100%;width:${cert>0?barW:0}%;background:${barCol};border-radius:2px;"></div>
+              </div>
+            </div>
           </td>
-          <td style="border-bottom:1px solid rgba(100,120,160,0.08);"></td>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${varCol};">${cert > 0 ? varSign + fmt(rem) : '—'}</td>
         </tr>`;
       });
       html += `</table></td></tr>`;
