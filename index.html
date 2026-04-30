@@ -105,6 +105,29 @@
   .bill-table td { padding: 12px 14px 12px 0; font-size: 13px; border-bottom: 1px solid rgba(100,120,160,0.15); vertical-align: middle; }
   .bill-table td:last-child { text-align: right; padding-right: 0; }
   .bill-table tr:last-child td { border-bottom: none; }
+
+  /* ── EXPANDABLE SUB-ITEMS ── */
+  .expand-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--accent); font-size: 11px; padding: 0 4px;
+    font-family: var(--mono); transition: transform 0.2s;
+  }
+  .expand-btn.open { transform: rotate(90deg); }
+  .sub-rows { display: none; }
+  .sub-rows.open { display: table-row-group; }
+  .sub-row td {
+    background: rgba(41,171,226,0.03);
+    border-bottom: 1px solid rgba(100,120,160,0.08) !important;
+    padding: 7px 14px 7px 32px !important;
+    font-size: 11px;
+  }
+  .sub-row:last-child td { border-bottom: 1px solid rgba(100,120,160,0.15) !important; }
+  .sub-label { color: var(--muted); font-size: 11px; }
+  .sub-budget { font-family: var(--mono); font-size: 11px; text-align: right; }
+  .sub-certified { font-family: var(--mono); font-size: 11px; text-align: right; color: var(--accent2); }
+  .sub-bar-wrap { width: 80px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 6px; }
+  .sub-bar-fill { height: 100%; border-radius: 2px; background: #29ABE2; }
+  .sub-nil { color: var(--border); font-family: var(--mono); font-size: 11px; text-align: right; }
   .bill-ref { font-family: var(--mono); font-size: 10px; color: var(--accent); background: rgba(41,171,226,0.10); border: 1px solid rgba(41,171,226,0.25); border-radius: 4px; padding: 2px 7px; display: inline-block; }
   .bill-name { font-weight: 600; font-size: 13px; }
   .bill-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
@@ -403,77 +426,192 @@
   </div>
 
   <div class="grid-2">
-    <!-- BILL TABLE -->
+    <!-- BILL TABLE with expandable sub-items -->
     <div class="panel">
       <div class="panel-header">
         <span class="panel-title">Bill-by-Bill Summary — Addendum TA1</span>
-        <span class="panel-tag">SOT Rev 1</span>
+        <span class="panel-tag" style="cursor:pointer;" onclick="toggleAllSubs()" id="expand-all-btn">▶ Expand All</span>
       </div>
       <div class="panel-body" style="padding:0 20px;">
-        <table class="bill-table">
+        <table class="bill-table" id="bq-main-table">
           <thead>
             <tr>
-              <th>Bill</th><th>Description</th><th>Type</th><th>% Share</th><th style="text-align:right">Amount (RM)</th>
+              <th style="width:28px;"></th>
+              <th>Bill</th><th>Description</th><th>Type</th><th>% Share</th><th style="text-align:right">BQ Budget (RM)</th>
             </tr>
           </thead>
           <tbody>
+
+            <!-- B1 -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b1')" id="btn-b1">▶</button></td>
               <td><span class="bill-ref">B1</span></td>
-              <td><div class="bill-name">Preliminaries</div><div class="bill-sub">Ref F1/14</div></td>
+              <td><div class="bill-name">Preliminaries</div><div class="bill-sub">Ref F1/14 — click ▶ to expand</div></td>
               <td><span class="bill-tag tag-fixed">Fixed</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:32%;background:#29ABE2;"></div></div><div class="bill-pct">12.6%</div></td>
               <td class="bill-amount">6,789,232.18</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b1">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Drawings &amp; Scaffolding</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">622,925.07</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Constructional Plant</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,504,950.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Temp Lightning &amp; Power</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">812,500.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Site Management &amp; Supervision</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,054,042.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Worker Amenities &amp; Site Security</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,033,045.96</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Hoardings, Temp Buildings &amp; Consultant Office</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">432,210.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Insurance, Performance Bond</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">104,940.64</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">CIDB, Stamp Duty, Qlassic</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">144,550.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Other Prelim Items (Env, Survey, DLP etc.)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,080,068.54</td></tr>
+            </tbody>
+
+            <!-- B2 -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b2')" id="btn-b2">▶</button></td>
               <td><span class="bill-ref">B2</span></td>
               <td><div class="bill-name">Piling, Pilecap, Stump, Liftpit &amp; Shearwall</div><div class="bill-sub">Ref F2/4/1 — All Provisional</div></td>
               <td><span class="bill-tag tag-provisional">Provisional</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:16%;background:#2668a8;"></div></div><div class="bill-pct">6.4%</div></td>
               <td class="bill-amount">3,450,167.02</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b2">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Precast RC Piles — Supply &amp; Drive (150/300/400mm)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">2,702,895.93</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Pile Cap (Main Building, Guard House, TNB)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">534,721.39</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Column Stump, Liftpit Wall &amp; Shearwall</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">212,549.70</td></tr>
+            </tbody>
+
+            <!-- B3 -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b3')" id="btn-b3">▶</button></td>
               <td><span class="bill-ref">B3</span></td>
-              <td><div class="bill-name">Main Building Works</div><div class="bill-sub">Ref F3/21/1</div></td>
+              <td><div class="bill-name">Main Building Works</div><div class="bill-sub">Ref F3/21/1 — 20 elements</div></td>
               <td><span class="bill-tag tag-fixed">Fixed</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:100%;background:#0D2080;"></div></div><div class="bill-pct">39.5%</div></td>
               <td class="bill-amount">21,328,751.16</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b3">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">A — Work Below Lowest Floor Level</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,850,981.54</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">B — Frame</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">2,148,729.60</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">C — Staircase</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">124,066.31</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">D — Staircase Finishes</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">99,875.37</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">E — Upper Floor Construction</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">4,289,446.06</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">F — Roof</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,728,176.37</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">G — External Wall</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">321,802.42</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">H — Internal Wall</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">397,170.37</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">J — Doors</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">240,636.15</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">K — Window &amp; Curtain Wall</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">2,413,055.81</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">L — Ironmongeries</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">68,399.91</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">M — External Wall Finishes</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">146,153.04</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">N — Internal Wall Finishes</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">560,809.11</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">P — Floor Finishes</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">2,247,759.17</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Q — Ceiling Finishes</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">878,130.74</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">R — Painting</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">293,040.76</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">S — Sanitary Fittings</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">541,835.42</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">T — Steel Roof Construction</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">2,190,373.95</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">U — Wall Cladding</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">766,048.63</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">V — Miscellaneous</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">22,397.53</td></tr>
+            </tbody>
+
+            <!-- B4 -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b4')" id="btn-b4">▶</button></td>
               <td><span class="bill-ref">B4</span></td>
-              <td><div class="bill-name">Local Infrastructure Works</div><div class="bill-sub">Ref F4/12/1 — All Provisional</div></td>
+              <td><div class="bill-name">Local Infrastructure Works</div><div class="bill-sub">Ref F4/12/1 — All Provisional — 12 elements</div></td>
               <td><span class="bill-tag tag-provisional">Provisional</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:24%;background:#2668a8;"></div></div><div class="bill-pct">9.3%</div></td>
               <td class="bill-amount">5,001,983.09</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b4">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">A — Earthwork (Cut, Fill, Compaction)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">932,111.09</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">B — Road Works (Within Boundary)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">863,885.11</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">C — Road Works (Outside Boundary)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">346,160.84</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">D — Surface Water Drainage (Within)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">622,159.89</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">E — Water Reticulation (Outside)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">269,681.50</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">F1 — Sewerage (Within Boundary)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">174,662.40</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">F2 — Sewerage (Outside Boundary)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">60,375.26</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">G — Guard House</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">728,138.28</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">H — Perimeter Fencing (Anti-climb 1850mm)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">120,895.28</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">J — Retaining Wall</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">475,821.88</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">K — TNB Substation</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">125,842.29</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">L — Crusher Run Parking (Lot 76077)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">253,746.90</td></tr>
+            </tbody>
+
+            <!-- B5a -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b5a')" id="btn-b5a">▶</button></td>
               <td><span class="bill-ref">B5a</span></td>
-              <td><div class="bill-name">Cold Water &amp; Sanitary Plumbing</div><div class="bill-sub">Prelim 36,724 · Cold Water 655,565 · Sanitary 102,509</div></td>
+              <td><div class="bill-name">Cold Water &amp; Sanitary Plumbing</div><div class="bill-sub">3 sections</div></td>
               <td><span class="bill-tag tag-fixed">Fixed</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:4%;background:#29ABE2;"></div></div><div class="bill-pct">1.5%</div></td>
               <td class="bill-amount">794,797.80</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b5a">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">01 — Preliminaries</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">36,724.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">02 — Cold Water System (incl. Rain Harvesting &amp; Irrigation)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">655,564.74</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">03 — Sanitary Plumbing System</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">102,509.06</td></tr>
+            </tbody>
+
+            <!-- B5b -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b5b')" id="btn-b5b">▶</button></td>
               <td><span class="bill-ref">B5b</span></td>
-              <td><div class="bill-name">Electrical, Telephone &amp; ELV Works</div><div class="bill-sub">Electrical 5,777,000 · ELV 1,166,000</div></td>
+              <td><div class="bill-name">Electrical, Telephone &amp; ELV Works</div><div class="bill-sub">8 sections — Electrical + ELV</div></td>
               <td><span class="bill-tag tag-fixed">Fixed</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:65%;background:#29ABE2;"></div></div><div class="bill-pct">12.9%</div></td>
               <td class="bill-amount">6,943,000.00</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b5b">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 01 Preliminaries</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">63,969.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 02 External &amp; TNB Incoming</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">358,729.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 03 LV Switchboards &amp; Cabling</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">3,865,096.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 03 Lighting &amp; Small Power Points</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,074,547.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 04–05 Telephone Infrastructure &amp; Internal</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">110,345.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 06 Standby Diesel Generator (350 KVA)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">144,533.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 07 Network Infrastructure</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">113,126.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Electrical — 08 TNB Substation Works</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">38,725.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">ELV — Barrier Gate &amp; Access Control</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">524,631.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">ELV — CCTV System</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">384,600.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">ELV — Public Address System</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">159,704.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">ELV — Preliminaries</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">97,065.00</td></tr>
+            </tbody>
+
+            <!-- B5c -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b5c')" id="btn-b5c">▶</button></td>
               <td><span class="bill-ref">B5c</span></td>
-              <td><div class="bill-name">Fire Protection Services</div><div class="bill-sub">Sprinkler 1,214,920 · Hose Reel 218,497 · Gas 80,068 · Alarm 208,153</div></td>
+              <td><div class="bill-name">Fire Protection Services</div><div class="bill-sub">7 sections</div></td>
               <td><span class="bill-tag tag-fixed">Fixed</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:17%;background:#c0392b;"></div></div><div class="bill-pct">3.3%</div></td>
               <td class="bill-amount">1,775,500.00</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b5c">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">01 — Preliminaries</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">39,200.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">02 — Automatic Sprinkler System (AV1/2/3)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,214,920.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">03 — Hose Reel System</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">218,497.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">04 — Portable Fire Extinguishers</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">8,345.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">05 — Gas Suppression (FK-5-1-12 &amp; CO₂)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">80,068.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">06 — Addressable Fire Alarm System</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">208,153.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">07 — Fire Hydrant System</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">6,317.00</td></tr>
+            </tbody>
+
+            <!-- B6 -->
             <tr>
+              <td><button class="expand-btn" onclick="toggleSub('b6')" id="btn-b6">▶</button></td>
               <td><span class="bill-ref">B6</span></td>
-              <td><div class="bill-name">Prime Cost &amp; Provisional Sums</div><div class="bill-sub">ACMV 6,000,950 · Lift 1,280,000 · P&amp;A 145,619 · Prov 490,000</div></td>
+              <td><div class="bill-name">Prime Cost &amp; Provisional Sums</div><div class="bill-sub">PC + Provisional + P&amp;A</div></td>
               <td><span class="bill-tag tag-pc">PC / Prov</span></td>
               <td><div class="bar-wrap"><div class="bar-fill" style="width:74%;background:#1a6fa8;"></div></div><div class="bill-pct">14.7%</div></td>
               <td class="bill-amount">7,916,568.75</td>
             </tr>
+            <tbody class="sub-rows" id="sub-b6">
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">PC — Lift Installation (Eita Elevator)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">1,280,000.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">PC — ACMV Installation (Heross Sdn Bhd)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">6,000,949.75</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Profit &amp; Attendance on PC (1%+1%)</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">145,619.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Provisional — Signage</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">150,000.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Provisional — Upgrade Road Louvers</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">40,000.00</td></tr>
+              <tr class="sub-row"><td></td><td colspan="2" class="sub-label">Provisional — Contingencies Sum</td><td colspan="2" class="sub-nil">—</td><td class="sub-budget">300,000.00</td></tr>
+            </tbody>
+
             <tr class="total-row">
+              <td></td>
               <td colspan="3"><strong>TOTAL CONTRACT SUM — Conforming Tender</strong></td>
               <td><span style="font-family:var(--mono);font-size:10px;color:var(--accent)">100.0%</span></td>
               <td class="bill-amount">54,000,000.00</td>
@@ -602,14 +740,14 @@
   </div>
 
   <!-- TRACKER KPIs -->
-  <div class="tracker-kpi-row">
+  <div class="tracker-kpi-row" style="grid-template-columns:repeat(5,1fr);">
     <div class="tkpi tc1">
       <div class="tkpi-label">Total BQ Budget</div>
       <div class="tkpi-value" id="tv-budget">RM 54.00M</div>
       <div class="tkpi-sub">SOT Addendum TA1</div>
     </div>
     <div class="tkpi tc2">
-      <div class="tkpi-label">Total Certified to Date</div>
+      <div class="tkpi-label">Total Certified (excl SST)</div>
       <div class="tkpi-value" id="tv-spent">RM 0</div>
       <div class="tkpi-sub" id="tv-spent-pct">0.0% of budget</div>
     </div>
@@ -617,6 +755,12 @@
       <div class="tkpi-label">Remaining Budget</div>
       <div class="tkpi-value" id="tv-remaining">RM 54.00M</div>
       <div class="tkpi-sub" id="tv-remaining-pct">100.0% remaining</div>
+    </div>
+    <div class="tkpi" style="border:1px solid var(--border);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden;background:var(--surface);">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#c0392b;"></div>
+      <div class="tkpi-label">SST Claimed (Nominated SCs)</div>
+      <div class="tkpi-value" id="tv-sst" style="color:#c0392b;">RM 0</div>
+      <div class="tkpi-sub" id="tv-sst-sub">6% on Eita &amp; Heross invoices</div>
     </div>
     <div class="tkpi tc4">
       <div class="tkpi-label">Months Recorded</div>
@@ -701,7 +845,7 @@
         <input type="text" id="m-note" placeholder="e.g. IPC No. 3" />
       </div>
     </div>
-    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Certified Amounts by Bill (RM)</div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Certified Amounts by Bill (RM) — Exclusive of SST</div>
     <div class="bill-inputs-grid">
       <div class="bil-field"><label>B1 — Preliminaries</label><input type="number" id="mb1" placeholder="0.00" min="0" step="0.01"/></div>
       <div class="bil-field"><label>B2 — Piling</label><input type="number" id="mb2" placeholder="0.00" min="0" step="0.01"/></div>
@@ -712,9 +856,37 @@
       <div class="bil-field"><label>B5c — Fire Protection</label><input type="number" id="mb5c" placeholder="0.00" min="0" step="0.01"/></div>
       <div class="bil-field"><label>B6 — PC &amp; Provisional</label><input type="number" id="mb6" placeholder="0.00" min="0" step="0.01"/></div>
     </div>
+    <!-- SST ROW -->
+    <div style="background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);border-radius:6px;padding:12px 14px;margin-bottom:12px;">
+      <div style="font-family:var(--mono);font-size:9px;color:#c0392b;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">SST on Nominated Subcontractors (6%) — Payable Separately to Employer</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="bil-field">
+          <label style="color:#c0392b;">SST — Lift (Eita) @ 6%</label>
+          <input type="number" id="msst_lift" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+        <div class="bil-field">
+          <label style="color:#c0392b;">SST — ACMV (Heross) @ 6%</label>
+          <input type="number" id="msst_acmv" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+        <div class="bil-field">
+          <label style="color:#c0392b;">SST — Other</label>
+          <input type="number" id="msst_other" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+      </div>
+    </div>
     <div class="bil-total-row">
-      <span class="bil-total-label">TOTAL THIS MONTH</span>
-      <span class="bil-total-val" id="modal-total">RM 0.00</span>
+      <div>
+        <span class="bil-total-label">SUBTOTAL (EXCL SST)</span>
+        <span class="bil-total-val" id="modal-subtotal">RM 0.00</span>
+      </div>
+      <div style="text-align:center;">
+        <span class="bil-total-label">SST TOTAL</span>
+        <span class="bil-total-val" id="modal-sst" style="color:#c0392b;">RM 0.00</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="bil-total-label">TOTAL INCL SST</span>
+        <span class="bil-total-val" id="modal-total">RM 0.00</span>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);" onclick="closeModal()">Cancel</button>
@@ -780,6 +952,9 @@ function openModal() {
   BILL_KEYS.forEach(k => {
     document.getElementById('m' + k.toLowerCase()).value = '';
   });
+  document.getElementById('msst_lift').value  = '';
+  document.getElementById('msst_acmv').value  = '';
+  document.getElementById('msst_other').value = '';
   updateModalTotal();
   document.getElementById('modal-overlay').classList.add('open');
 }
@@ -795,13 +970,24 @@ BILL_KEYS.forEach(k => {
   const el = document.getElementById('m' + k.toLowerCase());
   if (el) el.addEventListener('input', updateModalTotal);
 });
+['msst_lift','msst_acmv','msst_other'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateModalTotal);
+});
 function updateModalTotal() {
-  let total = 0;
+  let subtotal = 0;
   BILL_KEYS.forEach(k => {
     const el = document.getElementById('m' + k.toLowerCase());
-    if (el) total += parseFloat(el.value) || 0;
+    if (el) subtotal += parseFloat(el.value) || 0;
   });
-  document.getElementById('modal-total').textContent = 'RM ' + fmt(total);
+  let sst = 0;
+  ['msst_lift','msst_acmv','msst_other'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) sst += parseFloat(el.value) || 0;
+  });
+  document.getElementById('modal-subtotal').textContent = 'RM ' + fmt(subtotal);
+  document.getElementById('modal-sst').textContent = 'RM ' + fmt(sst);
+  document.getElementById('modal-total').textContent = 'RM ' + fmt(subtotal + sst);
 }
 
 function saveEntry() {
@@ -809,17 +995,23 @@ function saveEntry() {
   if (!month) { showToast('Please select a month.'); return; }
   const note = document.getElementById('m-note').value.trim();
   const bills = {};
-  let total = 0;
+  let subtotal = 0;
   BILL_KEYS.forEach(k => {
     const val = parseFloat(document.getElementById('m' + k.toLowerCase()).value) || 0;
     bills[k] = val;
-    total += val;
+    subtotal += val;
   });
-  if (total === 0) { showToast('Enter at least one certified amount.'); return; }
+  const sst = {
+    lift:  parseFloat(document.getElementById('msst_lift').value)  || 0,
+    acmv:  parseFloat(document.getElementById('msst_acmv').value)  || 0,
+    other: parseFloat(document.getElementById('msst_other').value) || 0,
+  };
+  const sstTotal = sst.lift + sst.acmv + sst.other;
+  const total = subtotal + sstTotal;
+  if (subtotal === 0 && sstTotal === 0) { showToast('Enter at least one certified amount.'); return; }
 
-  // Check if month already exists — if so, update
   const existing = entries.findIndex(e => e.month === month);
-  const entry = { month, note, bills, total };
+  const entry = { month, note, bills, sst, subtotal, sstTotal, total };
   if (existing >= 0) {
     entries[existing] = entry;
     showToast('Entry updated: ' + month);
@@ -852,6 +1044,9 @@ function editEntry(month) {
     const el = document.getElementById('m' + k.toLowerCase());
     if (el) el.value = entry.bills[k] || '';
   });
+  document.getElementById('msst_lift').value  = (entry.sst && entry.sst.lift)  || '';
+  document.getElementById('msst_acmv').value  = (entry.sst && entry.sst.acmv)  || '';
+  document.getElementById('msst_other').value = (entry.sst && entry.sst.other) || '';
   updateModalTotal();
   document.getElementById('modal-overlay').classList.add('open');
 }
@@ -868,18 +1063,29 @@ function renderLedger() {
   let html = '<table class="ledger-table"><thead><tr>';
   html += '<th>Month</th><th>Note / Ref</th>';
   BILL_KEYS.forEach(k => { html += `<th style="text-align:right">${k}</th>`; });
-  html += '<th style="text-align:right">Month Total</th><th>Actions</th></tr></thead><tbody>';
+  html += '<th style="text-align:right;color:#c0392b;">SST (Lift)</th>';
+  html += '<th style="text-align:right;color:#c0392b;">SST (ACMV)</th>';
+  html += '<th style="text-align:right;color:#c0392b;">SST Total</th>';
+  html += '<th style="text-align:right">Subtotal (excl SST)</th>';
+  html += '<th style="text-align:right;color:#0D2080;">Total incl SST</th><th>Actions</th></tr></thead><tbody>';
 
-  let cumTotal = 0;
   entries.forEach(e => {
-    cumTotal += e.total;
+    const sstLift  = (e.sst && e.sst.lift)  || 0;
+    const sstAcmv  = (e.sst && e.sst.acmv)  || 0;
+    const sstOther = (e.sst && e.sst.other) || 0;
+    const sstTotal = sstLift + sstAcmv + sstOther;
+    const subtotal = e.subtotal || (e.total - sstTotal);
     html += `<tr>
       <td><span class="month-badge">${fmtMonth(e.month)}</span></td>
       <td class="ledger-note">${e.note || '—'}</td>`;
     BILL_KEYS.forEach(k => {
       const v = e.bills[k] || 0;
-      html += `<td style="text-align:right;color:${v > 0 ? 'var(--accent2)' : 'var(--muted)'}">${v > 0 ? fmt(v) : '—'}</td>`;
+      html += `<td style="text-align:right;color:${v > 0 ? 'var(--accent2)' : v < 0 ? '#c0392b' : 'var(--muted)'}">${v !== 0 ? fmt(v) : '—'}</td>`;
     });
+    html += `<td style="text-align:right;color:${sstLift>0?'#c0392b':'var(--muted)'}">${sstLift>0?fmt(sstLift):'—'}</td>`;
+    html += `<td style="text-align:right;color:${sstAcmv>0?'#c0392b':'var(--muted)'}">${sstAcmv>0?fmt(sstAcmv):'—'}</td>`;
+    html += `<td style="text-align:right;font-weight:600;color:${sstTotal>0?'#c0392b':'var(--muted)'}">${sstTotal>0?fmt(sstTotal):'—'}</td>`;
+    html += `<td style="text-align:right;font-family:var(--mono);">${fmt(subtotal)}</td>`;
     html += `<td style="text-align:right;font-weight:700;color:#0D2080">${fmt(e.total)}</td>
       <td>
         <div style="display:flex;gap:6px;justify-content:center;">
@@ -891,14 +1097,23 @@ function renderLedger() {
   });
 
   // Totals row
+  const billTotals = {};
+  BILL_KEYS.forEach(k => { billTotals[k] = entries.reduce((s,e) => s + (e.bills[k]||0), 0); });
+  const grandSST = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
+  const grandSSTLift = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0), 0);
+  const grandSSTAcmv = entries.reduce((s,e) => s + ((e.sst&&e.sst.acmv)||0), 0);
+  const grandSubtotal = entries.reduce((s,e) => s + (e.subtotal||(e.total-((e.sst&&(e.sst.lift+e.sst.acmv+(e.sst.other||0)))||0))), 0);
+  const grandTotal = entries.reduce((s,e) => s + e.total, 0);
+
   html += `<tr style="background:var(--surface2);font-weight:700;">
     <td colspan="2" style="font-family:var(--mono);font-size:10px;border-top:2px solid var(--border);padding-top:12px;">CUMULATIVE TOTAL</td>`;
-  const billTotals = {};
   BILL_KEYS.forEach(k => {
-    billTotals[k] = entries.reduce((s,e) => s + (e.bills[k]||0), 0);
-    html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;">${billTotals[k] > 0 ? fmt(billTotals[k]) : '—'}</td>`;
+    html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:${billTotals[k]<0?'#c0392b':'inherit'}">${billTotals[k] !== 0 ? fmt(billTotals[k]) : '—'}</td>`;
   });
-  const grandTotal = entries.reduce((s,e) => s + e.total, 0);
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:#c0392b;">${grandSSTLift>0?fmt(grandSSTLift):'—'}</td>`;
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:#c0392b;">${grandSSTAcmv>0?fmt(grandSSTAcmv):'—'}</td>`;
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;font-weight:700;color:#c0392b;">${grandSST>0?fmt(grandSST):'—'}</td>`;
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;">${fmt(grandSubtotal)}</td>`;
   html += `<td style="text-align:right;font-family:var(--mono);color:#0D2080;font-size:14px;border-top:2px solid var(--border);padding-top:12px;">${fmt(grandTotal)}</td><td style="border-top:2px solid var(--border);"></td></tr>`;
   html += '</tbody></table>';
   container.innerHTML = html;
@@ -907,16 +1122,25 @@ function renderLedger() {
 // ─── VARIANCE RENDER ─────────────────────────────────────────────────────────
 function renderVariance() {
   const grandTotal = entries.reduce((s,e) => s + e.total, 0);
-  const remaining = TOTAL_BUDGET - grandTotal;
-  const spentPct = grandTotal / TOTAL_BUDGET * 100;
+  const grandSST   = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
+  const grandExclSST = grandTotal - grandSST;
+  const remaining = TOTAL_BUDGET - grandExclSST;
+  const spentPct = grandExclSST / TOTAL_BUDGET * 100;
   const months = entries.length;
 
   document.getElementById('tv-budget').textContent = 'RM 54.00M';
-  document.getElementById('tv-spent').textContent = 'RM ' + fmtM(grandTotal);
-  document.getElementById('tv-spent-pct').textContent = spentPct.toFixed(1) + '% of budget';
+  document.getElementById('tv-spent').textContent = 'RM ' + fmtM(grandExclSST);
+  document.getElementById('tv-spent-pct').textContent = spentPct.toFixed(1) + '% of budget (excl SST)';
   document.getElementById('tv-remaining').textContent = 'RM ' + fmtM(remaining);
   document.getElementById('tv-remaining-pct').textContent = (100 - spentPct).toFixed(1) + '% remaining';
   document.getElementById('tv-months').textContent = months;
+
+  // Update SST KPI if element exists
+  const sstEl = document.getElementById('tv-sst');
+  if (sstEl) {
+    sstEl.textContent = 'RM ' + fmtM(grandSST);
+    document.getElementById('tv-sst-sub').textContent = 'Cumul. SST on nominated SCs (6%)';
+  }
 
   renderVarianceTable();
   renderSCurve();
@@ -925,54 +1149,180 @@ function renderVariance() {
 
 function renderVarianceTable() {
   const tbody = document.getElementById('variance-tbody');
+
+  // Sub-item definitions: [label, budget, certifiedTotal(cumul to IPC3)]
+  // certifiedTotal is from the certs — will be overridden by actual entries when available
+  const SUB_ITEMS = {
+    B1: [
+      ['Drawings & Scaffolding',                       622925.07],
+      ['Constructional Plant',                        1504950.00],
+      ['Temp Lightning & Power',                       812500.00],
+      ['Site Management & Supervision',               1054042.00],
+      ['Worker Amenities & Site Security',            1033045.96],
+      ['Hoardings, Temp Buildings & Consultant Office', 432210.00],
+      ['Insurance & Performance Bond',                 104940.64],
+      ['CIDB, Stamp Duty, Qlassic',                    144550.00],
+      ['Other Prelim Items',                          1080068.54],
+    ],
+    B2: [
+      ['Precast RC Piles — Supply & Drive',           2702895.93],
+      ['Pile Cap',                                     534721.39],
+      ['Column Stump, Liftpit Wall & Shearwall',       212549.70],
+    ],
+    B3: [
+      ['A — Work Below Lowest Floor Level',           1850981.54],
+      ['B — Frame',                                   2148729.60],
+      ['C — Staircase',                                124066.31],
+      ['D — Staircase Finishes',                        99875.37],
+      ['E — Upper Floor Construction',                4289446.06],
+      ['F — Roof',                                    1728176.37],
+      ['G — External Wall',                            321802.42],
+      ['H — Internal Wall',                            397170.37],
+      ['J — Doors',                                    240636.15],
+      ['K — Window & Curtain Wall',                   2413055.81],
+      ['L — Ironmongeries',                             68399.91],
+      ['M — External Wall Finishes',                   146153.04],
+      ['N — Internal Wall Finishes',                   560809.11],
+      ['P — Floor Finishes',                          2247759.17],
+      ['Q — Ceiling Finishes',                         878130.74],
+      ['R — Painting',                                 293040.76],
+      ['S — Sanitary Fittings',                        541835.42],
+      ['T — Steel Roof Construction',                 2190373.95],
+      ['U — Wall Cladding',                            766048.63],
+      ['V — Miscellaneous',                             22397.53],
+    ],
+    B4: [
+      ['A — Earthwork',                                932111.09],
+      ['B — Road Works (Within)',                      863885.11],
+      ['C — Road Works (Outside)',                     346160.84],
+      ['D — Surface Water Drainage',                   622159.89],
+      ['E — Water Reticulation',                       269681.50],
+      ['F1 — Sewerage (Within)',                       174662.40],
+      ['F2 — Sewerage (Outside)',                       60375.26],
+      ['G — Guard House',                              728138.28],
+      ['H — Fencing',                                  120895.28],
+      ['J — Retaining Wall',                           475821.88],
+      ['K — TNB Substation',                           125842.29],
+      ['L — Crusher Run Parking',                      253746.90],
+    ],
+    B5a: [
+      ['01 — Preliminaries',                            36724.00],
+      ['02 — Cold Water System',                       655564.74],
+      ['03 — Sanitary Plumbing',                       102509.06],
+    ],
+    B5b: [
+      ['Electrical — 01 Preliminaries',                 63969.00],
+      ['Electrical — 02 External & TNB Incoming',      358729.00],
+      ['Electrical — 03 LV Switchboards & Cabling',   3865096.00],
+      ['Electrical — 03 Lighting & Power Points',     1074547.00],
+      ['Electrical — 04-05 Telephone Works',           110345.00],
+      ['Electrical — 06 Standby Generator',            144533.00],
+      ['Electrical — 07 Network Infrastructure',       113126.00],
+      ['Electrical — 08 TNB Substation',                38725.00],
+      ['ELV — Barrier Gate & Access Control',          524631.00],
+      ['ELV — CCTV System',                            384600.00],
+      ['ELV — Public Address System',                  159704.00],
+      ['ELV — Preliminaries',                           97065.00],
+    ],
+    B5c: [
+      ['01 — Preliminaries',                            39200.00],
+      ['02 — Auto Sprinkler System',                  1214920.00],
+      ['03 — Hose Reel System',                        218497.00],
+      ['04 — Portable Extinguishers',                    8345.00],
+      ['05 — Gas Suppression (FK & CO₂)',               80068.00],
+      ['06 — Fire Alarm System',                       208153.00],
+      ['07 — Fire Hydrant',                              6317.00],
+    ],
+    B6: [
+      ['PC — Lift Installation (Eita)',               1280000.00],
+      ['PC — ACMV (Heross Sdn Bhd)',                  6000949.75],
+      ['Profit & Attendance (1%+1%)',                   145619.00],
+      ['Provisional — Signage',                        150000.00],
+      ['Provisional — Road Louvers',                    40000.00],
+      ['Provisional — Contingencies',                  300000.00],
+    ],
+  };
+
   let html = '';
-  let totalSpent = 0, totalBudget = TOTAL_BUDGET;
+  let totalSpent = 0;
 
-  BILL_KEYS.forEach(k => {
+  BILL_KEYS.forEach((k, idx) => {
     const budget = BQ[k].budget;
-    const spent = entries.reduce((s,e) => s + (e.bills[k]||0), 0);
-    totalSpent += spent;
+    const spent  = entries.reduce((s,e) => s + (e.bills[k]||0), 0);
+    totalSpent  += spent;
     const remaining = budget - spent;
-    const pct = spent / budget * 100;
+    const pct    = spent / budget * 100;
     const varClass = remaining >= 0 ? 'positive' : 'negative';
-    const varSign = remaining >= 0 ? '+' : '';
-    const barW = Math.min(100, pct);
-    const barCol = pct > 100 ? '#c0392b' : pct > 80 ? '#e67e22' : '#1a8c5a';
+    const barCol = pct > 100 ? '#c0392b' : pct > 80 ? '#e67e22' : '#29ABE2';
+    const subId  = 'var-sub-' + k.toLowerCase();
 
-    html += `<tr>
+    html += `<tr style="cursor:pointer;" onclick="toggleVarSub('${k}')">
       <td>
         <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--accent);transition:transform 0.2s;" id="varicon-${k}">▶</span>
           <span class="bill-ref">${k}</span>
           <span style="font-size:13px;">${BQ[k].label}</span>
         </div>
       </td>
       <td>${fmt(budget)}</td>
-      <td style="color:var(--accent2);font-weight:500;">${spent > 0 ? fmt(spent) : '—'}</td>
+      <td style="color:${spent!==0?(spent<0?'#c0392b':'var(--accent2)'):'var(--muted)'};font-weight:500;">${spent !== 0 ? fmt(spent) : '—'}</td>
       <td class="${varClass}">${fmt(Math.abs(remaining))}</td>
       <td>
         <div style="text-align:right;font-size:11px;margin-bottom:3px;">${pct.toFixed(1)}%</div>
-        <div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${barW}%;background:${barCol};"></div></div>
+        <div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,Math.max(0,pct))}%;background:${barCol};"></div></div>
       </td>
-      <td class="${varClass}">${varSign}${fmt(remaining)}</td>
+      <td class="${varClass}">${remaining>=0?'+':''}${fmt(remaining)}</td>
     </tr>`;
+
+    // Sub-rows (hidden by default)
+    if (SUB_ITEMS[k]) {
+      html += `<tr id="${subId}" style="display:none;"><td colspan="6" style="padding:0;">
+        <table style="width:100%;border-collapse:collapse;">`;
+      SUB_ITEMS[k].forEach(([label, subBudget]) => {
+        const subPct = subBudget / budget * 100;
+        html += `<tr style="background:rgba(41,171,226,0.03);">
+          <td style="padding:6px 12px 6px 48px;font-size:11px;color:var(--muted);width:45%;border-bottom:1px solid rgba(100,120,160,0.08);">
+            ${label}
+          </td>
+          <td style="text-align:right;font-family:var(--mono);font-size:10px;padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:18%;">${fmt(subBudget)}</td>
+          <td style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--muted);padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:12%;">—</td>
+          <td style="text-align:right;font-family:var(--mono);font-size:10px;color:var(--muted);padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:12%;">${fmt(subBudget)}</td>
+          <td style="padding:6px 12px;border-bottom:1px solid rgba(100,120,160,0.08);width:13%;">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-align:right;">${subPct.toFixed(1)}% of bill</div>
+            <div style="height:3px;background:var(--border);border-radius:2px;margin-top:3px;"><div style="height:100%;width:${Math.min(100,subPct)}%;background:#c8d4e3;border-radius:2px;"></div></div>
+          </td>
+          <td style="border-bottom:1px solid rgba(100,120,160,0.08);"></td>
+        </tr>`;
+      });
+      html += `</table></td></tr>`;
+    }
   });
 
   // Total row
-  const totalRemaining = totalBudget - totalSpent;
-  const totalPct = totalSpent / totalBudget * 100;
+  const totalRemaining = TOTAL_BUDGET - totalSpent;
+  const totalPct = totalSpent / TOTAL_BUDGET * 100;
   const tVarClass = totalRemaining >= 0 ? 'positive' : 'negative';
   html += `<tr class="var-total">
     <td><strong>TOTAL</strong></td>
-    <td><strong>${fmt(totalBudget)}</strong></td>
+    <td><strong>${fmt(TOTAL_BUDGET)}</strong></td>
     <td style="color:var(--accent2);font-weight:700;">${totalSpent > 0 ? fmt(totalSpent) : '—'}</td>
     <td class="${tVarClass}"><strong>${fmt(Math.abs(totalRemaining))}</strong></td>
     <td>
       <div style="text-align:right;font-size:11px;margin-bottom:3px;font-weight:700;">${totalPct.toFixed(1)}%</div>
       <div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,totalPct)}%;background:#0D2080;"></div></div>
     </td>
-    <td class="${tVarClass}"><strong>${totalRemaining >= 0 ? '+' : ''}${fmt(totalRemaining)}</strong></td>
+    <td class="${tVarClass}"><strong>${totalRemaining>=0?'+':''}${fmt(totalRemaining)}</strong></td>
   </tr>`;
   tbody.innerHTML = html;
+}
+
+function toggleVarSub(k) {
+  const row  = document.getElementById('var-sub-' + k.toLowerCase());
+  const icon = document.getElementById('varicon-' + k);
+  if (!row) return;
+  const isOpen = row.style.display === 'none' || row.style.display === '';
+  row.style.display = isOpen ? 'table-row' : 'none';
+  if (icon) icon.textContent = isOpen ? '▼' : '▶';
 }
 
 function renderMonthlySummary() {
@@ -981,15 +1331,27 @@ function renderMonthlySummary() {
     container.innerHTML = '<div class="empty-state" style="padding:30px;"><div class="es-icon">📊</div><p>No expenditure data recorded yet.</p></div>';
     return;
   }
-  let html = '<table class="ledger-table"><thead><tr><th>Month</th><th style="text-align:right">This Month (RM)</th><th style="text-align:right">Cumulative (RM)</th><th style="text-align:right">% of Budget</th><th>Note</th></tr></thead><tbody>';
+  let html = `<table class="ledger-table"><thead><tr>
+    <th>Month</th>
+    <th style="text-align:right">Certified excl SST (RM)</th>
+    <th style="text-align:right;color:#c0392b;">SST (RM)</th>
+    <th style="text-align:right">Total incl SST (RM)</th>
+    <th style="text-align:right">Cumulative excl SST (RM)</th>
+    <th style="text-align:right">% of Budget</th>
+    <th>Note</th>
+  </tr></thead><tbody>`;
   let cum = 0;
   entries.forEach(e => {
-    cum += e.total;
+    const sstTotal = ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0);
+    const subtotal = e.subtotal || (e.total - sstTotal);
+    cum += subtotal;
     const pct = cum / TOTAL_BUDGET * 100;
     html += `<tr>
       <td><span class="month-badge">${fmtMonth(e.month)}</span></td>
-      <td style="text-align:right;font-family:var(--mono);color:var(--accent2);">${fmt(e.total)}</td>
-      <td style="text-align:right;font-family:var(--mono);font-weight:700;color:#0D2080;">${fmt(cum)}</td>
+      <td style="text-align:right;font-family:var(--mono);color:var(--accent2);">${fmt(subtotal)}</td>
+      <td style="text-align:right;font-family:var(--mono);color:${sstTotal>0?'#c0392b':'var(--muted)'};">${sstTotal>0?fmt(sstTotal):'—'}</td>
+      <td style="text-align:right;font-family:var(--mono);font-weight:700;color:#0D2080;">${fmt(e.total)}</td>
+      <td style="text-align:right;font-family:var(--mono);">${fmt(cum)}</td>
       <td style="text-align:right;font-family:var(--mono);">${pct.toFixed(2)}%</td>
       <td style="font-size:12px;color:var(--muted);">${e.note || '—'}</td>
     </tr>`;
@@ -1175,31 +1537,62 @@ function showToast(msg) {
 // ─── EXPORT CSV ──────────────────────────────────────────────────────────────
 function exportCSV() {
   if (entries.length === 0) { showToast('No data to export.'); return; }
-  let csv = 'Month,Note,' + BILL_KEYS.join(',') + ',Monthly Total,Cumulative Total\n';
+  let csv = 'Month,Note,' + BILL_KEYS.join(',') + ',SST Lift,SST ACMV,SST Other,SST Total,Subtotal (excl SST),Total incl SST,Cumulative excl SST\n';
   let cum = 0;
   entries.forEach(e => {
-    cum += e.total;
+    const sstLift  = (e.sst&&e.sst.lift)  || 0;
+    const sstAcmv  = (e.sst&&e.sst.acmv)  || 0;
+    const sstOther = (e.sst&&e.sst.other) || 0;
+    const sstTotal = sstLift + sstAcmv + sstOther;
+    const subtotal = e.subtotal || (e.total - sstTotal);
+    cum += subtotal;
     const row = [
-      fmtMonth(e.month),
-      '"' + (e.note||'') + '"',
+      fmtMonth(e.month), '"' + (e.note||'') + '"',
       ...BILL_KEYS.map(k => (e.bills[k]||0).toFixed(2)),
-      e.total.toFixed(2),
-      cum.toFixed(2)
+      sstLift.toFixed(2), sstAcmv.toFixed(2), sstOther.toFixed(2),
+      sstTotal.toFixed(2), subtotal.toFixed(2), e.total.toFixed(2), cum.toFixed(2)
     ];
     csv += row.join(',') + '\n';
   });
-  // Bill totals
-  csv += '\nBQ BUDGET,';
-  const budgetRow = ['BUDGET'] + BILL_KEYS.map(k => BQ[k].budget.toFixed(2));
   const bTotals = BILL_KEYS.map(k => entries.reduce((s,e) => s + (e.bills[k]||0), 0));
-  csv += 'BQ Budget,' + BILL_KEYS.map(k => BQ[k].budget.toFixed(2)).join(',') + ',,' + TOTAL_BUDGET.toFixed(2) + '\n';
-  csv += 'Total Certified,' + bTotals.map(v => v.toFixed(2)).join(',') + ',,' + entries.reduce((s,e)=>s+e.total,0).toFixed(2) + '\n';
+  const grandSST = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
+  csv += '\nBQ Budget,' + BILL_KEYS.map(k => BQ[k].budget.toFixed(2)).join(',') + ',,,,,' + TOTAL_BUDGET.toFixed(2) + '\n';
+  csv += 'Total Certified,' + bTotals.map(v=>v.toFixed(2)).join(',') + ',,,' + grandSST.toFixed(2) + ',,,' + entries.reduce((s,e)=>s+e.total,0).toFixed(2) + '\n';
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'Syntec_BQ_Expenditure.csv';
+  a.download = 'Syntec_BQ_Expenditure_SST.csv';
   a.click();
-  showToast('CSV exported.');
+  showToast('CSV exported with SST breakdown.');
+}
+
+// ─── SUB-ITEM EXPAND / COLLAPSE ─────────────────────────────────────────────
+function toggleSub(id) {
+  const rows = document.getElementById('sub-' + id);
+  const btn  = document.getElementById('btn-' + id);
+  if (!rows) return;
+  const isOpen = rows.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  btn.textContent = isOpen ? '▼' : '▶';
+  // Update expand-all button state
+  const allSubs = document.querySelectorAll('.sub-rows');
+  const openCount = document.querySelectorAll('.sub-rows.open').length;
+  const expandBtn = document.getElementById('expand-all-btn');
+  if (expandBtn) expandBtn.textContent = openCount === allSubs.length ? '▼ Collapse All' : '▶ Expand All';
+}
+
+function toggleAllSubs() {
+  const allSubs = document.querySelectorAll('.sub-rows');
+  const openCount = document.querySelectorAll('.sub-rows.open').length;
+  const shouldOpen = openCount < allSubs.length;
+  allSubs.forEach(el => {
+    const id = el.id.replace('sub-', '');
+    const btn = document.getElementById('btn-' + id);
+    el.classList.toggle('open', shouldOpen);
+    if (btn) { btn.classList.toggle('open', shouldOpen); btn.textContent = shouldOpen ? '▼' : '▶'; }
+  });
+  const expandBtn = document.getElementById('expand-all-btn');
+  if (expandBtn) expandBtn.textContent = shouldOpen ? '▼ Collapse All' : '▶ Expand All';
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
