@@ -4,1724 +4,1546 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Syntec @ Klang — Budget Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap');
-
   :root {
-    --bg: #f2f4f8;
-    --surface: #ffffff;
-    --surface2: #eaf0f7;
-    --border: #c8d4e3;
-    --accent: #29ABE2;
-    --accent2: #0D2080;
-    --accent3: #1a6fa8;
-    --accent4: #c0392b;
-    --green: #1a8c5a;
-    --text: #1c2340;
-    --muted: #58595B;
-    --mono: 'DM Mono', monospace;
-    --sans: 'EB Garamond', Georgia, serif;
+    --lkl: #29ABE2;
+    --navy: #0D2080;
+    --charcoal: #58595B;
+    --red: #C0392B;
+    --amber: #E67E22;
+    --green: #27AE60;
+    --bg: #F6F5F0;
+    --white: #FFFFFF;
+    --border: #D8D5CC;
+    --text: #1A1A1A;
+    --muted: #888;
+    --card-bg: #FFFFFF;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
-
-  /* NAV TABS */
-  .nav-tabs {
-    background: #0D2080;
-    display: flex;
-    gap: 0;
-    padding: 0 40px;
-    border-bottom: 3px solid #29ABE2;
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    min-height: 100vh;
   }
-  .nav-tab {
-    padding: 13px 24px;
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: rgba(255,255,255,0.5);
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--lkl);
+  }
+  header h1 {
+    font-size: 1.45rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  header .sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--lkl);
+    margin-top: 3px;
+    letter-spacing: 0.05em;
+  }
+  header .contract-sum {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+  }
+  header .contract-sum .label { font-size: 0.68rem; color: #aaa; letter-spacing: 0.06em; }
+  header .contract-sum .amount { font-size: 1.3rem; color: var(--lkl); font-weight: 500; }
+
+  /* ── TABS ── */
+  .tab-bar {
+    background: var(--navy);
+    display: flex;
+    gap: 2px;
+    padding: 0 32px;
+    border-bottom: 1px solid #1a3070;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: #8899cc;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    padding: 10px 20px;
     cursor: pointer;
     border-bottom: 3px solid transparent;
-    margin-bottom: -3px;
-    transition: all 0.15s;
-    user-select: none;
+    transition: all .2s;
+    text-transform: uppercase;
   }
-  .nav-tab:hover { color: rgba(255,255,255,0.85); }
-  .nav-tab.active { color: #29ABE2; border-bottom-color: #29ABE2; }
+  .tab-btn.active { color: white; border-bottom-color: var(--lkl); }
+  .tab-btn:hover:not(.active) { color: #ccd; }
 
-  /* HEADER */
-  .header {
-    background: #0D2080;
-    padding: 24px 40px 16px;
+  /* ── MAIN ── */
+  main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
+  .kpi-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--navy);
+    padding: 16px 18px;
+    border-radius: 2px;
+  }
+  .kpi-card.accent { border-top-color: var(--lkl); }
+  .kpi-card.warn { border-top-color: var(--amber); }
+  .kpi-card.danger { border-top-color: var(--red); }
+  .kpi-card.success { border-top-color: var(--green); }
+  .kpi-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .kpi-value { font-family: 'DM Mono', monospace; font-size: 1.15rem; font-weight: 500; color: var(--navy); }
+  .kpi-sub { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── TABLES ── */
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--navy);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 20px;
-  }
-  .header-left h1 { font-size: 11px; font-family: var(--mono); color: #29ABE2; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
-  .header-left h2 { font-size: 26px; font-weight: 800; color: #ffffff; font-family: 'EB Garamond', serif; }
-  .header-left h2 span { color: #29ABE2; }
-  .header-meta { font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.6); line-height: 1.8; text-align: right; }
-  .header-meta strong { color: #29ABE2; }
-
-  /* PAGE SECTIONS */
-  .page { display: none; }
-  .page.active { display: block; }
-  .main { padding: 28px 40px; max-width: 1600px; margin: 0 auto; }
-
-  /* KPI ROW */
-  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 28px; }
-  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; position: relative; overflow: hidden; }
-  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-  .kpi.c1::before { background: #29ABE2; }
-  .kpi.c2::before { background: #0D2080; }
-  .kpi.c3::before { background: #1a6fa8; }
-  .kpi.c4::before { background: #c0392b; }
-  .kpi.c5::before { background: #1a8c5a; }
-  .kpi-label { font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
-  .kpi-value { font-size: 22px; font-weight: 800; line-height: 1; margin-bottom: 5px; }
-  .kpi.c1 .kpi-value { color: #29ABE2; }
-  .kpi.c2 .kpi-value { color: #0D2080; }
-  .kpi.c3 .kpi-value { color: #1a6fa8; }
-  .kpi.c4 .kpi-value { color: #c0392b; }
-  .kpi.c5 .kpi-value { color: #1a8c5a; }
-  .kpi-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); line-height: 1.4; }
-
-  /* PANELS */
-  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .panel-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .panel-title { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; }
-  .panel-tag { font-family: var(--mono); font-size: 10px; color: var(--accent); background: rgba(41,171,226,0.10); border: 1px solid rgba(41,171,226,0.25); border-radius: 4px; padding: 3px 8px; }
-  .panel-body { padding: 20px; }
-
-  /* GRID */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; align-items: start; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-
-  /* BILL TABLE */
-  .bill-table { width: 100%; border-collapse: collapse; }
-  .bill-table th { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 14px 10px 0; text-align: left; border-bottom: 1px solid var(--border); }
-  .bill-table th:last-child { text-align: right; padding-right: 0; }
-  .bill-table td { padding: 12px 14px 12px 0; font-size: 13px; border-bottom: 1px solid rgba(100,120,160,0.15); vertical-align: middle; }
-  .bill-table td:last-child { text-align: right; padding-right: 0; }
-  .bill-table tr:last-child td { border-bottom: none; }
-
-  /* ── INLINE BUDGET EDITING ── */
-  .budget-cell { position: relative; }
-  .budget-display { cursor: default; }
-  .edit-mode .budget-display { display: none; }
-  .budget-input {
-    display: none;
-    width: 140px;
-    padding: 5px 8px;
-    border: 2px solid #29ABE2;
-    border-radius: 5px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--accent2);
-    background: rgba(41,171,226,0.06);
-    text-align: right;
-    outline: none;
-  }
-  .edit-mode .budget-input { display: inline-block; }
-  .edit-mode-banner {
-    display: none;
-    background: rgba(41,171,226,0.08);
-    border: 1px solid rgba(41,171,226,0.3);
-    border-radius: 6px;
-    padding: 10px 16px;
-    margin-bottom: 14px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--accent2);
     align-items: center;
     gap: 12px;
   }
-  .edit-mode-banner.visible { display: flex; }
-  .live-total-display {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent2);
-    font-family: var(--mono);
-  }
-  .live-total-display.changed { color: #c0392b; }
-  .btn-edit-budget {
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 5px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 1px solid rgba(41,171,226,0.4);
-    background: rgba(41,171,226,0.08);
-    color: #29ABE2;
+  table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); font-size: 0.88rem; margin-bottom: 28px; }
+  th {
+    background: var(--navy);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    transition: all 0.15s;
+    padding: 10px 14px;
+    text-align: left;
+    white-space: nowrap;
   }
-  .btn-edit-budget:hover { background: rgba(41,171,226,0.18); }
-  .btn-save-budget {
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 5px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    border: none;
-    background: #0D2080;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  th.num { text-align: right; }
+  td { padding: 9px 14px; border-bottom: 1px solid #EEEDEA; vertical-align: middle; }
+  td.num { text-align: right; font-family: 'DM Mono', monospace; font-size: 0.83rem; }
+  tr:hover td { background: #F0EFE8; }
+  tr.total-row td { background: #EEF2FF; font-weight: 600; border-top: 2px solid var(--navy); }
+  tr.bill-row { cursor: pointer; }
+  tr.bill-row td:first-child { padding-left: 10px; }
+  tr.sub-row td { background: #FAFAF6; padding-left: 32px; font-size: 0.83rem; color: #444; }
+  tr.sub-row:hover td { background: #F0EFE8; }
+  tr.sub-row.hidden { display: none; }
+
+  /* progress bars */
+  .prog-wrap { width: 100%; background: #E8E6E0; border-radius: 2px; height: 7px; min-width: 80px; }
+  .prog-bar { height: 7px; border-radius: 2px; background: var(--lkl); transition: width .4s; }
+  .prog-bar.warn { background: var(--amber); }
+  .prog-bar.danger { background: var(--red); }
+
+  /* badges */
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
   }
-  .btn-reset-budget {
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 5px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 1px solid rgba(192,57,43,0.3);
-    background: rgba(192,57,43,0.06);
-    color: #c0392b;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .budget-changed { color: #c0392b !important; }
-  .budget-increased::after { content: ' ▲'; font-size: 9px; color: #c0392b; }
-  .budget-decreased::after { content: ' ▼'; font-size: 9px; color: #1a8c5a; }
-  .expand-btn {
-    background: none; border: none; cursor: pointer;
-    color: var(--accent); font-size: 11px; padding: 0 4px;
-    font-family: var(--mono); transition: transform 0.2s;
-  }
-  .expand-btn.open { transform: rotate(90deg); }
-  .sub-rows { display: none; }
-  .sub-rows.open { display: table-row-group; }
-  .sub-row td {
-    background: rgba(41,171,226,0.03);
-    border-bottom: 1px solid rgba(100,120,160,0.08) !important;
-    padding: 7px 14px 7px 32px !important;
-    font-size: 11px;
-  }
-  .sub-row:last-child td { border-bottom: 1px solid rgba(100,120,160,0.15) !important; }
-  .sub-label { color: var(--muted); font-size: 11px; }
-  .sub-budget { font-family: var(--mono); font-size: 11px; text-align: right; }
-  .sub-certified { font-family: var(--mono); font-size: 11px; text-align: right; color: var(--accent2); }
-  .sub-bar-wrap { width: 80px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 6px; }
-  .sub-bar-fill { height: 100%; border-radius: 2px; background: #29ABE2; }
-  .sub-nil { color: var(--border); font-family: var(--mono); font-size: 11px; text-align: right; }
-  .bill-ref { font-family: var(--mono); font-size: 10px; color: var(--accent); background: rgba(41,171,226,0.10); border: 1px solid rgba(41,171,226,0.25); border-radius: 4px; padding: 2px 7px; display: inline-block; }
-  .bill-name { font-weight: 600; font-size: 13px; }
-  .bill-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
-  .bill-amount { font-family: var(--mono); font-weight: 500; font-size: 13px; }
-  .bill-pct { font-family: var(--mono); font-size: 9px; color: var(--muted); }
-  .bar-wrap { width: 100px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 2px; }
-  .bill-tag { font-family: var(--mono); font-size: 9px; border-radius: 3px; padding: 2px 6px; }
-  .tag-provisional { background: rgba(26,111,168,0.08); color: var(--accent3); border: 1px solid rgba(26,111,168,0.2); }
-  .tag-pc { background: rgba(13,32,128,0.08); color: var(--accent2); border: 1px solid rgba(13,32,128,0.2); }
-  .tag-fixed { background: rgba(41,171,226,0.08); color: var(--accent); border: 1px solid rgba(41,171,226,0.2); }
-  .total-row td { background: var(--surface2); font-weight: 700; font-size: 14px; border-top: 2px solid var(--accent); border-bottom: none !important; padding-top: 14px; padding-bottom: 14px; }
-  .total-row .bill-amount { color: var(--accent); font-size: 15px; }
+  .badge-fixed { background: #E8F4FD; color: var(--navy); }
+  .badge-prov { background: #FEF3CD; color: #856404; }
+  .badge-pc { background: #E8F5E9; color: #1B5E20; }
 
-  /* DONUT */
-  .chart-wrap { display: flex; align-items: center; gap: 24px; }
-  .donut-svg { flex-shrink: 0; }
-  .legend { flex: 1; }
-  .legend-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(100,120,160,0.15); }
-  .legend-item:last-child { border-bottom: none; }
-  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-  .legend-name { font-size: 11px; flex: 1; }
-  .legend-val { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-  .legend-pct { font-family: var(--mono); font-size: 10px; color: var(--accent); width: 36px; text-align: right; }
-
-  /* HBAR */
-  .hbar-list { display: flex; flex-direction: column; gap: 12px; }
-  .hbar-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
-  .hbar-label { font-size: 11px; font-weight: 600; }
-  .hbar-val { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-  .hbar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-  .hbar-fill { height: 100%; border-radius: 3px; }
-
-  /* B5 CARDS */
-  .b5-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .b5-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 16px; border-top: 3px solid; }
-  .b5-ref { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.1em; }
-  .b5-name { font-size: 12px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
-  .b5-amount { font-family: var(--mono); font-size: 18px; font-weight: 500; margin-bottom: 8px; }
-  .b5-sub-list { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
-  .b5-sub-item { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--muted); padding: 3px 0; }
-  .b5-sub-item span:last-child { color: var(--text); }
-
-  /* PC ITEMS */
-  .pc-grid { display: flex; flex-direction: column; gap: 10px; }
-  .pc-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; display: flex; align-items: center; gap: 14px; }
-  .pc-icon { width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
-  .pc-info { flex: 1; }
-  .pc-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
-  .pc-type { font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-  .pc-amount { font-family: var(--mono); font-size: 13px; font-weight: 500; }
-
-  /* RISK CARDS */
-  .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .risk-card { background: var(--surface2); border-radius: 6px; padding: 13px 15px; border-left: 3px solid; }
-  .risk-card.warn { border-color: #1a6fa8; }
-  .risk-card.info { border-color: #0D2080; }
-  .risk-card.alert { border-color: #c0392b; }
-  .risk-card.ok { border-color: #1a8c5a; }
-  .risk-title { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
-  .risk-card.warn .risk-title { color: #1a6fa8; }
-  .risk-card.info .risk-title { color: #0D2080; }
-  .risk-card.alert .risk-title { color: #c0392b; }
-  .risk-card.ok .risk-title { color: #1a8c5a; }
-  .risk-body { font-size: 11px; color: var(--muted); line-height: 1.5; }
-
-  /* CROSS-CHECK */
-  .crosscheck { background: rgba(41,171,226,0.06); border: 1px solid rgba(41,171,226,0.25); border-radius: 8px; padding: 14px 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-  .crosscheck-icon { font-size: 18px; }
-  .crosscheck-text { flex: 1; font-size: 12px; line-height: 1.6; }
-  .crosscheck-text strong { color: var(--accent2); font-family: var(--mono); }
-  .crosscheck-badge { font-family: var(--mono); font-size: 11px; color: var(--accent); background: rgba(41,171,226,0.10); border: 1px solid rgba(41,171,226,0.30); border-radius: 4px; padding: 6px 12px; white-space: nowrap; }
-  .section-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 10px; padding-left: 2px; }
-
-  /* FOOTER */
-  .footer { text-align: center; padding: 20px 40px; font-family: var(--mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 20px; }
-
-  /* ══════════════════════════════════════════
-     SPENDING TRACKER STYLES
-  ══════════════════════════════════════════ */
-
-  /* ENTRY FORM */
-  .tracker-form {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .form-header {
-    background: #0D2080;
-    padding: 14px 20px;
+  /* ── EDIT MODE ── */
+  .edit-toolbar {
     display: flex;
+    gap: 10px;
     align-items: center;
-    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: #EEF2FF;
+    border: 1px solid #C5CAE9;
+    border-radius: 2px;
   }
-  .form-header-title { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: #29ABE2; }
-  .form-body { padding: 20px; }
-  .form-row { display: grid; grid-template-columns: 160px 1fr repeat(8, 1fr) 120px; gap: 10px; align-items: end; margin-bottom: 10px; }
-  .form-row-header { display: grid; grid-template-columns: 160px 1fr repeat(8, 1fr) 120px; gap: 10px; margin-bottom: 6px; }
-  .fh { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-  .form-field label { display: block; font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 5px; }
-  .form-field input, .form-field select {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text);
-    background: var(--surface);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .form-field input:focus, .form-field select:focus { border-color: #29ABE2; }
-  .bill-amount-input {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text);
-    background: var(--surface);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .bill-amount-input:focus { border-color: #29ABE2; }
   .btn {
-    padding: 9px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 7px 16px;
     border: none;
-    border-radius: 5px;
-    font-family: var(--mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    border-radius: 2px;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all .15s;
   }
-  .btn-primary { background: #0D2080; color: #fff; }
-  .btn-primary:hover { background: #1a35a8; }
-  .btn-danger { background: rgba(192,57,43,0.1); color: #c0392b; border: 1px solid rgba(192,57,43,0.3); }
-  .btn-danger:hover { background: rgba(192,57,43,0.2); }
-  .btn-sm { padding: 5px 10px; font-size: 9px; }
-  .btn-export { background: rgba(41,171,226,0.1); color: #29ABE2; border: 1px solid rgba(41,171,226,0.3); }
-  .btn-export:hover { background: rgba(41,171,226,0.2); }
+  .btn-primary { background: var(--navy); color: white; }
+  .btn-primary:hover { background: #1a3280; }
+  .btn-edit { background: var(--lkl); color: white; }
+  .btn-edit:hover { background: #1f94d0; }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-danger:hover { background: #a93226; }
+  .btn-neutral { background: var(--charcoal); color: white; }
+  .btn-neutral:hover { background: #444; }
+  .btn-success { background: var(--green); color: white; }
+  .btn-success:hover { background: #1e8449; }
 
-  /* LEDGER TABLE */
-  .ledger-table { width: 100%; border-collapse: collapse; }
-  .ledger-table th { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 10px 10px 0; text-align: left; border-bottom: 1px solid var(--border); }
-  .ledger-table th:last-child { text-align: center; }
-  .ledger-table td { padding: 10px 10px 10px 0; font-size: 12px; border-bottom: 1px solid rgba(100,120,160,0.12); vertical-align: middle; font-family: var(--mono); }
-  .ledger-table td:last-child { text-align: center; }
-  .ledger-table tr:last-child td { border-bottom: none; }
-  .ledger-table tr:hover td { background: rgba(41,171,226,0.03); }
-  .ledger-month { font-size: 11px; color: var(--accent2); font-weight: 500; }
-  .ledger-note { font-family: var(--sans); font-size: 12px; color: var(--muted); }
-
-  /* VARIANCE TABLE */
-  .var-table { width: 100%; border-collapse: collapse; }
-  .var-table th { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 12px 10px 0; text-align: right; border-bottom: 1px solid var(--border); }
-  .var-table th:first-child { text-align: left; }
-  .var-table td { padding: 12px 12px 12px 0; font-size: 12px; border-bottom: 1px solid rgba(100,120,160,0.12); vertical-align: middle; text-align: right; font-family: var(--mono); }
-  .var-table td:first-child { text-align: left; font-family: var(--sans); font-size: 13px; }
-  .var-table tr:last-child td { border-bottom: none; }
-  .var-total td { background: var(--surface2); font-weight: 700; border-top: 2px solid var(--border); }
-  .positive { color: #1a8c5a; }
-  .negative { color: #c0392b; }
-  .neutral { color: var(--muted); }
-  .pct-bar-cell { width: 120px; }
-  .pct-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
-  .pct-bar-spent { height: 100%; border-radius: 3px; }
-
-  /* S-CURVE CANVAS */
-  #scurve { width: 100%; height: 280px; display: block; }
-
-  /* SUMMARY KPI tracker */
-  .tracker-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-  .tkpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; position: relative; overflow: hidden; }
-  .tkpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-  .tkpi.tc1::before { background: #29ABE2; }
-  .tkpi.tc2::before { background: #1a8c5a; }
-  .tkpi.tc3::before { background: #c0392b; }
-  .tkpi.tc4::before { background: #0D2080; }
-  .tkpi-label { font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
-  .tkpi-value { font-size: 22px; font-weight: 800; line-height: 1; margin-bottom: 5px; }
-  .tkpi.tc1 .tkpi-value { color: #29ABE2; }
-  .tkpi.tc2 .tkpi-value { color: #1a8c5a; }
-  .tkpi.tc3 .tkpi-value { color: #c0392b; }
-  .tkpi.tc4 .tkpi-value { color: #0D2080; }
-  .tkpi-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); }
-
-  /* MONTH BADGE */
-  .month-badge { display: inline-block; background: rgba(13,32,128,0.08); color: #0D2080; border: 1px solid rgba(13,32,128,0.15); border-radius: 4px; font-family: var(--mono); font-size: 10px; padding: 2px 7px; }
-
-  /* EMPTY STATE */
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty-state .es-icon { font-size: 36px; margin-bottom: 12px; }
-  .empty-state p { font-family: var(--mono); font-size: 11px; }
-
-  /* TOAST */
-  .toast { position: fixed; bottom: 24px; right: 24px; background: #0D2080; color: #fff; padding: 12px 20px; border-radius: 6px; font-family: var(--mono); font-size: 11px; border-left: 3px solid #29ABE2; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; }
-  .toast.show { opacity: 1; }
-
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(13,32,128,0.2); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 28px; width: 520px; box-shadow: 0 20px 60px rgba(13,32,128,0.15); }
-  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--accent2); }
-  .modal p { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 20px; }
-  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-  .modal-field label { display: block; font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 5px; }
-  .modal-field input, .modal-field select, .modal-field textarea {
-    width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: 5px;
-    font-family: var(--mono); font-size: 11px; color: var(--text); background: var(--surface);
-    outline: none; transition: border-color 0.15s;
+  input[type="number"].edit-input {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    border: 1px solid var(--lkl);
+    border-radius: 2px;
+    padding: 3px 6px;
+    width: 130px;
+    text-align: right;
+    outline: none;
+    background: #fff;
   }
-  .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus { border-color: #29ABE2; }
-  .modal-field.full { grid-column: 1 / -1; }
-  .bill-inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .bil-field label { display: block; font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
-  .bil-field input { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 5px; font-family: var(--mono); font-size: 11px; color: var(--text); background: #fff; outline: none; }
-  .bil-field input:focus { border-color: #29ABE2; }
-  .bil-total-row { background: rgba(41,171,226,0.06); border: 1px solid rgba(41,171,226,0.2); border-radius: 6px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .bil-total-label { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-  .bil-total-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--accent2); }
+  input[type="number"].edit-input:focus { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(41,171,226,.2); }
 
+  .total-indicator {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+  .total-ok { background: #E8F5E9; color: var(--green); }
+  .total-err { background: #FDECEA; color: var(--red); }
+
+  .modified-dot { color: var(--amber); font-size: 0.9rem; }
+  .delta-up { color: var(--green); font-size: 0.72rem; font-family: 'DM Mono', monospace; }
+  .delta-down { color: var(--red); font-size: 0.72rem; font-family: 'DM Mono', monospace; }
+
+  /* ── EXPENDITURE ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 4px;
+    padding: 28px;
+    width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-top: 4px solid var(--navy);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal h3 { font-size: 1.1rem; margin-bottom: 20px; color: var(--navy); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+  .form-group input, .form-group select, .form-group textarea {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 7px 10px;
+    outline: none;
+    background: #FAFAF6;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--lkl);
+    background: white;
+  }
+  .form-section-head {
+    grid-column: 1 / -1;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--navy);
+    padding: 8px 0 4px;
+    border-bottom: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+  /* ── RISK FLAGS ── */
+  .risk-table td:first-child { font-size: 0.82rem; }
+  .sev-high { color: var(--red); font-weight: 600; font-family: 'DM Mono', monospace; font-size: 0.75rem; }
+  .sev-med { color: var(--amber); font-weight: 600; font-family: 'DM Mono', monospace; font-size: 0.75rem; }
+  .sev-low { color: var(--green); font-weight: 600; font-family: 'DM Mono', monospace; font-size: 0.75rem; }
+
+  /* ── S-CURVE ── */
+  .chart-wrap { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; margin-bottom: 28px; border-radius: 2px; }
+  canvas { max-width: 100%; }
+
+  /* ── PROCESSING FEES ── */
+  .pf-submitter {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: white;
+    background: var(--charcoal);
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .pf-timeline {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--lkl);
+    font-style: italic;
+  }
+  tr.pf-sub-row td { background: #FAFAF6; padding-left: 32px; font-size: 0.82rem; color: #444; }
+  tr.pf-sub-row:hover td { background: #F0EFE8; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    main { padding: 16px; }
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    header { padding: 14px 16px; flex-direction: column; gap: 8px; }
+    .tab-bar { padding: 0 16px; }
+  }
+
+  /* ── VARIANCE COLOUR ── */
+  .var-pos { color: var(--green); }
+  .var-neg { color: var(--red); }
+
+  .expand-icon { font-size: 0.75rem; margin-right: 6px; transition: transform .2s; display: inline-block; }
+  tr.expanded .expand-icon { transform: rotate(90deg); }
+
+  .chevron { cursor: pointer; user-select: none; }
+
+  /* ledger delete btn */
+  .del-btn { background: none; border: none; color: var(--red); cursor: pointer; font-size: 1rem; padding: 2px 6px; }
+  .del-btn:hover { background: #fdecea; border-radius: 2px; }
+  .edit-row-btn { background: none; border: none; color: var(--lkl); cursor: pointer; font-size: 0.85rem; padding: 2px 6px; }
+
+  /* export button */
+  .export-btn { background: var(--charcoal); color: white; font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 6px 14px; border: none; border-radius: 2px; cursor: pointer; }
+  .export-btn:hover { background: #333; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-left">
-    <h1>Budget Tracking Dashboard</h1>
-    <h2>Syntec<span>@</span>Klang — Full BQ &amp; Expenditure</h2>
+<header>
+  <div>
+    <h1>Syntec @ Klang — Budget Tracker</h1>
+    <div class="sub">LOT 106719 JALAN ASTANA 3/KU2 · BANDAR BUKIT RAJA · 41050 KLANG · MAIN CONTRACT: PTSSB</div>
   </div>
-  <div class="header-meta">
-    <div>PROJECT &nbsp;<strong>Lot 106719, Jalan Astana 3/KU2, Bandar Bukit Raja, Klang</strong></div>
-    <div>CLIENT &nbsp;<strong>Syntec Intelligence Technology Sdn Bhd</strong></div>
-    <div>CONTRACTOR &nbsp;<strong>Pembinaan Tuju Setia Sdn Bhd (PTSSB)</strong></div>
-    <div>QS &nbsp;<strong>NCQS Consult</strong> &nbsp;|&nbsp; ADDENDUM &nbsp;<strong>TA1</strong> &nbsp;|&nbsp; COMPLETION &nbsp;<strong>14 months</strong></div>
+  <div class="contract-sum">
+    <div class="label">CONTRACT SUM (ADDENDUM TA1)</div>
+    <div class="amount" id="hdr-contract-sum">RM 54,000,000.00</div>
+    <div class="label" style="margin-top:4px">COMMENCEMENT: 8 DEC 2025 · 14-MONTH PERIOD</div>
   </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('bq')">BQ Summary</button>
+  <button class="tab-btn" onclick="showTab('expenditure')">Monthly Expenditure</button>
+  <button class="tab-btn" onclick="showTab('variance')">Budget vs Actual</button>
+  <button class="tab-btn" onclick="showTab('processing')">Processing Fees</button>
+  <button class="tab-btn" onclick="showTab('risks')">Risk Register</button>
 </div>
 
-<!-- NAV TABS -->
-<div class="nav-tabs">
-  <div class="nav-tab active" onclick="switchTab('bq')">BQ Summary</div>
-  <div class="nav-tab" onclick="switchTab('tracker')">Monthly Expenditure</div>
-  <div class="nav-tab" onclick="switchTab('variance')">Budget vs Actual</div>
+<main>
+
+<!-- ══════════════════════ TAB 1: BQ SUMMARY ══════════════════════ -->
+<div id="tab-bq" class="tab-panel active">
+  <div class="kpi-grid" id="bq-kpi-grid"></div>
+
+  <div class="section-title">
+    Bill of Quantities — Contract Sum Breakdown
+    <button class="btn btn-edit" id="edit-toggle-btn" onclick="toggleEditMode()">✏ Edit Budget</button>
+    <span id="edit-total-indicator" style="display:none"></span>
+  </div>
+
+  <div id="edit-toolbar" class="edit-toolbar" style="display:none">
+    <span style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--navy);font-weight:500">EDIT MODE — modify bill budgets below</span>
+    <button class="btn btn-success" onclick="saveEdits()">✓ Save Changes</button>
+    <button class="btn btn-neutral" onclick="resetToSOT()">↺ Reset to SOT</button>
+    <button class="btn btn-danger" onclick="cancelEdits()">✕ Cancel</button>
+  </div>
+
+  <table id="bq-table">
+    <thead>
+      <tr>
+        <th style="width:60px">Bill</th>
+        <th>Description</th>
+        <th class="num">Budget (RM)</th>
+        <th class="num">%</th>
+        <th class="num">Certified (RM)</th>
+        <th class="num">% Done</th>
+        <th class="num">Remaining (RM)</th>
+        <th>Type</th>
+        <th class="num" id="delta-col-header" style="display:none">Δ vs SOT</th>
+      </tr>
+    </thead>
+    <tbody id="bq-tbody"></tbody>
+  </table>
 </div>
 
-<!-- ══════════════ TAB 1: BQ SUMMARY ══════════════ -->
-<div id="tab-bq" class="page active">
-<div class="main">
-
-  <!-- CROSS-CHECK -->
-  <div class="crosscheck">
-    <div class="crosscheck-icon">✓</div>
-    <div class="crosscheck-text">
-      Cross-check passed — Bills 1–6 aggregate:
-      <strong>6,789,232 + 3,450,167 + 21,328,751 + 5,001,983 + 794,798 + 6,943,000 + 1,775,500 + 7,916,569 = RM 54,000,000.00</strong>
-      &nbsp;|&nbsp; SOT declared: <strong>RM 54,000,000.00</strong>
-    </div>
-    <div class="crosscheck-badge">✓ BALANCED</div>
-  </div>
-
-  <!-- KPI ROW -->
-  <div class="kpi-row">
-    <div class="kpi c1">
-      <div class="kpi-label">Total Contract Sum</div>
-      <div class="kpi-value">RM 54.0M</div>
-      <div class="kpi-sub">SOT Addendum TA1 confirmed</div>
-    </div>
-    <div class="kpi c2">
-      <div class="kpi-label">Main Structure (B2+B3)</div>
-      <div class="kpi-value">RM 24.78M</div>
-      <div class="kpi-sub">Piling + Main Building — 45.9%</div>
-    </div>
-    <div class="kpi c3">
-      <div class="kpi-label">M&amp;E Services (B5a/b/c)</div>
-      <div class="kpi-value">RM 9.51M</div>
-      <div class="kpi-sub">Plumbing + Elec + Fire — 17.6%</div>
-    </div>
-    <div class="kpi c4">
-      <div class="kpi-label">Provisional / PC Sums</div>
-      <div class="kpi-value">RM 12.92M</div>
-      <div class="kpi-sub">Bills 4 + 6 combined — 23.9%</div>
-    </div>
-    <div class="kpi c5">
-      <div class="kpi-label">Contingencies (B6)</div>
-      <div class="kpi-value">RM 300K</div>
-      <div class="kpi-sub">0.56% of contract — monitor adequacy</div>
+<!-- ══════════════════════ TAB 2: EXPENDITURE ══════════════════════ -->
+<div id="tab-expenditure" class="tab-panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div class="section-title" style="margin-bottom:0;border:none">IPC Payment Ledger</div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-edit" onclick="openModal()">+ Add Entry</button>
+      <button class="export-btn" onclick="exportCSV()">↓ Export CSV</button>
     </div>
   </div>
 
-  <div class="grid-2">
-    <!-- BILL TABLE with expandable sub-items -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">Bill-by-Bill Summary — Addendum TA1</span>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <span class="panel-tag" style="cursor:pointer;" onclick="toggleAllSubs()" id="expand-all-btn">▶ Expand All</span>
-          <button class="btn-edit-budget" id="edit-budget-btn" onclick="toggleBudgetEdit()">✏ Edit Budget</button>
-        </div>
-      </div>
-      <!-- EDIT MODE BANNER -->
-      <div class="edit-mode-banner" id="edit-banner">
-        <span style="flex:1;">✏ Budget edit mode — click any amount to adjust. Changes saved to browser.</span>
-        <span>Total: <span class="live-total-display" id="live-total">RM 54,000,000.00</span></span>
-        <button class="btn-reset-budget" onclick="resetBQ()">↺ Reset to SOT</button>
-        <button class="btn-save-budget" onclick="saveBudgetEdits()">✓ Save Changes</button>
-      </div>
-      <div class="panel-body" style="padding:0 20px;">
-        <div id="bq-table-container"></div>
-      </div>
-    </div>
-
-    <!-- DONUT + HBAR -->
-    <div style="display:flex;flex-direction:column;gap:18px;">
-      <div class="panel">
-        <div class="panel-header"><span class="panel-title">Cost Distribution</span></div>
-        <div class="panel-body">
-          <div class="chart-wrap">
-            <svg class="donut-svg" width="150" height="150" viewBox="0 0 150 150">
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#eaf0f7" stroke-width="22"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#0D2080" stroke-width="22" stroke-dasharray="138.9 213.1" stroke-dashoffset="88" transform="rotate(-90 75 75)"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#1a6fa8" stroke-width="22" stroke-dasharray="51.6 300.4" stroke-dashoffset="-50.9" transform="rotate(-90 75 75)"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#29ABE2" stroke-width="22" stroke-dasharray="45.5 306.5" stroke-dashoffset="-102.5" transform="rotate(-90 75 75)"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#29ABE2" stroke-width="22" stroke-dasharray="44.2 307.8" stroke-dashoffset="-148" transform="rotate(-90 75 75)" opacity="0.55"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#2668a8" stroke-width="22" stroke-dasharray="32.6 319.4" stroke-dashoffset="-192.2" transform="rotate(-90 75 75)"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#3a82b8" stroke-width="22" stroke-dasharray="22.5 329.5" stroke-dashoffset="-224.8" transform="rotate(-90 75 75)"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#c0392b" stroke-width="22" stroke-dasharray="11.6 340.4" stroke-dashoffset="-247.3" transform="rotate(-90 75 75)"/>
-              <circle cx="75" cy="75" r="56" fill="none" stroke="#1a8c5a" stroke-width="22" stroke-dasharray="5.2 346.8" stroke-dashoffset="-258.9" transform="rotate(-90 75 75)"/>
-              <text x="75" y="70" text-anchor="middle" fill="#0D2080" font-family="EB Garamond,serif" font-size="13" font-weight="800">RM 54M</text>
-              <text x="75" y="84" text-anchor="middle" fill="#58595B" font-family="DM Mono,monospace" font-size="7">CONTRACT</text>
-            </svg>
-            <div class="legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#0D2080"></div><div class="legend-name">B3 Main Building</div><div class="legend-val">21.33M</div><div class="legend-pct">39.5%</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#1a6fa8"></div><div class="legend-name">B6 PC &amp; Prov</div><div class="legend-val">7.92M</div><div class="legend-pct">14.7%</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#29ABE2"></div><div class="legend-name">B5b Electrical</div><div class="legend-val">6.94M</div><div class="legend-pct">12.9%</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#29ABE2;opacity:0.55"></div><div class="legend-name">B1 Preliminaries</div><div class="legend-val">6.79M</div><div class="legend-pct">12.6%</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#2668a8"></div><div class="legend-name">B4 Infrastructure</div><div class="legend-val">5.00M</div><div class="legend-pct">9.3%</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#3a82b8"></div><div class="legend-name">B2 Piling</div><div class="legend-val">3.45M</div><div class="legend-pct">6.4%</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div><div class="legend-name">B5c Fire</div><div class="legend-val">1.78M</div><div class="legend-pct">3.3%</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:#1a8c5a"></div><div class="legend-name">B5a Plumbing</div><div class="legend-val">0.79M</div><div class="legend-pct">1.5%</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-header"><span class="panel-title">Bills Ranked by Value</span></div>
-        <div class="panel-body">
-          <div class="hbar-list">
-            <div><div class="hbar-top"><span class="hbar-label">B3 — Main Building</span><span class="hbar-val">RM 21,328,751</span></div><div class="hbar-track"><div class="hbar-fill" style="width:100%;background:#0D2080;"></div></div></div>
-            <div><div class="hbar-top"><span class="hbar-label">B6 — PC &amp; Provisional</span><span class="hbar-val">RM 7,916,569</span></div><div class="hbar-track"><div class="hbar-fill" style="width:37.1%;background:#1a6fa8;"></div></div></div>
-            <div><div class="hbar-top"><span class="hbar-label">B5b — Electrical &amp; ELV</span><span class="hbar-val">RM 6,943,000</span></div><div class="hbar-track"><div class="hbar-fill" style="width:32.6%;background:#29ABE2;"></div></div></div>
-            <div><div class="hbar-top"><span class="hbar-label">B1 — Preliminaries</span><span class="hbar-val">RM 6,789,232</span></div><div class="hbar-track"><div class="hbar-fill" style="width:31.8%;background:#29ABE2;opacity:0.6"></div></div></div>
-            <div><div class="hbar-top"><span class="hbar-label">B4 — Infrastructure</span><span class="hbar-val">RM 5,001,983</span></div><div class="hbar-track"><div class="hbar-fill" style="width:23.5%;background:#2668a8;"></div></div></div>
-            <div><div class="hbar-top"><span class="hbar-label">B2 — Piling</span><span class="hbar-val">RM 3,450,167</span></div><div class="hbar-track"><div class="hbar-fill" style="width:16.2%;background:#3a82b8;"></div></div></div>
-            <div><div class="hbar-top"><span class="hbar-label">B5c — Fire Protection</span><span class="hbar-val">RM 1,775,500</span></div><div class="hbar-track"><div class="hbar-fill" style="width:8.3%;background:#c0392b;"></div></div></div>
-            <div><div class="hbar-top"><span class="hbar-label">B5a — Plumbing</span><span class="hbar-val">RM 794,798</span></div><div class="hbar-track"><div class="hbar-fill" style="width:3.7%;background:#1a8c5a;"></div></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RISK FLAGS -->
-  <div class="section-label">Risk &amp; Observation Flags</div>
-  <div class="panel" style="margin-bottom:18px;">
-    <div class="panel-body">
-      <div class="risk-grid">
-        <div class="risk-card alert"><div class="risk-title">⚠ High Provisional Exposure</div><div class="risk-body">Bills 2 + 4 are entirely provisional (RM 8.45M / 15.6%). Final cost subject to remeasurement — significant variance risk on earthwork rates and piling quantities.</div></div>
-        <div class="risk-card warn"><div class="risk-title">⚡ Heross Performance Bond</div><div class="risk-body">RM 300,047.50 bond due ~27 Feb 2026 (already past). Verify submission status with PTSSB before next payment certification.</div></div>
-        <div class="risk-card warn"><div class="risk-title">📅 Backdated Commencement</div><div class="risk-body">Both Eita and Heross LOAs show commencement 8 Dec 2025 — predating formal LOA issuance. Confirm time-at-large risk.</div></div>
-        <div class="risk-card info"><div class="risk-title">🏗 PC Sum vs LOA Variance</div><div class="risk-body">B6 Lift PC = RM 1,280,000. Eita LOA = RM 950,000. Delta RM 330,000 — confirm allocation before final account.</div></div>
-        <div class="risk-card info"><div class="risk-title">💡 Electrical LV Cost Weight</div><div class="risk-body">Switchboards + cabling = RM 3,865,096 — 55.7% of B5b. VRF feeder cables alone ~RM 1.36M. Monitor for VOs.</div></div>
-        <div class="risk-card ok"><div class="risk-title">✓ Contingencies Allocated</div><div class="risk-body">Provisional contingency RM 300,000 (0.56%) is low for a RM 54M build. Consider adequacy against Bills 2 and 4 uncertainty.</div></div>
-        <div class="risk-card info"><div class="risk-title">🔥 Fire System — AV1 Dominant</div><div class="risk-body">AV1 riser pipework = RM 229,690 vs AV2 RM 14,716 / AV3 RM 113,164. Verify zoning vs latest Bomba-approved drawings.</div></div>
-        <div class="risk-card warn"><div class="risk-title">📋 Profit &amp; Attendance Rate</div><div class="risk-body">P&amp;A RM 145,619 on PC RM 7,280,950 = 2.0%. If PTSSB awarded ACMV, profit deducted per B6 clause — track at award stage.</div></div>
-      </div>
-    </div>
-  </div>
-
+  <table id="ledger-table">
+    <thead>
+      <tr>
+        <th>Period</th>
+        <th>Note / IPC Ref</th>
+        <th class="num">B1</th>
+        <th class="num">B2</th>
+        <th class="num">B3</th>
+        <th class="num">B4</th>
+        <th class="num">B5a</th>
+        <th class="num">B5b</th>
+        <th class="num">B5c</th>
+        <th class="num">B6</th>
+        <th class="num">SST Labour</th>
+        <th class="num">SST NSC</th>
+        <th class="num">SST Other</th>
+        <th class="num">Sub-total excl SST</th>
+        <th class="num">Total incl SST</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="ledger-tbody"></tbody>
+    <tfoot id="ledger-tfoot"></tfoot>
+  </table>
 </div>
-</div><!-- /tab-bq -->
 
-
-<!-- ══════════════ TAB 2: MONTHLY EXPENDITURE ══════════════ -->
-<div id="tab-tracker" class="page">
-<div class="main">
-
-  <!-- ADD ENTRY BUTTON ROW -->
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <div>
-      <div style="font-size:22px;font-weight:700;color:var(--accent2);margin-bottom:3px;">Monthly Expenditure Ledger</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Enter certified payment amounts per bill per month. Data saved locally in browser.</div>
-    </div>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-export" onclick="exportCSV()">Export CSV</button>
-      <button class="btn btn-primary" onclick="openModal()">+ Add Month Entry</button>
-    </div>
+<!-- ══════════════════════ TAB 3: VARIANCE ══════════════════════ -->
+<div id="tab-variance" class="tab-panel">
+  <div class="kpi-grid" id="var-kpi-grid"></div>
+  <div class="chart-wrap">
+    <div class="section-title">S-Curve — Cumulative Expenditure vs Linear Baseline</div>
+    <canvas id="scurve" height="280"></canvas>
   </div>
+  <div class="section-title">Bill-by-Bill Variance (click row to expand sub-items)</div>
+  <table id="var-table">
+    <thead>
+      <tr>
+        <th>Bill</th>
+        <th>Description</th>
+        <th class="num">Budget (RM)</th>
+        <th class="num">Certified (RM)</th>
+        <th class="num">Remaining (RM)</th>
+        <th class="num">% Spent</th>
+        <th class="num">Variance (RM)</th>
+      </tr>
+    </thead>
+    <tbody id="var-tbody"></tbody>
+  </table>
 
-  <!-- LEDGER TABLE -->
-  <div class="panel" style="margin-bottom:20px;">
-    <div class="panel-header">
-      <span class="panel-title">Payment Ledger</span>
-      <span class="panel-tag" id="entry-count">0 entries</span>
-    </div>
-    <div class="panel-body" style="padding:0 20px;">
-      <div id="ledger-container">
-        <div class="empty-state">
-          <div class="es-icon">📋</div>
-          <p>No entries yet. Click "+ Add Month Entry" to record a certified payment.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <div class="section-title" style="margin-top:8px">Monthly Summary</div>
+  <table id="monthly-summary-table">
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Note</th>
+        <th class="num">Certified excl SST (RM)</th>
+        <th class="num">SST (RM)</th>
+        <th class="num">Total incl SST (RM)</th>
+        <th class="num">Cumul. Certified (RM)</th>
+        <th class="num">Cumul. %</th>
+      </tr>
+    </thead>
+    <tbody id="monthly-summary-tbody"></tbody>
+  </table>
 </div>
-</div><!-- /tab-tracker -->
 
+<!-- ══════════════════════ TAB 4: PROCESSING FEES ══════════════════════ -->
+<div id="tab-processing" class="tab-panel">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)" id="pf-kpi-grid"></div>
 
-<!-- ══════════════ TAB 3: BUDGET vs ACTUAL ══════════════ -->
-<div id="tab-variance" class="page">
-<div class="main">
-
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <div>
-      <div style="font-size:22px;font-weight:700;color:var(--accent2);margin-bottom:3px;">Budget vs Actual Expenditure</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Cumulative certified spend versus BQ budget by bill. S-curve shows project cash flow trajectory.</div>
-    </div>
+  <div class="section-title">
+    Processing Fees Estimation — Project Approvals &amp; Utilities
+    <button class="btn btn-edit" id="pf-edit-btn" onclick="togglePFEdit()">✏ Edit Amounts</button>
+    <span id="pf-total-indicator" style="display:none"></span>
   </div>
 
-  <!-- TRACKER KPIs -->
-  <div class="tracker-kpi-row" style="grid-template-columns:repeat(5,1fr);">
-    <div class="tkpi tc1">
-      <div class="tkpi-label">Total BQ Budget</div>
-      <div class="tkpi-value" id="tv-budget">RM 54.00M</div>
-      <div class="tkpi-sub">SOT Addendum TA1</div>
-    </div>
-    <div class="tkpi tc2">
-      <div class="tkpi-label">Total Certified (excl SST)</div>
-      <div class="tkpi-value" id="tv-spent">RM 0</div>
-      <div class="tkpi-sub" id="tv-spent-pct">0.0% of budget</div>
-    </div>
-    <div class="tkpi tc3">
-      <div class="tkpi-label">Remaining Budget</div>
-      <div class="tkpi-value" id="tv-remaining">RM 54.00M</div>
-      <div class="tkpi-sub" id="tv-remaining-pct">100.0% remaining</div>
-    </div>
-    <div class="tkpi" style="border:1px solid var(--border);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden;background:var(--surface);">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#c0392b;"></div>
-      <div class="tkpi-label">SST Paid (PTSSB Labour @ 6%)</div>
-      <div class="tkpi-value" id="tv-sst" style="color:#c0392b;">RM 0</div>
-      <div class="tkpi-sub" id="tv-sst-sub">Reg B16-2508-32001462 — labour only</div>
-    </div>
-    <div class="tkpi tc4">
-      <div class="tkpi-label">Months Recorded</div>
-      <div class="tkpi-value" id="tv-months">0</div>
-      <div class="tkpi-sub">of 14 month contract</div>
-    </div>
+  <div id="pf-edit-toolbar" class="edit-toolbar" style="display:none">
+    <span style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--navy);font-weight:500">EDIT MODE — adjust individual fee amounts</span>
+    <button class="btn btn-success" onclick="savePFEdits()">✓ Save</button>
+    <button class="btn btn-neutral" onclick="resetPFToDefault()">↺ Reset</button>
+    <button class="btn btn-danger" onclick="cancelPFEdits()">✕ Cancel</button>
   </div>
 
-  <!-- S-CURVE -->
-  <div class="panel" style="margin-bottom:20px;">
-    <div class="panel-header">
-      <span class="panel-title">Cumulative Expenditure S-Curve — Certified vs Budget</span>
-      <span class="panel-tag">Monthly Progression</span>
-    </div>
-    <div class="panel-body">
-      <canvas id="scurve"></canvas>
-      <div style="display:flex;gap:24px;margin-top:12px;justify-content:center;">
-        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--muted);">
-          <div style="width:28px;height:3px;background:#0D2080;border-radius:2px;"></div> Budget Baseline (linear)
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--muted);">
-          <div style="width:28px;height:3px;background:#29ABE2;border-radius:2px;"></div> Actual Certified
-        </div>
-      </div>
-    </div>
-  </div>
+  <table id="pf-table">
+    <thead>
+      <tr>
+        <th style="width:40px">No.</th>
+        <th>Purpose</th>
+        <th>Submitted By</th>
+        <th>Est. Payment Timeline</th>
+        <th class="num">Sub-Total (RM)</th>
+        <th class="num">Total (RM)</th>
+        <th class="num">Status</th>
+      </tr>
+    </thead>
+    <tbody id="pf-tbody"></tbody>
+    <tfoot id="pf-tfoot"></tfoot>
+  </table>
 
-  <!-- VARIANCE TABLE BY BILL -->
-  <div class="panel" style="margin-bottom:20px;">
-    <div class="panel-header">
-      <span class="panel-title">Bill-by-Bill Variance Table</span>
-      <span class="panel-tag">Budget vs Certified</span>
-    </div>
-    <div class="panel-body" style="padding:0 20px;">
-      <table class="var-table" id="variance-table">
-        <thead>
-          <tr>
-            <th style="text-align:left">Bill</th>
-            <th>BQ Budget (RM)</th>
-            <th>Certified to Date (RM)</th>
-            <th>Remaining (RM)</th>
-            <th>% Spent</th>
-            <th>Variance</th>
-          </tr>
-        </thead>
-        <tbody id="variance-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- MONTHLY BREAKDOWN TABLE -->
-  <div class="panel" style="margin-bottom:20px;">
-    <div class="panel-header">
-      <span class="panel-title">Monthly Certified Amounts</span>
-    </div>
-    <div class="panel-body" style="padding:0 20px;">
-      <div id="monthly-summary-container">
-        <div class="empty-state" style="padding:30px;">
-          <div class="es-icon">📊</div>
-          <p>No expenditure data recorded yet. Add entries in the Monthly Expenditure tab.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <div class="section-title" style="margin-top:8px">Processing Fees by Category</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th class="num">Estimated (RM)</th>
+        <th class="num">% of Total Fees</th>
+        <th class="num">% of Contract Sum</th>
+      </tr>
+    </thead>
+    <tbody id="pf-breakdown-tbody"></tbody>
+  </table>
 </div>
-</div><!-- /tab-variance -->
 
+<!-- ══════════════════════ TAB 5: RISKS ══════════════════════ -->
+<div id="tab-risks" class="tab-panel">
+  <div class="section-title">Risk Register — Syntec @ Klang</div>
+  <table class="risk-table">
+    <thead>
+      <tr>
+        <th style="width:40px">#</th>
+        <th>Risk Item</th>
+        <th>Severity</th>
+        <th>Action Required</th>
+      </tr>
+    </thead>
+    <tbody id="risk-tbody"></tbody>
+  </table>
+</div>
 
-<!-- ══════════ MODAL: ADD ENTRY ══════════ -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+</main>
+
+<!-- ── ADD ENTRY MODAL ── -->
+<div class="modal-overlay" id="entry-modal">
   <div class="modal">
-    <h3>Add Monthly Entry</h3>
-    <p>Enter certified payment amounts for each bill for the selected month.</p>
-    <div class="modal-grid">
-      <div class="modal-field">
-        <label>Month / Year</label>
-        <input type="month" id="m-month" />
+    <h3 id="modal-title">Add IPC Entry</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Month (YYYY-MM)</label>
+        <input type="month" id="m-month">
       </div>
-      <div class="modal-field">
-        <label>Note / Reference</label>
-        <input type="text" id="m-note" placeholder="e.g. IPC No. 3" />
+      <div class="form-group">
+        <label>IPC Note / Ref</label>
+        <input type="text" id="m-note" placeholder="IPC No. 4 | Invoice 000XXXXX">
       </div>
-    </div>
-    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Certified Amounts by Bill (RM) — Exclusive of SST</div>
-    <div class="bill-inputs-grid">
-      <div class="bil-field"><label>B1 — Preliminaries</label><input type="number" id="mb1" placeholder="0.00" min="0" step="0.01"/></div>
-      <div class="bil-field"><label>B2 — Piling</label><input type="number" id="mb2" placeholder="0.00" min="0" step="0.01"/></div>
-      <div class="bil-field"><label>B3 — Main Building</label><input type="number" id="mb3" placeholder="0.00" min="0" step="0.01"/></div>
-      <div class="bil-field"><label>B4 — Infrastructure</label><input type="number" id="mb4" placeholder="0.00" min="0" step="0.01"/></div>
-      <div class="bil-field"><label>B5a — Plumbing</label><input type="number" id="mb5a" placeholder="0.00" min="0" step="0.01"/></div>
-      <div class="bil-field"><label>B5b — Electrical &amp; ELV</label><input type="number" id="mb5b" placeholder="0.00" min="0" step="0.01"/></div>
-      <div class="bil-field"><label>B5c — Fire Protection</label><input type="number" id="mb5c" placeholder="0.00" min="0" step="0.01"/></div>
-      <div class="bil-field"><label>B6 — PC &amp; Provisional</label><input type="number" id="mb6" placeholder="0.00" min="0" step="0.01"/></div>
-    </div>
-    <!-- SST ROW -->
-    <div style="background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);border-radius:6px;padding:12px 14px;margin-bottom:12px;">
-      <div style="font-family:var(--mono);font-size:9px;color:#c0392b;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">SST on PTSSB Works @ 6% (on Labour Component) — Reg B16-2508-32001462</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-        <div class="bil-field">
-          <label style="color:#c0392b;">SST — Labour (6% on PTSSB workdone)</label>
-          <input type="number" id="msst_lift" placeholder="0.00" min="0" step="0.01"/>
-        </div>
-        <div class="bil-field">
-          <label style="color:#c0392b;">SST — Nominated SC (Eita/Heross separate inv.)</label>
-          <input type="number" id="msst_acmv" placeholder="0.00" min="0" step="0.01"/>
-        </div>
-        <div class="bil-field">
-          <label style="color:#c0392b;">SST — Other</label>
-          <input type="number" id="msst_other" placeholder="0.00" min="0" step="0.01"/>
-        </div>
-      </div>
-    </div>
-    <div class="bil-total-row">
-      <div>
-        <span class="bil-total-label">SUBTOTAL (EXCL SST)</span>
-        <span class="bil-total-val" id="modal-subtotal">RM 0.00</span>
-      </div>
-      <div style="text-align:center;">
-        <span class="bil-total-label">SST TOTAL</span>
-        <span class="bil-total-val" id="modal-sst" style="color:#c0392b;">RM 0.00</span>
-      </div>
-      <div style="text-align:right;">
-        <span class="bil-total-label">TOTAL INCL SST</span>
-        <span class="bil-total-val" id="modal-total">RM 0.00</span>
-      </div>
+      <div class="form-section-head">Bill Split — QS Cert Gross (RM)</div>
+      <div class="form-group"><label>B1 Prelim</label><input type="number" id="m-b1" value="0" step="0.01"></div>
+      <div class="form-group"><label>B2 Piling</label><input type="number" id="m-b2" value="0" step="0.01"></div>
+      <div class="form-group"><label>B3 Main Building</label><input type="number" id="m-b3" value="0" step="0.01"></div>
+      <div class="form-group"><label>B4 Infrastructure</label><input type="number" id="m-b4" value="0" step="0.01"></div>
+      <div class="form-group"><label>B5a Plumbing</label><input type="number" id="m-b5a" value="0" step="0.01"></div>
+      <div class="form-group"><label>B5b Electrical/ELV</label><input type="number" id="m-b5b" value="0" step="0.01"></div>
+      <div class="form-group"><label>B5c Fire</label><input type="number" id="m-b5c" value="0" step="0.01"></div>
+      <div class="form-group"><label>B6 PC / Prov</label><input type="number" id="m-b6" value="0" step="0.01"></div>
+      <div class="form-section-head">SST Breakdown (RM)</div>
+      <div class="form-group"><label>PTSSB Labour SST @6%</label><input type="number" id="m-sst-labour" value="0" step="0.01"></div>
+      <div class="form-group"><label>Nominated SC SST</label><input type="number" id="m-sst-nsc" value="0" step="0.01"></div>
+      <div class="form-group"><label>Other SST</label><input type="number" id="m-sst-other" value="0" step="0.01"></div>
+      <div class="form-section-head">Invoice Totals (RM)</div>
+      <div class="form-group"><label>Sub-total excl SST</label><input type="number" id="m-subtotal" value="0" step="0.01"></div>
+      <div class="form-group"><label>Total incl SST (payable)</label><input type="number" id="m-total" value="0" step="0.01"></div>
     </div>
     <div class="modal-actions">
-      <button class="btn" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-neutral" onclick="closeModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveEntry()">Save Entry</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<div class="footer">
-  SYNTEC @ KLANG &nbsp;|&nbsp; Budget Tracking Dashboard v2 &nbsp;|&nbsp; SOT Addendum TA1 · NCQS Consult BQ &nbsp;|&nbsp; Cross-check RM 54,000,000.00 ✓ Balanced &nbsp;|&nbsp; Provisional amounts subject to remeasurement
-</div>
-
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
-const BQ_DEFAULTS = {
-  B1:  { label: 'Preliminaries',               budget: 6789232.18 },
-  B2:  { label: 'Piling & Structural',         budget: 3450167.02 },
-  B3:  { label: 'Main Building Works',         budget: 21328751.16 },
-  B4:  { label: 'Local Infrastructure',        budget: 5001983.09 },
-  B5a: { label: 'Cold Water & Sanitary',       budget: 794797.80 },
-  B5b: { label: 'Electrical, Tel & ELV',       budget: 6943000.00 },
-  B5c: { label: 'Fire Protection',             budget: 1775500.00 },
-  B6:  { label: 'PC & Provisional Sums',       budget: 7916568.75 },
-};
-const BILL_KEYS = ['B1','B2','B3','B4','B5a','B5b','B5c','B6'];
-const BQ_BUDGET_KEY = 'syntec_bq_budgets';
+// ════════════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════════════
 
-function loadBQ() {
+const SOT_DEFAULTS = {
+  B1:  { label: 'Preliminaries', budget: 6789232.18, type: 'Fixed' },
+  B2:  { label: 'Piling, Pilecap, Column Stump, Liftpit & Shearwall', budget: 3450167.02, type: 'Provisional' },
+  B3:  { label: 'Main Building Works', budget: 21328751.16, type: 'Fixed' },
+  B4:  { label: 'Local Infrastructure Works', budget: 5001983.09, type: 'Provisional' },
+  B5a: { label: 'Cold Water & Sanitary Plumbing', budget: 794797.80, type: 'Fixed' },
+  B5b: { label: 'Electrical, Telephone & ELV Works', budget: 6943000.00, type: 'Fixed' },
+  B5c: { label: 'Fire Protection Services', budget: 1775500.00, type: 'Fixed' },
+  B6:  { label: 'Prime Cost & Provisional Sums', budget: 7916568.75, type: 'PC/Prov' }
+};
+
+const SOT_CONTRACT_SUM = 54000000.00;
+
+const SUB_ELEMENTS = {
+  B2: [
+    { label: 'RC Piles Supply & Drive', budget: 2702895.93, certified: 1897313.80 },
+    { label: 'Pile Cap', budget: 534721.39, certified: 356096.25 },
+    { label: 'Column Stump / Liftpit / Shearwall', budget: 212549.70, certified: 41611.68 }
+  ],
+  B3: [
+    { label: 'A — Work Below Lowest Floor', budget: 1850981.54, certified: 206770.14 },
+    { label: 'B — Frame', budget: 2148729.60, certified: 0 },
+    { label: 'E — Upper Floor Construction', budget: 4289446.06, certified: 0 },
+    { label: 'K — Window & Curtain Wall', budget: 2413055.81, certified: 0 },
+    { label: 'T — Steel Roof Construction', budget: 2190373.95, certified: 0 }
+  ],
+  B4: [
+    { label: 'A — Earthwork', budget: 932111.09, certified: 211275.56 },
+    { label: 'B — Road Works (Within)', budget: 863885.11, certified: 0 },
+    { label: 'G — Guard House', budget: 728138.28, certified: 0 },
+    { label: 'J — Retaining Wall', budget: 475821.88, certified: 0 },
+    { label: 'K — TNB Substation', budget: 125842.29, certified: 25168.46 }
+  ],
+  B6: [
+    { label: 'PC — Lift (Eita Elevator)', budget: 1280000.00, certified: 95000.00 },
+    { label: 'PC — ACMV (Heross Sdn Bhd)', budget: 6000949.75, certified: 0 },
+    { label: 'Profit & Attendance on PC (1%+1%)', budget: 145619.00, certified: 1900.00 },
+    { label: 'Provisional — Signage', budget: 150000.00, certified: 0 },
+    { label: 'Provisional — Road Louvers', budget: 40000.00, certified: 0 },
+    { label: 'Provisional — Contingencies', budget: 300000.00, certified: 0 }
+  ]
+};
+
+// Cumulative certified per bill (to IPC3)
+const CERTIFIED = { B1: 1085354.92, B2: 2295021.73, B3: 206770.14, B4: 236444.02, B5a: 0, B5b: 0, B5c: 0, B6: 96900.00 };
+
+// Processing Fees (from image)
+const PF_DEFAULTS = [
+  {
+    no: 1,
+    purpose: 'KM* — Planning Approval (SRCM)',
+    submitter: 'Planner (SRCM)',
+    timeline: 'Before KM Approval',
+    note: 'Processing fees paid by C&C Architects — reimbursed by SIST',
+    items: [
+      { desc: 'Processing Fees for submission (reimbursed by SIST)', amount: 4923.00 },
+      { desc: 'IFS (Improvement Service Fund)', amount: 52990.75 },
+      { desc: 'Caj Pemajuan (30% of increase in land value)', amount: 0, note: 'Subject to Authority' }
+    ],
+    subtotal: 57913.75,
+    total: 57913.75,
+    editable_total: 57913.75
+  },
+  {
+    no: 2,
+    purpose: 'C&S Approvals (ABODE)',
+    submitter: 'C&S (ABODE)',
+    timeline: 'Refer to Appendix (ii)',
+    note: '',
+    items: [
+      { desc: 'Earthwork', amount: 30473.80 },
+      { desc: 'Road & Drainage', amount: 654.50 },
+      { desc: 'AIS — Air Selangor (excl. Bulk Meter Deposit)', amount: 45812.00 },
+      { desc: 'IWK (excl. 1% property value)', amount: 2040.00 },
+      { desc: 'JPS', amount: 100000.00 }
+    ],
+    subtotal: 178980.30,
+    total: 178980.30,
+    editable_total: 178980.30
+  },
+  {
+    no: 3,
+    purpose: 'BP* — Building Plan Approval (Architect / CCA)',
+    submitter: 'Architect (CCA)',
+    timeline: 'After BP OSC submission',
+    note: '',
+    items: [
+      { desc: 'Processing Fees for submission', amount: 19499.00 },
+      { desc: 'Processing Fees for scheme development', amount: 15194.00 },
+      { desc: 'Pagar', amount: 200.00 },
+      { desc: 'Sanitary', amount: 840.00 },
+      { desc: 'Drainage', amount: 28563.00 },
+      { desc: 'Advertising (Iklan)', amount: 100.00 },
+      { desc: 'Hoarding', amount: 39859.00 },
+      { desc: 'Temporary Office', amount: 3600.00 }
+    ],
+    subtotal: 107855.00,
+    total: 107855.00,
+    editable_total: 107855.00
+  },
+  {
+    no: 4,
+    purpose: 'Street Lighting & TNB Utility Connection',
+    submitter: 'M&E (MPVS)',
+    timeline: 'Refer to Appendix',
+    note: '',
+    items: [
+      { desc: 'Street Lighting — Lamp pole relocation from Majlis', amount: 20000.00 },
+      { desc: 'TNB LV connection & meter (application charges from Majlis)', amount: 1700000.00 }
+    ],
+    subtotal: 1720000.00,
+    total: 1720000.00,
+    editable_total: 1720000.00
+  }
+];
+
+const RISKS = [
+  { id: 1, item: 'Heross performance bond RM 300,047.50 due ~27 Feb 2026', sev: 'HIGH', action: 'Verify submission with PTSSB — overdue as at May 2026' },
+  { id: 2, item: 'Backdated commencement both Eita & Heross — 8 Dec 2025', sev: 'HIGH', action: 'Confirm agreed programme baseline with both subcontractors' },
+  { id: 3, item: 'Bills 2 + 4 entirely provisional — RM 8.45M remeasure risk', sev: 'HIGH', action: 'Monitor via each QS Cert; flag variations early' },
+  { id: 4, item: 'B6 Lift PC RM 1,280,000 vs Eita LOA RM 950,000 — delta RM 330K', sev: 'MED', action: 'Clarify before final account; instruction from Syntec required' },
+  { id: 5, item: 'IPC2 B4 negative remeasure (−RM 47,838.59)', sev: 'MED', action: 'NCQS to confirm final B4 remeasurement' },
+  { id: 6, item: 'IPC3 PTSSB invoice RM 9,447.84 higher than QS Cert 3 (Reconcile Cert1 not deducted)', sev: 'MED', action: 'Track at final account; RM 9,500 Reconcile Cert 1 outstanding' },
+  { id: 7, item: 'No QS Cert 2 document — IPC2 bill split is derived from Cert 3 Previous column', sev: 'MED', action: 'Obtain actual Cert 2 from NCQS' },
+  { id: 8, item: 'Contingency RM 300K (0.56%) — low for RM 54M contract', sev: 'LOW', action: 'Flag to Syntec; recommend reviewing contingency provision' },
+  { id: 9, item: 'Studio Kenda (Impression Ventures) — collaboration agreement unsigned', sev: 'MED', action: 'Chase Party B signature; exposure to undocumented engagement' },
+  { id: 10, item: 'ELV/Data shop drawing (Mepvis) due 5 May 2026', sev: 'MED', action: 'Monitor / chase Mepvis — likely already overdue' },
+  { id: 11, item: 'Processing Fees — TNB LV connection RM 1,700,000 pending approval', sev: 'MED', action: 'Ensure M&E (MPVS) has submitted application; confirm cash-flow with Syntec' },
+  { id: 12, item: 'Processing Fees — Caj Pemajuan (30% land value increase) — amount subject to Authority', sev: 'MED', action: 'SRCM to advise quantum once KM decision issued' }
+];
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let BQ = JSON.parse(JSON.stringify(SOT_DEFAULTS));
+let PF = JSON.parse(JSON.stringify(PF_DEFAULTS));
+let editMode = false;
+let pfEditMode = false;
+let editBackup = null;
+let pfBackup = null;
+let editingEntryIdx = null;
+
+// Load from localStorage
+function loadFromStorage() {
   try {
-    const saved = JSON.parse(localStorage.getItem(BQ_BUDGET_KEY));
-    if (saved) {
-      const merged = {};
-      BILL_KEYS.forEach(k => {
-        merged[k] = { label: BQ_DEFAULTS[k].label, budget: saved[k] !== undefined ? saved[k] : BQ_DEFAULTS[k].budget };
-      });
-      return merged;
+    const bqSaved = localStorage.getItem('syntec_bq_budgets');
+    if (bqSaved) {
+      const saved = JSON.parse(bqSaved);
+      Object.keys(saved).forEach(k => { if (BQ[k]) BQ[k].budget = saved[k]; });
+    }
+    const pfSaved = localStorage.getItem('syntec_pf_totals');
+    if (pfSaved) {
+      const saved = JSON.parse(pfSaved);
+      saved.forEach((v, i) => { if (PF[i]) PF[i].editable_total = v; });
     }
   } catch(e) {}
-  return JSON.parse(JSON.stringify(BQ_DEFAULTS));
-}
-function saveBQ() {
-  const out = {};
-  BILL_KEYS.forEach(k => { out[k] = BQ[k].budget; });
-  localStorage.setItem(BQ_BUDGET_KEY, JSON.stringify(out));
-}
-function resetBQ() {
-  if (!confirm('Reset all bill budgets to original SOT Addendum TA1 figures?')) return;
-  localStorage.removeItem(BQ_BUDGET_KEY);
-  BILL_KEYS.forEach(k => { BQ[k].budget = BQ_DEFAULTS[k].budget; });
-  updateTotalBudget();
-  renderBQTable();
-  renderVariance();
-  showToast('Budgets reset to original SOT values.');
-}
-function updateTotalBudget() {
-  TOTAL_BUDGET = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
 }
 
-let BQ = loadBQ();
-let TOTAL_BUDGET = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
-const BILL_COLORS = {
-  B1:'#29ABE2', B2:'#3a82b8', B3:'#0D2080', B4:'#2668a8',
-  B5a:'#1a8c5a', B5b:'#29ABE2', B5c:'#c0392b', B6:'#1a6fa8'
-};
-
-const STORAGE_KEY = 'syntec_bq_entries';
-
-function loadEntries() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch(e) { return []; }
+function getEntries() {
+  try { return JSON.parse(localStorage.getItem('syntec_bq_entries') || '[]'); } catch(e) { return []; }
 }
 function saveEntries(entries) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  localStorage.setItem('syntec_bq_entries', JSON.stringify(entries));
 }
 
-let entries = loadEntries();
-
-// ─── TAB SWITCH ─────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  const tabs = ['bq','tracker','variance'];
-  document.querySelectorAll('.nav-tab')[tabs.indexOf(tab)].classList.add('active');
-  if (tab === 'variance') renderVariance();
+// ════════════════════════════════════════════════════════
+//  FORMATTERS
+// ════════════════════════════════════════════════════════
+function fmt(n, d=2) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return n.toLocaleString('en-MY', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtRM(n) { return 'RM ' + fmt(n); }
+function pct(n, total) { if (!total) return '0.0%'; return (n/total*100).toFixed(1) + '%'; }
+function fmtMonth(ym) {
+  if (!ym) return '';
+  const [y, m] = ym.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[parseInt(m)-1] + ' ' + y;
 }
 
-// ─── MODAL ──────────────────────────────────────────────────────────────────
-function openModal() {
-  // Set default month to current
-  const now = new Date();
-  document.getElementById('m-month').value = now.toISOString().slice(0,7);
-  document.getElementById('m-note').value = '';
-  BILL_KEYS.forEach(k => {
-    document.getElementById('m' + k.toLowerCase()).value = '';
+// ════════════════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'variance') renderVariance();
+  if (name === 'bq') renderBQ();
+  if (name === 'expenditure') renderLedger();
+  if (name === 'processing') renderPF();
+  if (name === 'risks') renderRisks();
+}
+
+// ════════════════════════════════════════════════════════
+//  DERIVED TOTALS
+// ════════════════════════════════════════════════════════
+function totalBudget() { return Object.values(BQ).reduce((s, b) => s + b.budget, 0); }
+function totalCertifiedFromBQ() { return Object.keys(BQ).reduce((s, k) => s + (CERTIFIED[k] || 0), 0); }
+function totalCertifiedFromEntries() {
+  return getEntries().reduce((s, e) => s + (e.subtotal || 0), 0);
+}
+function totalSSTFromEntries() {
+  return getEntries().reduce((s, e) => {
+    const sst = e.sst || {};
+    return s + (sst.labour || 0) + (sst.nsc || 0) + (sst.other || 0);
+  }, 0);
+}
+function totalPayableFromEntries() {
+  return getEntries().reduce((s, e) => s + (e.total || 0), 0);
+}
+function totalPF() { return PF.reduce((s, p) => s + p.editable_total, 0); }
+
+// ════════════════════════════════════════════════════════
+//  TAB 1: BQ SUMMARY
+// ════════════════════════════════════════════════════════
+function renderBQKPIs() {
+  const tb = totalBudget();
+  const tc = totalCertifiedFromBQ();
+  const remaining = tb - tc;
+  const pctDone = tc / tb * 100;
+  const pfTotal = totalPF();
+
+  const cards = [
+    { label: 'Contract Sum', value: fmtRM(tb), sub: tb === SOT_CONTRACT_SUM ? 'SOT Addendum TA1' : '⚠ Modified from SOT', cls: 'accent' },
+    { label: 'Certified (excl SST)', value: fmtRM(tc), sub: pct(tc, tb) + ' of contract', cls: '' },
+    { label: 'Remaining', value: fmtRM(remaining), sub: pct(remaining, tb) + ' outstanding', cls: 'warn' },
+    { label: 'Total Processing Fees', value: fmtRM(pfTotal), sub: pct(pfTotal, tb) + ' of contract sum', cls: '' },
+    { label: 'Grand Total Exposure', value: fmtRM(tb + pfTotal), sub: 'Contract + Processing Fees', cls: 'danger' }
+  ];
+  const g = document.getElementById('bq-kpi-grid');
+  g.innerHTML = cards.map(c => `
+    <div class="kpi-card ${c.cls}">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      <div class="kpi-sub">${c.sub}</div>
+    </div>`).join('');
+}
+
+function renderBQ() {
+  renderBQKPIs();
+  const tb = totalBudget();
+  const tbody = document.getElementById('bq-tbody');
+  const bills = Object.keys(BQ);
+  const rows = [];
+
+  bills.forEach(key => {
+    const bill = BQ[key];
+    const cert = CERTIFIED[key] || 0;
+    const remaining = bill.budget - cert;
+    const pctDone = bill.budget > 0 ? cert / bill.budget * 100 : 0;
+    const origBudget = SOT_DEFAULTS[key].budget;
+    const delta = bill.budget - origBudget;
+    const hasSubs = SUB_ELEMENTS[key];
+    const barClass = pctDone > 90 ? 'danger' : pctDone > 60 ? 'warn' : '';
+
+    const typeBadge = bill.type === 'Fixed' ? 'badge-fixed' : bill.type === 'Provisional' ? 'badge-prov' : 'badge-pc';
+
+    let budgetCell;
+    if (editMode) {
+      const modified = delta !== 0;
+      budgetCell = `<input type="number" class="edit-input" id="edit-${key}" value="${bill.budget.toFixed(2)}" step="1000" oninput="onBudgetInput('${key}')">
+        ${modified ? `<span class="modified-dot" title="Modified">●</span> ${delta > 0 ? '<span class="delta-up">▲</span>' : '<span class="delta-down">▼</span>'}` : ''}`;
+    } else {
+      const modified = delta !== 0;
+      budgetCell = `${fmtRM(bill.budget)} ${modified ? '<span class="modified-dot" title="Modified from SOT">●</span>' : ''}`;
+    }
+
+    let deltaCell = '';
+    if (editMode) {
+      deltaCell = `<td class="num" id="delta-${key}" style="${delta === 0 ? 'color:var(--muted)' : delta > 0 ? 'color:var(--green)' : 'color:var(--red)'}">
+        ${delta === 0 ? '—' : (delta > 0 ? '+' : '') + fmtRM(delta)}
+      </td>`;
+    }
+
+    rows.push(`<tr class="bill-row${hasSubs ? ' chevron' : ''}" onclick="${hasSubs ? `toggleSubs('${key}')` : ''}" id="row-${key}">
+      <td><strong>${key}</strong></td>
+      <td>${hasSubs ? `<span class="expand-icon" id="exp-${key}">▶</span>` : ''}<em>${bill.label}</em></td>
+      <td class="num" id="budget-cell-${key}">${budgetCell}</td>
+      <td class="num">${pct(bill.budget, tb)}</td>
+      <td class="num">${cert > 0 ? fmtRM(cert) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="num">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="prog-wrap"><div class="prog-bar ${barClass}" style="width:${Math.min(pctDone,100)}%"></div></div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.72rem">${pctDone.toFixed(1)}%</span>
+        </div>
+      </td>
+      <td class="num">${fmtRM(remaining)}</td>
+      <td><span class="badge ${typeBadge}">${bill.type}</span></td>
+      ${editMode ? deltaCell : ''}
+    </tr>`);
+
+    if (hasSubs) {
+      SUB_ELEMENTS[key].forEach((sub, i) => {
+        const subPct = sub.budget > 0 ? sub.certified / sub.budget * 100 : 0;
+        rows.push(`<tr class="sub-row hidden" id="sub-${key}-${i}">
+          <td></td>
+          <td colspan="2" style="padding-left:32px;font-size:0.82rem;color:#444">${sub.label}</td>
+          <td class="num" style="font-size:0.8rem">${pct(sub.budget, bill.budget)}</td>
+          <td class="num" style="font-size:0.8rem">${sub.certified > 0 ? fmtRM(sub.certified) : '—'}</td>
+          <td class="num">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="prog-wrap"><div class="prog-bar" style="width:${Math.min(subPct,100)}%"></div></div>
+              <span style="font-family:'DM Mono',monospace;font-size:0.7rem">${subPct.toFixed(1)}%</span>
+            </div>
+          </td>
+          <td class="num" style="font-size:0.8rem">${fmtRM(sub.budget - sub.certified)}</td>
+          <td></td>
+          ${editMode ? '<td></td>' : ''}
+        </tr>`);
+      });
+    }
   });
-  document.getElementById('msst_lift').value  = '';
-  document.getElementById('msst_acmv').value  = '';
-  document.getElementById('msst_other').value = '';
-  updateModalTotal();
-  document.getElementById('modal-overlay').classList.add('open');
-}
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
+
+  // Total row
+  const totalCert = totalCertifiedFromBQ();
+  const totalRemain = totalBudget() - totalCert;
+  rows.push(`<tr class="total-row">
+    <td colspan="2"><strong>TOTAL CONTRACT SUM</strong></td>
+    <td class="num" id="total-budget-display"><strong>${fmtRM(totalBudget())}</strong></td>
+    <td class="num">100.0%</td>
+    <td class="num"><strong>${fmtRM(totalCert)}</strong></td>
+    <td class="num"><strong>${pct(totalCert, totalBudget())}</strong></td>
+    <td class="num"><strong>${fmtRM(totalRemain)}</strong></td>
+    <td></td>
+    ${editMode ? '<td></td>' : ''}
+  </tr>`);
+
+  tbody.innerHTML = rows.join('');
+
+  // Delta column header visibility
+  document.getElementById('delta-col-header').style.display = editMode ? '' : 'none';
+
+  // Update total indicator
+  if (editMode) updateTotalIndicator();
 }
 
-// Live total in modal
-BILL_KEYS.forEach(k => {
-  const el = document.getElementById('m' + k.toLowerCase());
-  if (el) el.addEventListener('input', updateModalTotal);
-});
-['msst_lift','msst_acmv','msst_other'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('input', updateModalTotal);
-});
-function updateModalTotal() {
-  let subtotal = 0;
-  BILL_KEYS.forEach(k => {
-    const el = document.getElementById('m' + k.toLowerCase());
-    if (el) subtotal += parseFloat(el.value) || 0;
-  });
-  let sst = 0;
-  ['msst_lift','msst_acmv','msst_other'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) sst += parseFloat(el.value) || 0;
-  });
-  document.getElementById('modal-subtotal').textContent = 'RM ' + fmt(subtotal);
-  document.getElementById('modal-sst').textContent = 'RM ' + fmt(sst);
-  document.getElementById('modal-total').textContent = 'RM ' + fmt(subtotal + sst);
+function toggleSubs(key) {
+  const row = document.getElementById('row-' + key);
+  const icon = document.getElementById('exp-' + key);
+  const subs = document.querySelectorAll(`[id^="sub-${key}-"]`);
+  const expanded = row.classList.toggle('expanded');
+  subs.forEach(s => s.classList.toggle('hidden', !expanded));
+  if (icon) icon.style.transform = expanded ? 'rotate(90deg)' : '';
 }
+
+// ── EDIT MODE ──
+function toggleEditMode() {
+  if (!editMode) {
+    editBackup = JSON.parse(JSON.stringify(BQ));
+    editMode = true;
+    document.getElementById('edit-toggle-btn').style.display = 'none';
+    document.getElementById('edit-toolbar').style.display = 'flex';
+    document.getElementById('edit-total-indicator').style.display = 'inline-block';
+    document.getElementById('delta-col-header').style.display = '';
+  }
+  renderBQ();
+}
+
+function onBudgetInput(key) {
+  const val = parseFloat(document.getElementById('edit-' + key).value) || 0;
+  BQ[key].budget = val;
+  updateTotalIndicator();
+  // update delta cell live
+  const orig = SOT_DEFAULTS[key].budget;
+  const delta = val - orig;
+  const dc = document.getElementById('delta-' + key);
+  if (dc) {
+    dc.style.color = delta === 0 ? 'var(--muted)' : delta > 0 ? 'var(--green)' : 'var(--red)';
+    dc.textContent = delta === 0 ? '—' : (delta > 0 ? '+' : '') + fmtRM(delta);
+  }
+  // update total row
+  const td = document.getElementById('total-budget-display');
+  if (td) td.innerHTML = `<strong>${fmtRM(totalBudget())}</strong>`;
+}
+
+function updateTotalIndicator() {
+  const tb = totalBudget();
+  const diff = tb - SOT_CONTRACT_SUM;
+  const ind = document.getElementById('edit-total-indicator');
+  if (!ind) return;
+  if (Math.abs(diff) < 0.01) {
+    ind.className = 'total-indicator total-ok';
+    ind.textContent = `✓ Total: ${fmtRM(tb)} — matches SOT`;
+  } else {
+    ind.className = 'total-indicator total-err';
+    ind.textContent = `⚠ Total: ${fmtRM(tb)} — diverges from SOT by ${diff > 0 ? '+' : ''}${fmtRM(diff)}`;
+  }
+}
+
+function saveEdits() {
+  // Read all inputs
+  Object.keys(BQ).forEach(key => {
+    const inp = document.getElementById('edit-' + key);
+    if (inp) BQ[key].budget = parseFloat(inp.value) || 0;
+  });
+  // Save to localStorage
+  const toSave = {};
+  Object.keys(BQ).forEach(k => toSave[k] = BQ[k].budget);
+  localStorage.setItem('syntec_bq_budgets', JSON.stringify(toSave));
+  exitEditMode();
+  renderBQ();
+}
+
+function resetToSOT() {
+  Object.keys(BQ).forEach(k => BQ[k].budget = SOT_DEFAULTS[k].budget);
+  localStorage.removeItem('syntec_bq_budgets');
+  exitEditMode();
+  renderBQ();
+}
+
+function cancelEdits() {
+  BQ = editBackup;
+  exitEditMode();
+  renderBQ();
+}
+
+function exitEditMode() {
+  editMode = false;
+  document.getElementById('edit-toggle-btn').style.display = '';
+  document.getElementById('edit-toolbar').style.display = 'none';
+  document.getElementById('edit-total-indicator').style.display = 'none';
+  document.getElementById('delta-col-header').style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════
+//  TAB 2: LEDGER
+// ════════════════════════════════════════════════════════
+function renderLedger() {
+  const entries = getEntries();
+  const tbody = document.getElementById('ledger-tbody');
+  const tfoot = document.getElementById('ledger-tfoot');
+
+  if (!entries.length) {
+    tbody.innerHTML = `<tr><td colspan="16" style="text-align:center;color:var(--muted);padding:24px;font-style:italic">No entries yet — click "+ Add Entry" or run inject script in console</td></tr>`;
+    tfoot.innerHTML = '';
+    return;
+  }
+
+  const bills = ['B1','B2','B3','B4','B5a','B5b','B5c','B6'];
+
+  tbody.innerHTML = entries.map((e, idx) => {
+    const sst = e.sst || {};
+    return `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:0.78rem;white-space:nowrap">${fmtMonth(e.month)}</td>
+      <td style="font-size:0.82rem">${e.note || ''}</td>
+      ${bills.map(b => `<td class="num" style="font-size:0.78rem">${e.bills && e.bills[b] ? fmt(e.bills[b]) : '—'}</td>`).join('')}
+      <td class="num" style="font-size:0.78rem">${fmt(sst.labour || 0)}</td>
+      <td class="num" style="font-size:0.78rem">${fmt(sst.nsc || 0)}</td>
+      <td class="num" style="font-size:0.78rem">${fmt(sst.other || 0)}</td>
+      <td class="num" style="font-size:0.78rem;font-weight:500">${fmt(e.subtotal)}</td>
+      <td class="num" style="font-size:0.78rem;font-weight:600;color:var(--navy)">${fmt(e.total)}</td>
+      <td style="white-space:nowrap">
+        <button class="edit-row-btn" onclick="editEntry(${idx})" title="Edit">✏</button>
+        <button class="del-btn" onclick="deleteEntry(${idx})" title="Delete">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Totals footer
+  const totBills = {};
+  bills.forEach(b => totBills[b] = entries.reduce((s, e) => s + ((e.bills && e.bills[b]) || 0), 0));
+  const totLabourSST = entries.reduce((s, e) => s + ((e.sst && e.sst.labour) || 0), 0);
+  const totNSCSST = entries.reduce((s, e) => s + ((e.sst && e.sst.nsc) || 0), 0);
+  const totOtherSST = entries.reduce((s, e) => s + ((e.sst && e.sst.other) || 0), 0);
+  const totSub = entries.reduce((s, e) => s + (e.subtotal || 0), 0);
+  const totTotal = entries.reduce((s, e) => s + (e.total || 0), 0);
+
+  tfoot.innerHTML = `<tr class="total-row">
+    <td colspan="2"><strong>CUMULATIVE TOTAL</strong></td>
+    ${bills.map(b => `<td class="num" style="font-size:0.78rem"><strong>${fmt(totBills[b])}</strong></td>`).join('')}
+    <td class="num" style="font-size:0.78rem"><strong>${fmt(totLabourSST)}</strong></td>
+    <td class="num" style="font-size:0.78rem"><strong>${fmt(totNSCSST)}</strong></td>
+    <td class="num" style="font-size:0.78rem"><strong>${fmt(totOtherSST)}</strong></td>
+    <td class="num" style="font-weight:700"><strong>${fmt(totSub)}</strong></td>
+    <td class="num" style="font-weight:700;color:var(--navy)"><strong>${fmt(totTotal)}</strong></td>
+    <td></td>
+  </tr>`;
+}
+
+function openModal(idx) {
+  editingEntryIdx = (idx !== undefined) ? idx : null;
+  const modal = document.getElementById('entry-modal');
+  const title = document.getElementById('modal-title');
+  const bills = ['B1','B2','B3','B4','B5a','B5b','B5c','B6'];
+
+  if (editingEntryIdx !== null) {
+    title.textContent = 'Edit IPC Entry';
+    const e = getEntries()[editingEntryIdx];
+    document.getElementById('m-month').value = e.month || '';
+    document.getElementById('m-note').value = e.note || '';
+    bills.forEach(b => { const el = document.getElementById('m-' + b.toLowerCase()); if(el) el.value = (e.bills && e.bills[b]) || 0; });
+    const sst = e.sst || {};
+    document.getElementById('m-sst-labour').value = sst.labour || 0;
+    document.getElementById('m-sst-nsc').value = sst.nsc || 0;
+    document.getElementById('m-sst-other').value = sst.other || 0;
+    document.getElementById('m-subtotal').value = e.subtotal || 0;
+    document.getElementById('m-total').value = e.total || 0;
+  } else {
+    title.textContent = 'Add IPC Entry';
+    document.getElementById('m-month').value = '';
+    document.getElementById('m-note').value = '';
+    bills.forEach(b => { const el = document.getElementById('m-' + b.toLowerCase()); if(el) el.value = 0; });
+    ['m-sst-labour','m-sst-nsc','m-sst-other','m-subtotal','m-total'].forEach(id => {
+      const el = document.getElementById(id); if(el) el.value = 0;
+    });
+  }
+  modal.classList.add('open');
+}
+
+function editEntry(idx) { openModal(idx); }
+
+function closeModal() { document.getElementById('entry-modal').classList.remove('open'); }
 
 function saveEntry() {
-  const month = document.getElementById('m-month').value;
-  if (!month) { showToast('Please select a month.'); return; }
-  const note = document.getElementById('m-note').value.trim();
-  const bills = {};
-  let subtotal = 0;
-  BILL_KEYS.forEach(k => {
-    const val = parseFloat(document.getElementById('m' + k.toLowerCase()).value) || 0;
-    bills[k] = val;
-    subtotal += val;
+  const bills = ['B1','B2','B3','B4','B5a','B5b','B5c','B6'];
+  const billMap = {};
+  bills.forEach(b => {
+    const el = document.getElementById('m-' + b.toLowerCase());
+    billMap[b] = el ? parseFloat(el.value) || 0 : 0;
   });
-  const sst = {
-    lift:  parseFloat(document.getElementById('msst_lift').value)  || 0,
-    acmv:  parseFloat(document.getElementById('msst_acmv').value)  || 0,
-    other: parseFloat(document.getElementById('msst_other').value) || 0,
-  };
-  const sstTotal = sst.lift + sst.acmv + sst.other;
-  const total = subtotal + sstTotal;
-  if (subtotal === 0 && sstTotal === 0) { showToast('Enter at least one certified amount.'); return; }
 
-  const existing = entries.findIndex(e => e.month === month);
-  const entry = { month, note, bills, sst, subtotal, sstTotal, total };
-  if (existing >= 0) {
-    entries[existing] = entry;
-    showToast('Entry updated: ' + month);
+  const entry = {
+    month: document.getElementById('m-month').value,
+    note: document.getElementById('m-note').value,
+    bills: billMap,
+    sst: {
+      labour: parseFloat(document.getElementById('m-sst-labour').value) || 0,
+      nsc: parseFloat(document.getElementById('m-sst-nsc').value) || 0,
+      other: parseFloat(document.getElementById('m-sst-other').value) || 0
+    },
+    subtotal: parseFloat(document.getElementById('m-subtotal').value) || 0,
+    total: parseFloat(document.getElementById('m-total').value) || 0
+  };
+
+  if (!entry.month) { alert('Please select a month.'); return; }
+
+  const entries = getEntries();
+  if (editingEntryIdx !== null) {
+    entries[editingEntryIdx] = entry;
   } else {
     entries.push(entry);
-    entries.sort((a,b) => a.month.localeCompare(b.month));
-    showToast('Entry saved: ' + month);
+    entries.sort((a, b) => a.month.localeCompare(b.month));
   }
   saveEntries(entries);
   closeModal();
   renderLedger();
-  renderVariance();
 }
 
-function deleteEntry(month) {
-  if (!confirm('Delete entry for ' + month + '?')) return;
-  entries = entries.filter(e => e.month !== month);
+function deleteEntry(idx) {
+  if (!confirm('Delete this entry?')) return;
+  const entries = getEntries();
+  entries.splice(idx, 1);
   saveEntries(entries);
   renderLedger();
-  renderVariance();
-  showToast('Entry deleted: ' + month);
 }
 
-function editEntry(month) {
-  const entry = entries.find(e => e.month === month);
-  if (!entry) return;
-  document.getElementById('m-month').value = entry.month;
-  document.getElementById('m-note').value = entry.note || '';
-  BILL_KEYS.forEach(k => {
-    const el = document.getElementById('m' + k.toLowerCase());
-    if (el) el.value = entry.bills[k] || '';
+function exportCSV() {
+  const entries = getEntries();
+  if (!entries.length) { alert('No entries to export.'); return; }
+  const bills = ['B1','B2','B3','B4','B5a','B5b','B5c','B6'];
+  const header = ['Month','Note',...bills,'SST Labour','SST NSC','SST Other','Subtotal excl SST','Total incl SST'];
+  const rows = entries.map(e => {
+    const sst = e.sst || {};
+    return [
+      fmtMonth(e.month), e.note || '',
+      ...bills.map(b => (e.bills && e.bills[b]) || 0),
+      sst.labour || 0, sst.nsc || 0, sst.other || 0,
+      e.subtotal || 0, e.total || 0
+    ].join(',');
   });
-  document.getElementById('msst_lift').value  = (entry.sst && entry.sst.lift)  || '';
-  document.getElementById('msst_acmv').value  = (entry.sst && entry.sst.acmv)  || '';
-  document.getElementById('msst_other').value = (entry.sst && entry.sst.other) || '';
-  updateModalTotal();
-  document.getElementById('modal-overlay').classList.add('open');
+  const csv = [header.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Syntec_IPC_Export.csv';
+  a.click();
 }
 
-// ─── LEDGER RENDER ──────────────────────────────────────────────────────────
-function renderLedger() {
-  document.getElementById('entry-count').textContent = entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies');
-  const container = document.getElementById('ledger-container');
-  if (entries.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="es-icon">📋</div><p>No entries yet. Click "+ Add Month Entry" to record a certified payment.</p></div>';
-    return;
-  }
-
-  let html = '<table class="ledger-table"><thead><tr>';
-  html += '<th>Month</th><th>Note / Ref</th>';
-  BILL_KEYS.forEach(k => { html += `<th style="text-align:right">${k}</th>`; });
-  html += '<th style="text-align:right;color:#c0392b;">SST (Lift)</th>';
-  html += '<th style="text-align:right;color:#c0392b;">SST (ACMV)</th>';
-  html += '<th style="text-align:right;color:#c0392b;">SST Total</th>';
-  html += '<th style="text-align:right">Subtotal (excl SST)</th>';
-  html += '<th style="text-align:right;color:#0D2080;">Total incl SST</th><th>Actions</th></tr></thead><tbody>';
-
-  entries.forEach(e => {
-    const sstLift  = (e.sst && e.sst.lift)  || 0;
-    const sstAcmv  = (e.sst && e.sst.acmv)  || 0;
-    const sstOther = (e.sst && e.sst.other) || 0;
-    const sstTotal = sstLift + sstAcmv + sstOther;
-    const subtotal = e.subtotal || (e.total - sstTotal);
-    html += `<tr>
-      <td><span class="month-badge">${fmtMonth(e.month)}</span></td>
-      <td class="ledger-note">${e.note || '—'}</td>`;
-    BILL_KEYS.forEach(k => {
-      const v = e.bills[k] || 0;
-      html += `<td style="text-align:right;color:${v > 0 ? 'var(--accent2)' : v < 0 ? '#c0392b' : 'var(--muted)'}">${v !== 0 ? fmt(v) : '—'}</td>`;
-    });
-    html += `<td style="text-align:right;color:${sstLift>0?'#c0392b':'var(--muted)'}">${sstLift>0?fmt(sstLift):'—'}</td>`;
-    html += `<td style="text-align:right;color:${sstAcmv>0?'#c0392b':'var(--muted)'}">${sstAcmv>0?fmt(sstAcmv):'—'}</td>`;
-    html += `<td style="text-align:right;font-weight:600;color:${sstTotal>0?'#c0392b':'var(--muted)'}">${sstTotal>0?fmt(sstTotal):'—'}</td>`;
-    html += `<td style="text-align:right;font-family:var(--mono);">${fmt(subtotal)}</td>`;
-    html += `<td style="text-align:right;font-weight:700;color:#0D2080">${fmt(e.total)}</td>
-      <td>
-        <div style="display:flex;gap:6px;justify-content:center;">
-          <button class="btn btn-sm" style="background:rgba(41,171,226,0.1);color:#29ABE2;border:1px solid rgba(41,171,226,0.25);" onclick="editEntry('${e.month}')">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteEntry('${e.month}')">Del</button>
-        </div>
-      </td>
-    </tr>`;
-  });
-
-  // Totals row
-  const billTotals = {};
-  BILL_KEYS.forEach(k => { billTotals[k] = entries.reduce((s,e) => s + (e.bills[k]||0), 0); });
-  const grandSST = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
-  const grandSSTLift = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0), 0);
-  const grandSSTAcmv = entries.reduce((s,e) => s + ((e.sst&&e.sst.acmv)||0), 0);
-  const grandSubtotal = entries.reduce((s,e) => s + (e.subtotal||(e.total-((e.sst&&(e.sst.lift+e.sst.acmv+(e.sst.other||0)))||0))), 0);
-  const grandTotal = entries.reduce((s,e) => s + e.total, 0);
-
-  html += `<tr style="background:var(--surface2);font-weight:700;">
-    <td colspan="2" style="font-family:var(--mono);font-size:10px;border-top:2px solid var(--border);padding-top:12px;">CUMULATIVE TOTAL</td>`;
-  BILL_KEYS.forEach(k => {
-    html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:${billTotals[k]<0?'#c0392b':'inherit'}">${billTotals[k] !== 0 ? fmt(billTotals[k]) : '—'}</td>`;
-  });
-  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:#c0392b;">${grandSSTLift>0?fmt(grandSSTLift):'—'}</td>`;
-  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:#c0392b;">${grandSSTAcmv>0?fmt(grandSSTAcmv):'—'}</td>`;
-  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;font-weight:700;color:#c0392b;">${grandSST>0?fmt(grandSST):'—'}</td>`;
-  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;">${fmt(grandSubtotal)}</td>`;
-  html += `<td style="text-align:right;font-family:var(--mono);color:#0D2080;font-size:14px;border-top:2px solid var(--border);padding-top:12px;">${fmt(grandTotal)}</td><td style="border-top:2px solid var(--border);"></td></tr>`;
-  html += '</tbody></table>';
-  container.innerHTML = html;
-}
-
-// ─── VARIANCE RENDER ─────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  TAB 3: VARIANCE
+// ════════════════════════════════════════════════════════
 function renderVariance() {
-  const grandTotal = entries.reduce((s,e) => s + e.total, 0);
-  const grandSST   = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
-  const grandExclSST = grandTotal - grandSST;
-  const remaining = TOTAL_BUDGET - grandExclSST;
-  const spentPct = grandExclSST / TOTAL_BUDGET * 100;
-  const months = entries.length;
+  const entries = getEntries();
+  const tb = totalBudget();
+  const tc = totalCertifiedFromBQ();
+  const pfTotal = totalPF();
+  const contractMonths = 14;
 
-  document.getElementById('tv-budget').textContent = 'RM 54.00M';
-  document.getElementById('tv-spent').textContent = 'RM ' + fmtM(grandExclSST);
-  document.getElementById('tv-spent-pct').textContent = spentPct.toFixed(1) + '% of budget (excl SST)';
-  document.getElementById('tv-remaining').textContent = 'RM ' + fmtM(remaining);
-  document.getElementById('tv-remaining-pct').textContent = (100 - spentPct).toFixed(1) + '% remaining';
-  document.getElementById('tv-months').textContent = months;
+  // KPI cards
+  const elapsed = entries.length > 0 ? entries.length : 0;
+  document.getElementById('var-kpi-grid').innerHTML = [
+    { label: 'Total Budget (Contract)', value: fmtRM(tb), cls: 'accent' },
+    { label: 'Certified excl SST', value: fmtRM(tc), sub: pct(tc, tb), cls: '' },
+    { label: 'Remaining Budget', value: fmtRM(tb - tc), sub: pct(tb - tc, tb) + ' outstanding', cls: 'warn' },
+    { label: 'SST (PTSSB Labour)', value: fmtRM(totalSSTFromEntries()), sub: 'Labour component @6%', cls: '' },
+    { label: 'Months Recorded', value: elapsed + ' / ' + contractMonths, sub: (elapsed/contractMonths*100).toFixed(0) + '% of contract period', cls: '' }
+  ].map(c => `<div class="kpi-card ${c.cls}"><div class="kpi-label">${c.label}</div><div class="kpi-value">${c.value}</div><div class="kpi-sub">${c.sub || ''}</div></div>`).join('');
 
-  // Update SST KPI if element exists
-  const sstEl = document.getElementById('tv-sst');
-  if (sstEl) {
-    sstEl.textContent = 'RM ' + fmtM(grandSST);
-    document.getElementById('tv-sst-sub').textContent = 'Cumul. SST on nominated SCs (6%)';
-  }
+  // S-Curve
+  drawSCurve(entries, tb, contractMonths);
 
-  renderVarianceTable();
-  renderSCurve();
-  renderMonthlySummary();
-}
+  // Variance table
+  const tbody = document.getElementById('var-tbody');
+  const rows = [];
+  Object.keys(BQ).forEach(key => {
+    const bill = BQ[key];
+    const cert = CERTIFIED[key] || 0;
+    const remaining = bill.budget - cert;
+    const pctDone = bill.budget > 0 ? cert / bill.budget * 100 : 0;
+    const variance = cert - bill.budget;
+    const barClass = pctDone > 90 ? 'danger' : pctDone > 60 ? 'warn' : '';
+    const hasSubs = SUB_ELEMENTS[key];
 
-function renderVarianceTable() {
-  const tbody = document.getElementById('variance-tbody');
-
-  // Sub-item definitions: [label, budget, certifiedCumulative]
-  // Certified amounts from QS Certs (cumulative to IPC3)
-  const SUB_ITEMS = {
-    B1: [
-      // Certified amounts estimated proportionally from B1 total cert 1,085,354.92
-      // (QS Cert does not split B1 at sub-item level — uses recurring % formula)
-      ['Drawings & Scaffolding',                         622925.07,   99583.39],
-      ['Constructional Plant',                          1504950.00,  240587.57],
-      ['Temp Lightning & Power',                         812500.00,  129889.63],
-      ['Site Management & Supervision',                 1054042.00,  168503.54],
-      ['Worker Amenities & Site Security',              1033045.96,  165147.03],
-      ['Hoardings, Temp Buildings & Consultant Office',  432210.00,   69094.89],
-      ['Insurance & Performance Bond',                   104940.64,   16776.25],
-      ['CIDB, Stamp Duty, Qlassic',                      144550.00,   23108.36],
-      ['Other Prelim Items',                            1080068.54,  172664.26],
-    ],
-    B2: [
-      ['Precast RC Piles — Supply & Drive (150/300/400mm)', 2702895.93, 1897313.80],
-      ['Pile Cap (Main Building, Guard House, TNB)',          534721.39,  356096.25],
-      ['Column Stump, Liftpit Wall & Shearwall',             212549.70,   41611.68],
-    ],
-    B3: [
-      ['A — Work Below Lowest Floor Level', 1850981.54, 206770.14],
-      ['B — Frame',                         2148729.60,       0],
-      ['C — Staircase',                      124066.31,       0],
-      ['D — Staircase Finishes',              99875.37,       0],
-      ['E — Upper Floor Construction',      4289446.06,       0],
-      ['F — Roof',                          1728176.37,       0],
-      ['G — External Wall',                  321802.42,       0],
-      ['H — Internal Wall',                  397170.37,       0],
-      ['J — Doors',                          240636.15,       0],
-      ['K — Window & Curtain Wall',         2413055.81,       0],
-      ['L — Ironmongeries',                   68399.91,       0],
-      ['M — External Wall Finishes',         146153.04,       0],
-      ['N — Internal Wall Finishes',         560809.11,       0],
-      ['P — Floor Finishes',               2247759.17,       0],
-      ['Q — Ceiling Finishes',              878130.74,       0],
-      ['R — Painting',                       293040.76,       0],
-      ['S — Sanitary Fittings',              541835.42,       0],
-      ['T — Steel Roof Construction',      2190373.95,       0],
-      ['U — Wall Cladding',                  766048.63,       0],
-      ['V — Miscellaneous',                   22397.53,       0],
-    ],
-    B4: [
-      ['A — Earthwork',               932111.09, 211275.56],
-      ['B — Road Works (Within)',     863885.11,       0],
-      ['C — Road Works (Outside)',    346160.84,       0],
-      ['D — Surface Water Drainage',  622159.89,       0],
-      ['E — Water Reticulation',      269681.50,       0],
-      ['F1 — Sewerage (Within)',      174662.40,       0],
-      ['F2 — Sewerage (Outside)',      60375.26,       0],
-      ['G — Guard House',             728138.28,       0],
-      ['H — Fencing',                 120895.28,       0],
-      ['J — Retaining Wall',          475821.88,       0],
-      ['K — TNB Substation',          125842.29,  25168.46],
-      ['L — Crusher Run Parking',     253746.90,       0],
-    ],
-    B5a: [
-      ['01 — Preliminaries',                             36724.00,  0],
-      ['02 — Cold Water System (incl. Rain & Irrigation)',655564.74, 0],
-      ['03 — Sanitary Plumbing System',                  102509.06,  0],
-    ],
-    B5b: [
-      ['Electrical — 01 Preliminaries',                   63969.00,  0],
-      ['Electrical — 02 External & TNB Incoming',        358729.00,  0],
-      ['Electrical — 03 LV Switchboards & Cabling',     3865096.00,  0],
-      ['Electrical — 03 Lighting & Power Points',       1074547.00,  0],
-      ['Electrical — 04-05 Telephone Works',             110345.00,  0],
-      ['Electrical — 06 Standby Generator (350KVA)',     144533.00,  0],
-      ['Electrical — 07 Network Infrastructure',         113126.00,  0],
-      ['Electrical — 08 TNB Substation Works',            38725.00,  0],
-      ['ELV — Barrier Gate & Access Control',            524631.00,  0],
-      ['ELV — CCTV System',                              384600.00,  0],
-      ['ELV — Public Address System',                    159704.00,  0],
-      ['ELV — Preliminaries',                             97065.00,  0],
-    ],
-    B5c: [
-      ['01 — Preliminaries',                              39200.00,  0],
-      ['02 — Auto Sprinkler System (AV1/2/3)',          1214920.00,  0],
-      ['03 — Hose Reel System',                          218497.00,  0],
-      ['04 — Portable Fire Extinguishers',                 8345.00,  0],
-      ['05 — Gas Suppression (FK-5-1-12 & CO₂)',          80068.00,  0],
-      ['06 — Addressable Fire Alarm System',              208153.00,  0],
-      ['07 — Fire Hydrant System',                          6317.00,  0],
-    ],
-    B6: [
-      ['PC — Lift Installation (Eita Elevator)',        1280000.00,  95000.00],
-      ['PC — ACMV Installation (Heross Sdn Bhd)',      6000949.75,       0],
-      ['Profit & Attendance on PC (1%+1%)',              145619.00,   1900.00],
-      ['Provisional — Signage',                          150000.00,       0],
-      ['Provisional — Road Louvers',                      40000.00,       0],
-      ['Provisional — Contingencies Sum',                300000.00,       0],
-    ],
-  };
-
-  let html = '';
-  let totalSpent = 0;
-
-  BILL_KEYS.forEach((k, idx) => {
-    const budget = BQ[k].budget;
-    const spent  = entries.reduce((s,e) => s + (e.bills[k]||0), 0);
-    totalSpent  += spent;
-    const remaining = budget - spent;
-    const pct    = spent / budget * 100;
-    const varClass = remaining >= 0 ? 'positive' : 'negative';
-    const barCol = pct > 100 ? '#c0392b' : pct > 80 ? '#e67e22' : '#29ABE2';
-    const subId  = 'var-sub-' + k.toLowerCase();
-
-    html += `<tr style="cursor:pointer;" onclick="toggleVarSub('${k}')">
-      <td>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-family:var(--mono);font-size:11px;color:var(--accent);transition:transform 0.2s;" id="varicon-${k}">▶</span>
-          <span class="bill-ref">${k}</span>
-          <span style="font-size:13px;">${BQ[k].label}</span>
+    rows.push(`<tr class="bill-row chevron" onclick="${hasSubs ? `toggleVarSubs('${key}')` : ''}">
+      <td><strong>${key}</strong> ${hasSubs ? `<span class="expand-icon" id="vexp-${key}">▶</span>` : ''}</td>
+      <td><em>${bill.label}</em></td>
+      <td class="num">${fmtRM(bill.budget)}</td>
+      <td class="num">${cert > 0 ? fmtRM(cert) : '—'}</td>
+      <td class="num">${fmtRM(remaining)}</td>
+      <td class="num">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="prog-wrap"><div class="prog-bar ${barClass}" style="width:${Math.min(pctDone,100)}%"></div></div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.72rem">${pctDone.toFixed(1)}%</span>
         </div>
       </td>
-      <td>${fmt(budget)}</td>
-      <td style="color:${spent!==0?(spent<0?'#c0392b':'var(--accent2)'):'var(--muted)'};font-weight:500;">${spent !== 0 ? fmt(spent) : '—'}</td>
-      <td class="${varClass}">${fmt(Math.abs(remaining))}</td>
-      <td>
-        <div style="text-align:right;font-size:11px;margin-bottom:3px;">${pct.toFixed(1)}%</div>
-        <div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,Math.max(0,pct))}%;background:${barCol};"></div></div>
-      </td>
-      <td class="${varClass}">${remaining>=0?'+':''}${fmt(remaining)}</td>
-    </tr>`;
+      <td class="num ${variance > 0 ? 'var-neg' : 'var-pos'}">${variance === 0 ? '—' : (variance > 0 ? '+' : '') + fmtRM(variance)}</td>
+    </tr>`);
 
-    // Sub-rows (hidden by default)
-    if (SUB_ITEMS[k]) {
-      html += `<tr id="${subId}" style="display:none;"><td colspan="6" style="padding:0;">
-        <table style="width:100%;border-collapse:collapse;">
-        <thead><tr style="background:rgba(41,171,226,0.05);">
-          <th style="padding:5px 12px 5px 48px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:left;font-weight:500;">Element</th>
-          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Budget (RM)</th>
-          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Certified (RM)</th>
-          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Remaining (RM)</th>
-          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">% Spent</th>
-          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Variance</th>
-        </tr></thead>`;
-      SUB_ITEMS[k].forEach(([label, subBudget, subCertified]) => {
-        const cert    = subCertified || 0;
-        const rem     = subBudget - cert;
-        const spentPct = cert / subBudget * 100;
-        const barW    = Math.min(100, Math.max(0, spentPct));
-        const barCol  = spentPct > 100 ? '#c0392b' : spentPct > 80 ? '#e67e22' : '#29ABE2';
-        const remCol  = rem >= 0 ? '#1a6fa8' : '#c0392b';
-        const varSign = rem >= 0 ? '+' : '';
-        const varCol  = rem >= 0 ? '#1a8c5a' : '#c0392b';
-        const subPctOfBill = subBudget / budget * 100;
-        html += `<tr style="background:rgba(41,171,226,0.02);" onmouseover="this.style.background='rgba(41,171,226,0.06)'" onmouseout="this.style.background='rgba(41,171,226,0.02)'">
-          <td style="padding:7px 12px 7px 48px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(100,120,160,0.08);">
-            ${label}
-            <span style="font-family:var(--mono);font-size:9px;color:var(--border);margin-left:6px;">${subPctOfBill.toFixed(1)}% of bill</span>
-          </td>
-          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:var(--text);">${fmt(subBudget)}</td>
-          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${cert>0?'var(--accent2)':'var(--muted)'};">${cert > 0 ? fmt(cert) : '—'}</td>
-          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${remCol};">${fmt(Math.abs(rem))}</td>
-          <td style="padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);min-width:100px;">
-            <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
-              <div style="font-family:var(--mono);font-size:10px;color:${cert>0?barCol:'var(--muted)'};">${cert > 0 ? spentPct.toFixed(1) + '%' : '0.0%'}</div>
-              <div style="width:60px;height:4px;background:var(--border);border-radius:2px;flex-shrink:0;">
-                <div style="height:100%;width:${cert>0?barW:0}%;background:${barCol};border-radius:2px;"></div>
-              </div>
+    if (hasSubs) {
+      SUB_ELEMENTS[key].forEach((sub, i) => {
+        const subVar = sub.certified - sub.budget;
+        const subPct = sub.budget > 0 ? sub.certified / sub.budget * 100 : 0;
+        rows.push(`<tr class="sub-row hidden" id="vsub-${key}-${i}">
+          <td></td>
+          <td style="padding-left:24px;font-size:0.82rem">${sub.label}</td>
+          <td class="num" style="font-size:0.8rem">${fmtRM(sub.budget)}</td>
+          <td class="num" style="font-size:0.8rem">${sub.certified > 0 ? fmtRM(sub.certified) : '—'}</td>
+          <td class="num" style="font-size:0.8rem">${fmtRM(sub.budget - sub.certified)}</td>
+          <td class="num">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div class="prog-wrap"><div class="prog-bar" style="width:${Math.min(subPct,100)}%"></div></div>
+              <span style="font-family:'DM Mono',monospace;font-size:0.7rem">${subPct.toFixed(1)}%</span>
             </div>
           </td>
-          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${varCol};">${cert > 0 ? varSign + fmt(rem) : '—'}</td>
-        </tr>`;
+          <td class="num ${subVar > 0 ? 'var-neg' : 'var-pos'}" style="font-size:0.8rem">${subVar === 0 ? '—' : (subVar > 0 ? '+' : '') + fmtRM(subVar)}</td>
+        </tr>`);
       });
-      html += `</table></td></tr>`;
     }
   });
 
   // Total row
-  const totalRemaining = TOTAL_BUDGET - totalSpent;
-  const totalPct = totalSpent / TOTAL_BUDGET * 100;
-  const tVarClass = totalRemaining >= 0 ? 'positive' : 'negative';
-  html += `<tr class="var-total">
-    <td><strong>TOTAL</strong></td>
-    <td><strong>${fmt(TOTAL_BUDGET)}</strong></td>
-    <td style="color:var(--accent2);font-weight:700;">${totalSpent > 0 ? fmt(totalSpent) : '—'}</td>
-    <td class="${tVarClass}"><strong>${fmt(Math.abs(totalRemaining))}</strong></td>
-    <td>
-      <div style="text-align:right;font-size:11px;margin-bottom:3px;font-weight:700;">${totalPct.toFixed(1)}%</div>
-      <div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,totalPct)}%;background:#0D2080;"></div></div>
-    </td>
-    <td class="${tVarClass}"><strong>${totalRemaining>=0?'+':''}${fmt(totalRemaining)}</strong></td>
-  </tr>`;
-  tbody.innerHTML = html;
+  const totCert = totalCertifiedFromBQ();
+  const totVar = totCert - tb;
+  rows.push(`<tr class="total-row">
+    <td colspan="2"><strong>TOTAL</strong></td>
+    <td class="num"><strong>${fmtRM(tb)}</strong></td>
+    <td class="num"><strong>${fmtRM(totCert)}</strong></td>
+    <td class="num"><strong>${fmtRM(tb - totCert)}</strong></td>
+    <td class="num"><strong>${pct(totCert, tb)}</strong></td>
+    <td class="num ${totVar > 0 ? 'var-neg' : 'var-pos'}"><strong>${totVar === 0 ? '—' : (totVar > 0 ? '+' : '') + fmtRM(totVar)}</strong></td>
+  </tr>`);
+  tbody.innerHTML = rows.join('');
+
+  // Monthly summary
+  renderMonthlySummary(entries, tb);
 }
 
-function toggleVarSub(k) {
-  const row  = document.getElementById('var-sub-' + k.toLowerCase());
-  const icon = document.getElementById('varicon-' + k);
-  if (!row) return;
-  const isOpen = row.style.display === 'none' || row.style.display === '';
-  row.style.display = isOpen ? 'table-row' : 'none';
-  if (icon) icon.textContent = isOpen ? '▼' : '▶';
+function toggleVarSubs(key) {
+  const icon = document.getElementById('vexp-' + key);
+  const subs = document.querySelectorAll(`[id^="vsub-${key}-"]`);
+  const hidden = subs[0] && subs[0].classList.contains('hidden');
+  subs.forEach(s => s.classList.toggle('hidden', !hidden));
+  if (icon) icon.style.transform = hidden ? 'rotate(90deg)' : '';
 }
 
-function renderMonthlySummary() {
-  const container = document.getElementById('monthly-summary-container');
-  if (entries.length === 0) {
-    container.innerHTML = '<div class="empty-state" style="padding:30px;"><div class="es-icon">📊</div><p>No expenditure data recorded yet.</p></div>';
+function renderMonthlySummary(entries, tb) {
+  const tbody = document.getElementById('monthly-summary-tbody');
+  if (!entries.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;font-style:italic">No payment data — add entries in Monthly Expenditure tab</td></tr>`;
     return;
   }
-  let html = `<table class="ledger-table"><thead><tr>
-    <th>Month</th>
-    <th style="text-align:right">Certified excl SST (RM)</th>
-    <th style="text-align:right;color:#c0392b;">SST (RM)</th>
-    <th style="text-align:right">Total incl SST (RM)</th>
-    <th style="text-align:right">Cumulative excl SST (RM)</th>
-    <th style="text-align:right">% of Budget</th>
-    <th>Note</th>
-  </tr></thead><tbody>`;
-  let cum = 0;
-  entries.forEach(e => {
-    const sstTotal = ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0);
-    const subtotal = e.subtotal || (e.total - sstTotal);
-    cum += subtotal;
-    const pct = cum / TOTAL_BUDGET * 100;
-    html += `<tr>
-      <td><span class="month-badge">${fmtMonth(e.month)}</span></td>
-      <td style="text-align:right;font-family:var(--mono);color:var(--accent2);">${fmt(subtotal)}</td>
-      <td style="text-align:right;font-family:var(--mono);color:${sstTotal>0?'#c0392b':'var(--muted)'};">${sstTotal>0?fmt(sstTotal):'—'}</td>
-      <td style="text-align:right;font-family:var(--mono);font-weight:700;color:#0D2080;">${fmt(e.total)}</td>
-      <td style="text-align:right;font-family:var(--mono);">${fmt(cum)}</td>
-      <td style="text-align:right;font-family:var(--mono);">${pct.toFixed(2)}%</td>
-      <td style="font-size:12px;color:var(--muted);">${e.note || '—'}</td>
+  let cumul = 0;
+  tbody.innerHTML = entries.map(e => {
+    const sst = e.sst || {};
+    const sstTotal = (sst.labour || 0) + (sst.nsc || 0) + (sst.other || 0);
+    cumul += (e.subtotal || 0);
+    return `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:0.8rem">${fmtMonth(e.month)}</td>
+      <td style="font-size:0.82rem">${e.note || ''}</td>
+      <td class="num" style="font-size:0.8rem">${fmtRM(e.subtotal)}</td>
+      <td class="num" style="font-size:0.8rem">${fmtRM(sstTotal)}</td>
+      <td class="num" style="font-size:0.8rem">${fmtRM(e.total)}</td>
+      <td class="num" style="font-size:0.8rem;font-weight:500">${fmtRM(cumul)}</td>
+      <td class="num" style="font-size:0.8rem">${pct(cumul, tb)}</td>
     </tr>`;
-  });
-  html += '</tbody></table>';
-  container.innerHTML = html;
+  }).join('');
 }
 
-// ─── S-CURVE CANVAS ──────────────────────────────────────────────────────────
-function renderSCurve() {
+function drawSCurve(entries, tb, totalMonths) {
   const canvas = document.getElementById('scurve');
   const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  const W = canvas.offsetWidth;
-  const H = 280;
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  ctx.scale(dpr, dpr);
+  canvas.width = canvas.offsetWidth || 900;
+  canvas.height = 280;
+
+  const W = canvas.width, H = canvas.height;
+  const pad = { top: 20, right: 30, bottom: 50, left: 90 };
+  const chartW = W - pad.left - pad.right;
+  const chartH = H - pad.top - pad.bottom;
+
   ctx.clearRect(0, 0, W, H);
 
-  const PAD = { top: 20, right: 30, bottom: 50, left: 80 };
-  const cW = W - PAD.left - PAD.right;
-  const cH = H - PAD.top - PAD.bottom;
-
-  const CONTRACT_MONTHS = 14;
-
-  // Build data points
-  // Budget: linear baseline over 14 months
-  const budgetPoints = [];
-  for (let m = 0; m <= CONTRACT_MONTHS; m++) {
-    budgetPoints.push({ x: m, y: (TOTAL_BUDGET / CONTRACT_MONTHS) * m });
-  }
-
-  // Actual: from entries
-  const actualPoints = [{ x: 0, y: 0 }];
-  if (entries.length > 0) {
-    const startMonth = entries[0].month;
-    let cum = 0;
-    entries.forEach((e, i) => {
-      cum += e.total;
-      const diff = monthDiff(startMonth, e.month) + 1;
-      actualPoints.push({ x: diff, y: cum });
-    });
-  }
-
-  const maxX = CONTRACT_MONTHS;
-  const maxY = TOTAL_BUDGET;
-
-  function cx(x) { return PAD.left + (x / maxX) * cW; }
-  function cy(y) { return PAD.top + cH - (y / maxY) * cH; }
-
   // Grid
-  ctx.strokeStyle = '#c8d4e3';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4, 4]);
-  for (let m = 0; m <= CONTRACT_MONTHS; m++) {
-    ctx.beginPath(); ctx.moveTo(cx(m), PAD.top); ctx.lineTo(cx(m), PAD.top + cH); ctx.stroke();
-  }
-  const ySteps = 6;
-  for (let i = 0; i <= ySteps; i++) {
-    const y = (maxY / ySteps) * i;
-    ctx.beginPath(); ctx.moveTo(PAD.left, cy(y)); ctx.lineTo(PAD.left + cW, cy(y)); ctx.stroke();
-  }
-  ctx.setLineDash([]);
-
-  // Axes
-  ctx.strokeStyle = '#c8d4e3';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, PAD.top + cH); ctx.lineTo(PAD.left + cW, PAD.top + cH); ctx.stroke();
-
-  // Y-axis labels
-  ctx.font = `10px 'DM Mono', monospace`;
-  ctx.fillStyle = '#58595B';
-  ctx.textAlign = 'right';
-  for (let i = 0; i <= ySteps; i++) {
-    const y = (maxY / ySteps) * i;
-    ctx.fillText('RM ' + fmtM(y), PAD.left - 8, cy(y) + 3);
+  ctx.strokeStyle = '#E8E6E0'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 10; i++) {
+    const y = pad.top + chartH - (chartH * i / 10);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+    ctx.fillStyle = '#888'; ctx.font = "11px 'DM Mono',monospace";
+    ctx.textAlign = 'right';
+    ctx.fillText((i * 10) + '%', pad.left - 6, y + 4);
   }
 
-  // X-axis labels
-  ctx.textAlign = 'center';
-  for (let m = 0; m <= CONTRACT_MONTHS; m++) {
-    ctx.fillStyle = '#58595B';
-    ctx.fillText('M' + m, cx(m), PAD.top + cH + 18);
+  // X axis labels
+  ctx.fillStyle = '#888'; ctx.font = "10px 'DM Mono',monospace"; ctx.textAlign = 'center';
+  for (let m = 0; m <= totalMonths; m += 2) {
+    const x = pad.left + chartW * m / totalMonths;
+    ctx.fillText('M' + m, x, H - pad.bottom + 16);
   }
-  ctx.fillStyle = '#0D2080';
-  ctx.font = `bold 10px 'DM Mono', monospace`;
-  ctx.fillText('CONTRACT MONTH', PAD.left + cW / 2, H - 4);
+  ctx.fillText('Contract months', pad.left + chartW / 2, H - 8);
 
-  // Budget line (navy dashed)
-  ctx.strokeStyle = '#0D2080';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([8, 5]);
-  ctx.beginPath();
-  budgetPoints.forEach((p, i) => {
-    i === 0 ? ctx.moveTo(cx(p.x), cy(p.y)) : ctx.lineTo(cx(p.x), cy(p.y));
-  });
-  ctx.stroke();
-  ctx.setLineDash([]);
+  // Linear baseline
+  ctx.beginPath(); ctx.strokeStyle = '#0D2080'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+  for (let m = 0; m <= totalMonths; m++) {
+    const x = pad.left + chartW * m / totalMonths;
+    const y = pad.top + chartH - (chartH * m / totalMonths);
+    m === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
 
-  // Actual line (sky blue solid)
-  if (actualPoints.length > 1) {
-    ctx.strokeStyle = '#29ABE2';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    actualPoints.forEach((p, i) => {
-      i === 0 ? ctx.moveTo(cx(p.x), cy(p.y)) : ctx.lineTo(cx(p.x), cy(p.y));
+  // Actual S-curve
+  if (entries.length) {
+    let cumul = 0;
+    const points = [[0, 0]];
+    entries.forEach((e, i) => {
+      cumul += (e.subtotal || 0);
+      points.push([i + 1, cumul / tb]);
+    });
+
+    ctx.beginPath(); ctx.strokeStyle = '#29ABE2'; ctx.lineWidth = 3;
+    points.forEach(([m, pct], i) => {
+      const x = pad.left + chartW * Math.min(m, totalMonths) / totalMonths;
+      const y = pad.top + chartH - (chartH * Math.min(pct, 1));
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     });
     ctx.stroke();
 
-    // Fill area under actual
-    ctx.fillStyle = 'rgba(41,171,226,0.08)';
-    ctx.beginPath();
-    actualPoints.forEach((p, i) => {
-      i === 0 ? ctx.moveTo(cx(p.x), cy(p.y)) : ctx.lineTo(cx(p.x), cy(p.y));
+    // Dots
+    points.forEach(([m, pct]) => {
+      const x = pad.left + chartW * Math.min(m, totalMonths) / totalMonths;
+      const y = pad.top + chartH - (chartH * Math.min(pct, 1));
+      ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#29ABE2'; ctx.fill();
+      ctx.strokeStyle = 'white'; ctx.lineWidth = 1.5; ctx.stroke();
     });
-    ctx.lineTo(cx(actualPoints[actualPoints.length-1].x), cy(0));
-    ctx.lineTo(cx(0), cy(0));
-    ctx.closePath();
-    ctx.fill();
-
-    // Dots on actual
-    actualPoints.forEach(p => {
-      ctx.fillStyle = '#29ABE2';
-      ctx.beginPath();
-      ctx.arc(cx(p.x), cy(p.y), 4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(cx(p.x), cy(p.y), 2, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Variance annotation at last point
-    const last = actualPoints[actualPoints.length - 1];
-    const budgetAtLast = (TOTAL_BUDGET / CONTRACT_MONTHS) * last.x;
-    const diff = last.y - budgetAtLast;
-    const diffLabel = (diff >= 0 ? '+' : '') + 'RM ' + fmtM(Math.abs(diff));
-    ctx.font = `bold 10px 'DM Mono', monospace`;
-    ctx.fillStyle = diff >= 0 ? '#c0392b' : '#1a8c5a';
-    ctx.textAlign = 'left';
-    const lx = cx(last.x) + 8;
-    const ly = cy(last.y) - 4;
-    ctx.fillText(diffLabel, Math.min(lx, W - 80), ly);
-    ctx.font = `9px 'DM Mono', monospace`;
-    ctx.fillStyle = '#58595B';
-    ctx.fillText(diff >= 0 ? 'over baseline' : 'under baseline', Math.min(lx, W - 80), ly + 13);
-  } else {
-    // No data message
-    ctx.fillStyle = '#c8d4e3';
-    ctx.font = `11px 'EB Garamond', serif`;
-    ctx.textAlign = 'center';
-    ctx.fillText('No expenditure data yet — add entries in the Monthly Expenditure tab', PAD.left + cW/2, PAD.top + cH/2);
   }
+
+  // Legend
+  ctx.setLineDash([6, 4]); ctx.strokeStyle = '#0D2080'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(pad.left, H - pad.bottom + 32); ctx.lineTo(pad.left + 30, H - pad.bottom + 32); ctx.stroke();
+  ctx.setLineDash([]); ctx.fillStyle = '#0D2080'; ctx.font = "11px 'DM Mono',monospace"; ctx.textAlign = 'left';
+  ctx.fillText('Linear baseline', pad.left + 34, H - pad.bottom + 36);
+  ctx.strokeStyle = '#29ABE2'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(pad.left + 140, H - pad.bottom + 32); ctx.lineTo(pad.left + 170, H - pad.bottom + 32); ctx.stroke();
+  ctx.fillStyle = '#29ABE2';
+  ctx.fillText('Actual certified', pad.left + 174, H - pad.bottom + 36);
 }
 
-// ─── UTILS ───────────────────────────────────────────────────────────────────
-function fmt(n) {
-  return Number(n).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-function fmtM(n) {
-  if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(2) + 'M';
-  if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(1) + 'K';
-  return n.toFixed(0);
-}
-function fmtMonth(ym) {
-  const [y, m] = ym.split('-');
-  const names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return names[parseInt(m)-1] + ' ' + y;
-}
-function monthDiff(start, end) {
-  const [sy, sm] = start.split('-').map(Number);
-  const [ey, em] = end.split('-').map(Number);
-  return (ey - sy) * 12 + (em - sm);
-}
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+// ════════════════════════════════════════════════════════
+//  TAB 4: PROCESSING FEES
+// ════════════════════════════════════════════════════════
+function renderPF() {
+  const pfTotal = totalPF();
+  const tb = totalBudget();
+  const grandTotal = tb + pfTotal;
 
-// ─── EXPORT CSV ──────────────────────────────────────────────────────────────
-function exportCSV() {
-  if (entries.length === 0) { showToast('No data to export.'); return; }
-  let csv = 'Month,Note,' + BILL_KEYS.join(',') + ',SST Lift,SST ACMV,SST Other,SST Total,Subtotal (excl SST),Total incl SST,Cumulative excl SST\n';
-  let cum = 0;
-  entries.forEach(e => {
-    const sstLift  = (e.sst&&e.sst.lift)  || 0;
-    const sstAcmv  = (e.sst&&e.sst.acmv)  || 0;
-    const sstOther = (e.sst&&e.sst.other) || 0;
-    const sstTotal = sstLift + sstAcmv + sstOther;
-    const subtotal = e.subtotal || (e.total - sstTotal);
-    cum += subtotal;
-    const row = [
-      fmtMonth(e.month), '"' + (e.note||'') + '"',
-      ...BILL_KEYS.map(k => (e.bills[k]||0).toFixed(2)),
-      sstLift.toFixed(2), sstAcmv.toFixed(2), sstOther.toFixed(2),
-      sstTotal.toFixed(2), subtotal.toFixed(2), e.total.toFixed(2), cum.toFixed(2)
-    ];
-    csv += row.join(',') + '\n';
-  });
-  const bTotals = BILL_KEYS.map(k => entries.reduce((s,e) => s + (e.bills[k]||0), 0));
-  const grandSST = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
-  csv += '\nBQ Budget,' + BILL_KEYS.map(k => BQ[k].budget.toFixed(2)).join(',') + ',,,,,' + TOTAL_BUDGET.toFixed(2) + '\n';
-  csv += 'Total Certified,' + bTotals.map(v=>v.toFixed(2)).join(',') + ',,,' + grandSST.toFixed(2) + ',,,' + entries.reduce((s,e)=>s+e.total,0).toFixed(2) + '\n';
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'Syntec_BQ_Expenditure_SST.csv';
-  a.click();
-  showToast('CSV exported with SST breakdown.');
-}
+  // KPI cards
+  document.getElementById('pf-kpi-grid').innerHTML = [
+    { label: 'Total Processing Fees', value: fmtRM(pfTotal), cls: 'accent' },
+    { label: '% of Contract Sum', value: pct(pfTotal, tb), sub: 'relative to RM ' + fmt(tb/1e6, 2) + 'M', cls: '' },
+    { label: 'Grand Total (Contract + Fees)', value: fmtRM(grandTotal), cls: 'danger' },
+    { label: 'TNB LV Connection', value: fmtRM(PF[3].editable_total), sub: 'Largest single item', cls: 'warn' }
+  ].map(c => `<div class="kpi-card ${c.cls}"><div class="kpi-label">${c.label}</div><div class="kpi-value">${c.value}</div><div class="kpi-sub">${c.sub || ''}</div></div>`).join('');
 
-// ─── BQ TABLE RENDER (DYNAMIC + EDITABLE) ────────────────────────────────────
-
-const BILL_META = {
-  B1:  { desc: 'Preliminaries',                    sub: 'Ref F1/14',                       type: 'fixed',  color: '#29ABE2', subId: 'b1' },
-  B2:  { desc: 'Piling, Pilecap, Stump & Shearwall', sub: 'Ref F2/4/1 — All Provisional', type: 'prov',   color: '#3a82b8', subId: 'b2' },
-  B3:  { desc: 'Main Building Works',               sub: 'Ref F3/21/1 — 20 elements',      type: 'fixed',  color: '#0D2080', subId: 'b3' },
-  B4:  { desc: 'Local Infrastructure Works',        sub: 'Ref F4/12/1 — All Provisional',  type: 'prov',   color: '#2668a8', subId: 'b4' },
-  B5a: { desc: 'Cold Water & Sanitary Plumbing',    sub: '3 sections',                      type: 'fixed',  color: '#29ABE2', subId: 'b5a' },
-  B5b: { desc: 'Electrical, Telephone & ELV Works', sub: '8 sections',                     type: 'fixed',  color: '#29ABE2', subId: 'b5b' },
-  B5c: { desc: 'Fire Protection Services',          sub: '7 sections',                      type: 'fixed',  color: '#c0392b', subId: 'b5c' },
-  B6:  { desc: 'Prime Cost & Provisional Sums',     sub: 'PC + Provisional + P&A',          type: 'pc',     color: '#1a6fa8', subId: 'b6' },
-};
-const TYPE_TAG = {
-  fixed: '<span class="bill-tag tag-fixed">Fixed</span>',
-  prov:  '<span class="bill-tag tag-provisional">Provisional</span>',
-  pc:    '<span class="bill-tag tag-pc">PC / Prov</span>',
-};
-
-let budgetEditMode = false;
-
-function renderBQTable() {
-  const total = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
-  const maxBudget = Math.max(...BILL_KEYS.map(k => BQ[k].budget));
-
-  let html = `<table class="bill-table" id="bq-main-table" class="${budgetEditMode?'edit-mode':''}">
-    <thead><tr>
-      <th style="width:28px;"></th>
-      <th>Bill</th><th>Description</th><th>Type</th>
-      <th>% Share</th>
-      <th style="text-align:right">BQ Budget (RM)</th>
-    </tr></thead><tbody>`;
-
-  BILL_KEYS.forEach(k => {
-    const b    = BQ[k].budget;
-    const def  = BQ_DEFAULTS[k].budget;
-    const pct  = total > 0 ? (b / total * 100) : 0;
-    const barW = total > 0 ? (b / maxBudget * 100) : 0;
-    const meta = BILL_META[k];
-    const isChanged = Math.abs(b - def) > 0.01;
-    const changedClass = isChanged ? (b > def ? 'budget-increased' : 'budget-decreased') : '';
-
-    html += `<tr>
-      <td><button class="expand-btn" onclick="toggleSub('${meta.subId}')" id="btn-${meta.subId}">▶</button></td>
-      <td><span class="bill-ref">${k}</span></td>
+  // Main table
+  const tbody = document.getElementById('pf-tbody');
+  const rows = [];
+  PF.forEach((pf, i) => {
+    rows.push(`<tr class="bill-row chevron" onclick="togglePFSubs(${i})" id="pfrow-${i}">
+      <td><strong>${pf.no}</strong></td>
       <td>
-        <div class="bill-name">${meta.desc}</div>
-        <div class="bill-sub">${meta.sub}${isChanged ? ' <span style="color:#c0392b;font-size:9px;">● Modified</span>' : ''}</div>
+        <span class="expand-icon" id="pfexp-${i}">▶</span>
+        <strong>${pf.purpose}</strong>
+        ${pf.note ? `<br><span style="font-size:0.78rem;color:var(--muted);font-style:italic">${pf.note}</span>` : ''}
       </td>
-      <td>${TYPE_TAG[meta.type]}</td>
-      <td>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${barW.toFixed(1)}%;background:${meta.color};"></div></div>
-        <div class="bill-pct">${pct.toFixed(1)}%</div>
+      <td><span class="pf-submitter">${pf.submitter}</span></td>
+      <td><span class="pf-timeline">${pf.timeline}</span></td>
+      <td class="num">${fmtRM(pf.subtotal)}</td>
+      <td class="num" id="pf-total-cell-${i}">
+        ${pfEditMode
+          ? `<input type="number" class="edit-input" id="pf-edit-${i}" value="${pf.editable_total.toFixed(2)}" step="100" oninput="onPFInput(${i})">`
+          : `<strong>${fmtRM(pf.editable_total)}</strong>`}
       </td>
-      <td class="bill-amount budget-cell">
-        <span class="budget-display ${changedClass}" style="${isChanged?'color:#c0392b;':''}">${fmt(b)}</span>
-        <input type="number" class="budget-input" id="bi-${k}" value="${b.toFixed(2)}" step="0.01" min="0"
-          onchange="onBudgetInputChange('${k}', this.value)"
-          oninput="onBudgetInputChange('${k}', this.value)"
-          style="${budgetEditMode?'display:inline-block':'display:none'}"/>
-      </td>
-    </tr>`;
+      <td><span class="badge badge-prov">Est.</span></td>
+    </tr>`);
+
+    pf.items.forEach((item, j) => {
+      rows.push(`<tr class="pf-sub-row hidden" id="pfsub-${i}-${j}">
+        <td></td>
+        <td colspan="3" style="padding-left:32px;font-size:0.82rem;color:#444">${item.desc}</td>
+        <td class="num" style="font-size:0.8rem">${item.amount > 0 ? fmtRM(item.amount) : '<span style="color:var(--muted);font-style:italic">Subject to Authority</span>'}</td>
+        <td colspan="2"></td>
+      </tr>`);
+    });
   });
 
-  // Total row
-  const totalChanged = Math.abs(total - 54000000) > 0.01;
-  html += `<tr class="total-row">
+  const tfoot = document.getElementById('pf-tfoot');
+  tfoot.innerHTML = `<tr class="total-row">
+    <td colspan="4"><strong>Total Processing Fees Estimation (Items 1–4)</strong></td>
+    <td class="num">—</td>
+    <td class="num" id="pf-grand-total"><strong>${fmtRM(pfTotal)}</strong></td>
     <td></td>
-    <td colspan="3"><strong>TOTAL CONTRACT SUM</strong>${totalChanged ? ' <span style="font-size:11px;color:#c0392b;">● Adjusted from SOT RM 54,000,000</span>' : ' <span style="font-size:11px;color:var(--muted);">— SOT Addendum TA1</span>'}</td>
-    <td><span style="font-family:var(--mono);font-size:10px;color:var(--accent)">100.0%</span></td>
-    <td class="bill-amount" style="${totalChanged?'color:#c0392b;':''}"><span id="bq-total-amt">${fmt(total)}</span></td>
   </tr>`;
 
-  html += '</tbody></table>';
-  document.getElementById('bq-table-container').innerHTML = html;
+  tbody.innerHTML = rows.join('');
 
-  // Restore sub-row open states
-  document.querySelectorAll('.sub-rows').forEach(el => {
-    if (el.classList.contains('open')) {
-      const id = el.id.replace('sub-', '');
-      const btn = document.getElementById('btn-' + id);
-      if (btn) btn.textContent = '▼';
-    }
-  });
+  // Breakdown table
+  renderPFBreakdown();
+}
 
-  // Apply edit mode styles
-  if (budgetEditMode) {
-    document.getElementById('bq-main-table').classList.add('edit-mode');
-    document.querySelectorAll('.budget-input').forEach(el => el.style.display = 'inline-block');
-    document.querySelectorAll('.budget-display').forEach(el => el.style.display = 'none');
+function togglePFSubs(i) {
+  const row = document.getElementById('pfrow-' + i);
+  const icon = document.getElementById('pfexp-' + i);
+  const subs = document.querySelectorAll(`[id^="pfsub-${i}-"]`);
+  const hidden = subs[0] && subs[0].classList.contains('hidden');
+  subs.forEach(s => s.classList.toggle('hidden', !hidden));
+  if (icon) icon.style.transform = hidden ? 'rotate(90deg)' : '';
+}
+
+function renderPFBreakdown() {
+  const pfTotal = totalPF();
+  const tb = totalBudget();
+  const breakdown = PF.map(pf => ({
+    label: `Item ${pf.no}: ${pf.purpose.split('—')[0].trim()}`,
+    total: pf.editable_total
+  }));
+  document.getElementById('pf-breakdown-tbody').innerHTML = breakdown.map(b => `<tr>
+    <td>${b.label}</td>
+    <td class="num">${fmtRM(b.total)}</td>
+    <td class="num">${pct(b.total, pfTotal)}</td>
+    <td class="num">${pct(b.total, tb)}</td>
+  </tr>`).join('') + `<tr class="total-row">
+    <td><strong>Total</strong></td>
+    <td class="num"><strong>${fmtRM(pfTotal)}</strong></td>
+    <td class="num">100.0%</td>
+    <td class="num">${pct(pfTotal, tb)}</td>
+  </tr>`;
+}
+
+// PF Edit Mode
+function togglePFEdit() {
+  if (!pfEditMode) {
+    pfBackup = PF.map(p => p.editable_total);
+    pfEditMode = true;
+    document.getElementById('pf-edit-btn').style.display = 'none';
+    document.getElementById('pf-edit-toolbar').style.display = 'flex';
+    document.getElementById('pf-total-indicator').style.display = 'inline-block';
   }
-
-  // Update live total in banner
-  updateLiveTotalDisplay();
+  renderPF();
 }
 
-function onBudgetInputChange(k, val) {
-  const v = parseFloat(val);
-  if (isNaN(v) || v < 0) return;
-  BQ[k].budget = v;
-  updateTotalBudget();
-  updateLiveTotalDisplay();
+function onPFInput(i) {
+  const val = parseFloat(document.getElementById('pf-edit-' + i).value) || 0;
+  PF[i].editable_total = val;
+  const gt = document.getElementById('pf-grand-total');
+  if (gt) gt.innerHTML = `<strong>${fmtRM(totalPF())}</strong>`;
+  const ind = document.getElementById('pf-total-indicator');
+  if (ind) { ind.className = 'total-indicator total-ok'; ind.textContent = `Total: ${fmtRM(totalPF())}`; }
 }
 
-function updateLiveTotalDisplay() {
-  const total = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
-  const el = document.getElementById('live-total');
-  if (!el) return;
-  const changed = Math.abs(total - 54000000) > 0.01;
-  el.textContent = 'RM ' + fmt(total);
-  el.className = 'live-total-display' + (changed ? ' changed' : '');
+function savePFEdits() {
+  PF.forEach((p, i) => {
+    const inp = document.getElementById('pf-edit-' + i);
+    if (inp) p.editable_total = parseFloat(inp.value) || 0;
+  });
+  localStorage.setItem('syntec_pf_totals', JSON.stringify(PF.map(p => p.editable_total)));
+  exitPFEditMode();
+  renderPF();
 }
 
-function toggleBudgetEdit() {
-  budgetEditMode = !budgetEditMode;
-  const btn = document.getElementById('edit-budget-btn');
-  const banner = document.getElementById('edit-banner');
-  if (budgetEditMode) {
-    btn.textContent = '✕ Cancel Edit';
-    btn.style.background = 'rgba(192,57,43,0.08)';
-    btn.style.color = '#c0392b';
-    btn.style.borderColor = 'rgba(192,57,43,0.3)';
-    banner.classList.add('visible');
-  } else {
-    // Cancel — reload from localStorage (discard unsaved changes)
-    BQ = loadBQ();
-    updateTotalBudget();
-    btn.textContent = '✏ Edit Budget';
-    btn.style.background = '';
-    btn.style.color = '';
-    btn.style.borderColor = '';
-    banner.classList.remove('visible');
-  }
-  renderBQTable();
+function resetPFToDefault() {
+  PF.forEach((p, i) => p.editable_total = PF_DEFAULTS[i].total);
+  localStorage.removeItem('syntec_pf_totals');
+  exitPFEditMode();
+  renderPF();
 }
 
-function saveBudgetEdits() {
-  // Read all input values before saving
-  BILL_KEYS.forEach(k => {
-    const el = document.getElementById('bi-' + k);
-    if (el) {
-      const v = parseFloat(el.value);
-      if (!isNaN(v) && v >= 0) BQ[k].budget = v;
+function cancelPFEdits() {
+  pfBackup.forEach((v, i) => PF[i].editable_total = v);
+  exitPFEditMode();
+  renderPF();
+}
+
+function exitPFEditMode() {
+  pfEditMode = false;
+  document.getElementById('pf-edit-btn').style.display = '';
+  document.getElementById('pf-edit-toolbar').style.display = 'none';
+  document.getElementById('pf-total-indicator').style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════
+//  TAB 5: RISKS
+// ════════════════════════════════════════════════════════
+function renderRisks() {
+  document.getElementById('risk-tbody').innerHTML = RISKS.map(r => `<tr>
+    <td style="font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:500">${r.id}</td>
+    <td>${r.item}</td>
+    <td><span class="${r.sev === 'HIGH' ? 'sev-high' : r.sev === 'MED' ? 'sev-med' : 'sev-low'}">${r.sev === 'HIGH' ? '🔴 HIGH' : r.sev === 'MED' ? '🟡 MED' : '🟢 LOW'}</span></td>
+    <td style="font-size:0.83rem">${r.action}</td>
+  </tr>`).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  INJECT SCRIPT — for console use
+//  window.injectIPC123 = function() { ... }
+// ════════════════════════════════════════════════════════
+window.injectIPC123 = function() {
+  const data = [
+    {
+      month: '2026-01',
+      note: 'IPC No. 1 | PTSSB Invoice 00014068 | Period ending 31 Jan 2026',
+      bills: { B1: 688819.98, B2: 1471409.87, B3: 0, B4: 231994.40, B5a: 0, B5b: 0, B5c: 0, B6: 95000.00 },
+      sst: { labour: 69707.06, nsc: 0, other: 0 },
+      subtotal: 2476890.79,
+      total: 2546597.85
+    },
+    {
+      month: '2026-02',
+      note: 'IPC No. 2 | PTSSB Invoice 00014076 | Period ending 28 Feb 2026 (bill split derived)',
+      bills: { B1: 212342.31, B2: 551328.93, B3: 0, B4: -47838.59, B5a: 0, B5b: 0, B5c: 0, B6: 0 },
+      sst: { labour: 22173.79, nsc: 0, other: 0 },
+      subtotal: 562308.10,
+      total: 584481.89
+    },
+    {
+      month: '2026-03',
+      note: 'IPC No. 3 | PTSSB Invoice 00014090 | Period ending 25 Mar 2026',
+      bills: { B1: 184192.63, B2: 272282.93, B3: 206770.14, B4: 52288.21, B5a: 0, B5b: 0, B5c: 0, B6: 1900.00 },
+      sst: { labour: 19289.84, nsc: 0, other: 0 },
+      subtotal: 832191.53,
+      total: 851481.37
     }
-  });
-  updateTotalBudget();
-  saveBQ();
-  budgetEditMode = false;
-  const btn = document.getElementById('edit-budget-btn');
-  btn.textContent = '✏ Edit Budget';
-  btn.style.background = '';
-  btn.style.color = '';
-  btn.style.borderColor = '';
-  document.getElementById('edit-banner').classList.remove('visible');
-  renderBQTable();
-  renderVariance();
-  showToast('Budget updated and saved.');
-}
+  ];
+  localStorage.setItem('syntec_bq_entries', JSON.stringify(data));
+  alert('IPC 1–3 injected. Refresh the Expenditure and Variance tabs.');
+  console.log('IPC 1–3 loaded into syntec_bq_entries');
+};
 
-// ─── SUB-ITEM EXPAND / COLLAPSE ─────────────────────────────────────────────
-function toggleSub(id) {
-  const rows = document.getElementById('sub-' + id);
-  const btn  = document.getElementById('btn-' + id);
-  if (!rows) return;
-  const isOpen = rows.classList.toggle('open');
-  btn.classList.toggle('open', isOpen);
-  btn.textContent = isOpen ? '▼' : '▶';
-  // Update expand-all button state
-  const allSubs = document.querySelectorAll('.sub-rows');
-  const openCount = document.querySelectorAll('.sub-rows.open').length;
-  const expandBtn = document.getElementById('expand-all-btn');
-  if (expandBtn) expandBtn.textContent = openCount === allSubs.length ? '▼ Collapse All' : '▶ Expand All';
-}
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+loadFromStorage();
+renderBQ();
+renderRisks();
 
-function toggleAllSubs() {
-  const allSubs = document.querySelectorAll('.sub-rows');
-  const openCount = document.querySelectorAll('.sub-rows.open').length;
-  const shouldOpen = openCount < allSubs.length;
-  allSubs.forEach(el => {
-    const id = el.id.replace('sub-', '');
-    const btn = document.getElementById('btn-' + id);
-    el.classList.toggle('open', shouldOpen);
-    if (btn) { btn.classList.toggle('open', shouldOpen); btn.textContent = shouldOpen ? '▼' : '▶'; }
-  });
-  const expandBtn = document.getElementById('expand-all-btn');
-  if (expandBtn) expandBtn.textContent = shouldOpen ? '▼ Collapse All' : '▶ Expand All';
-}
-// ─── INIT ────────────────────────────────────────────────────────────────────
-renderBQTable();
-renderLedger();
-renderVariance();
-
-window.addEventListener('resize', () => {
-  if (document.getElementById('tab-variance').classList.contains('active')) renderSCurve();
-});
+// Console hint
+console.log('%cSyntec Budget Tracker v3', 'color:#0D2080;font-size:1.1rem;font-weight:bold');
+console.log('%cTo load IPC 1–3 data: injectIPC123()', 'color:#29ABE2;font-size:0.9rem');
+console.log('%cTo clear all data: localStorage.clear(); location.reload()', 'color:#888;font-size:0.85rem');
 </script>
 </body>
 </html>
