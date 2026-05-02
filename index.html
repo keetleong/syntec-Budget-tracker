@@ -26,13 +26,38 @@
   body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
 
   /* NAV TABS */
-  .nav-tabs { background: #0D2080; display: flex; gap: 0; padding: 0 40px; border-bottom: 3px solid #29ABE2; }
-  .nav-tab { padding: 13px 24px; font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.5); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -3px; transition: all 0.15s; user-select: none; }
+  .nav-tabs {
+    background: #0D2080;
+    display: flex;
+    gap: 0;
+    padding: 0 40px;
+    border-bottom: 3px solid #29ABE2;
+  }
+  .nav-tab {
+    padding: 13px 24px;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: all 0.15s;
+    user-select: none;
+  }
   .nav-tab:hover { color: rgba(255,255,255,0.85); }
   .nav-tab.active { color: #29ABE2; border-bottom-color: #29ABE2; }
 
   /* HEADER */
-  .header { background: #0D2080; padding: 24px 40px 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+  .header {
+    background: #0D2080;
+    padding: 24px 40px 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
   .header-left h1 { font-size: 11px; font-family: var(--mono); color: #29ABE2; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
   .header-left h2 { font-size: 26px; font-weight: 800; color: #ffffff; font-family: 'EB Garamond', serif; }
   .header-left h2 span { color: #29ABE2; }
@@ -71,54 +96,121 @@
 
   /* GRID */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; align-items: start; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 18px; }
 
   /* BILL TABLE */
   .bill-table { width: 100%; border-collapse: collapse; }
   .bill-table th { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 14px 10px 0; text-align: left; border-bottom: 1px solid var(--border); }
-  .bill-table th.right { text-align: right; padding-right: 0; }
+  .bill-table th:last-child { text-align: right; padding-right: 0; }
   .bill-table td { padding: 12px 14px 12px 0; font-size: 13px; border-bottom: 1px solid rgba(100,120,160,0.15); vertical-align: middle; }
-  .bill-table td.right { text-align: right; padding-right: 0; }
+  .bill-table td:last-child { text-align: right; padding-right: 0; }
   .bill-table tr:last-child td { border-bottom: none; }
 
-  /* EXPAND */
-  .expand-btn { background: none; border: none; cursor: pointer; color: var(--accent); font-size: 11px; padding: 0 4px; font-family: var(--mono); transition: transform 0.2s; }
+  /* ── INLINE BUDGET EDITING ── */
+  .budget-cell { position: relative; }
+  .budget-display { cursor: default; }
+  .edit-mode .budget-display { display: none; }
+  .budget-input {
+    display: none;
+    width: 140px;
+    padding: 5px 8px;
+    border: 2px solid #29ABE2;
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent2);
+    background: rgba(41,171,226,0.06);
+    text-align: right;
+    outline: none;
+  }
+  .edit-mode .budget-input { display: inline-block; }
+  .edit-mode-banner {
+    display: none;
+    background: rgba(41,171,226,0.08);
+    border: 1px solid rgba(41,171,226,0.3);
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent2);
+    align-items: center;
+    gap: 12px;
+  }
+  .edit-mode-banner.visible { display: flex; }
+  .live-total-display {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+    font-family: var(--mono);
+  }
+  .live-total-display.changed { color: #c0392b; }
+  .btn-edit-budget {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid rgba(41,171,226,0.4);
+    background: rgba(41,171,226,0.08);
+    color: #29ABE2;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+  .btn-edit-budget:hover { background: rgba(41,171,226,0.18); }
+  .btn-save-budget {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    background: #0D2080;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .btn-reset-budget {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid rgba(192,57,43,0.3);
+    background: rgba(192,57,43,0.06);
+    color: #c0392b;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .budget-changed { color: #c0392b !important; }
+  .budget-increased::after { content: ' ▲'; font-size: 9px; color: #c0392b; }
+  .budget-decreased::after { content: ' ▼'; font-size: 9px; color: #1a8c5a; }
+  .expand-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--accent); font-size: 11px; padding: 0 4px;
+    font-family: var(--mono); transition: transform 0.2s;
+  }
   .expand-btn.open { transform: rotate(90deg); }
   .sub-rows { display: none; }
   .sub-rows.open { display: table-row-group; }
-
-  /* SUB ROWS */
-  .sub-row td { background: rgba(41,171,226,0.03); border-bottom: 1px solid rgba(100,120,160,0.08) !important; padding: 7px 14px 7px 32px !important; font-size: 11px; }
+  .sub-row td {
+    background: rgba(41,171,226,0.03);
+    border-bottom: 1px solid rgba(100,120,160,0.08) !important;
+    padding: 7px 14px 7px 32px !important;
+    font-size: 11px;
+  }
   .sub-row:last-child td { border-bottom: 1px solid rgba(100,120,160,0.15) !important; }
   .sub-label { color: var(--muted); font-size: 11px; }
-
-  /* ── EDITABLE BUDGET INPUTS ── */
-  .budget-cell { display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
-  .budget-display { font-family: var(--mono); font-size: 11px; color: var(--text); text-align: right; min-width: 110px; cursor: pointer; padding: 3px 6px; border-radius: 4px; border: 1px solid transparent; transition: all 0.15s; white-space: nowrap; }
-  .budget-display:hover { background: rgba(41,171,226,0.08); border-color: rgba(41,171,226,0.3); }
-  .budget-display.edited { color: var(--accent2); font-weight: 500; }
-  .budget-display.edited::after { content: ' ✎'; font-size: 9px; color: var(--accent); }
-  .budget-input-field {
-    font-family: var(--mono); font-size: 11px; color: var(--accent2);
-    border: 1px solid var(--accent); border-radius: 4px; padding: 3px 6px;
-    width: 120px; text-align: right; outline: none; background: rgba(41,171,226,0.05);
-    display: none;
-  }
-  .budget-input-field.active { display: block; }
-  /* Bill-level editable */
-  .bill-budget-display { font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--text); cursor: pointer; padding: 3px 6px; border-radius: 4px; border: 1px solid transparent; transition: all 0.15s; white-space: nowrap; }
-  .bill-budget-display:hover { background: rgba(41,171,226,0.08); border-color: rgba(41,171,226,0.3); }
-  .bill-budget-display.edited { color: var(--accent2); }
-  .bill-budget-display.edited::after { content: ' ✎'; font-size: 9px; color: var(--accent); }
-  .bill-budget-input-field { font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--accent2); border: 1px solid var(--accent); border-radius: 4px; padding: 3px 6px; width: 150px; text-align: right; outline: none; background: rgba(41,171,226,0.06); display: none; }
-  .bill-budget-input-field.active { display: block; }
-
-  /* Edit hint tooltip */
-  .edit-hint { font-family: var(--mono); font-size: 8px; color: rgba(41,171,226,0.5); letter-spacing: 0.05em; }
-
-  /* BILL TABLE misc */
+  .sub-budget { font-family: var(--mono); font-size: 11px; text-align: right; }
+  .sub-certified { font-family: var(--mono); font-size: 11px; text-align: right; color: var(--accent2); }
+  .sub-bar-wrap { width: 80px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 6px; }
+  .sub-bar-fill { height: 100%; border-radius: 2px; background: #29ABE2; }
+  .sub-nil { color: var(--border); font-family: var(--mono); font-size: 11px; text-align: right; }
   .bill-ref { font-family: var(--mono); font-size: 10px; color: var(--accent); background: rgba(41,171,226,0.10); border: 1px solid rgba(41,171,226,0.25); border-radius: 4px; padding: 2px 7px; display: inline-block; }
   .bill-name { font-weight: 600; font-size: 13px; }
   .bill-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
+  .bill-amount { font-family: var(--mono); font-weight: 500; font-size: 13px; }
   .bill-pct { font-family: var(--mono); font-size: 9px; color: var(--muted); }
   .bar-wrap { width: 100px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 2px; }
@@ -127,25 +219,7 @@
   .tag-pc { background: rgba(13,32,128,0.08); color: var(--accent2); border: 1px solid rgba(13,32,128,0.2); }
   .tag-fixed { background: rgba(41,171,226,0.08); color: var(--accent); border: 1px solid rgba(41,171,226,0.2); }
   .total-row td { background: var(--surface2); font-weight: 700; font-size: 14px; border-top: 2px solid var(--accent); border-bottom: none !important; padding-top: 14px; padding-bottom: 14px; }
-  .total-row .bill-amount { color: var(--accent); font-size: 15px; font-family: var(--mono); }
-
-  /* BUDGET TOOLBAR */
-  .budget-toolbar {
-    display: flex; align-items: center; gap: 10px; padding: 10px 20px;
-    background: rgba(41,171,226,0.04); border-bottom: 1px solid rgba(41,171,226,0.15);
-    font-family: var(--mono); font-size: 10px;
-  }
-  .budget-toolbar-label { color: var(--muted); letter-spacing: 0.08em; }
-  .budget-toolbar-total { color: var(--accent2); font-weight: 500; font-size: 12px; }
-  .budget-toolbar-total.changed { color: var(--accent4); }
-  .btn-reset { padding: 5px 12px; border: 1px solid rgba(192,57,43,0.3); border-radius: 4px; background: rgba(192,57,43,0.06); color: #c0392b; font-family: var(--mono); font-size: 9px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.15s; }
-  .btn-reset:hover { background: rgba(192,57,43,0.12); }
-  .btn-export-budget { padding: 5px 12px; border: 1px solid rgba(41,171,226,0.3); border-radius: 4px; background: rgba(41,171,226,0.06); color: var(--accent); font-family: var(--mono); font-size: 9px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.15s; }
-  .btn-export-budget:hover { background: rgba(41,171,226,0.12); }
-  .budget-variance-badge { padding: 3px 10px; border-radius: 4px; font-family: var(--mono); font-size: 10px; }
-  .budget-variance-badge.balanced { background: rgba(26,140,90,0.1); color: var(--green); border: 1px solid rgba(26,140,90,0.25); }
-  .budget-variance-badge.changed { background: rgba(192,57,43,0.1); color: #c0392b; border: 1px solid rgba(192,57,43,0.25); }
-  .budget-variance-badge.ok { background: rgba(41,171,226,0.1); color: var(--accent); border: 1px solid rgba(41,171,226,0.25); }
+  .total-row .bill-amount { color: var(--accent); font-size: 15px; }
 
   /* DONUT */
   .chart-wrap { display: flex; align-items: center; gap: 24px; }
@@ -164,7 +238,26 @@
   .hbar-label { font-size: 11px; font-weight: 600; }
   .hbar-val { font-family: var(--mono); font-size: 10px; color: var(--muted); }
   .hbar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-  .hbar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+  .hbar-fill { height: 100%; border-radius: 3px; }
+
+  /* B5 CARDS */
+  .b5-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .b5-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 16px; border-top: 3px solid; }
+  .b5-ref { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .b5-name { font-size: 12px; font-weight: 700; margin-bottom: 10px; line-height: 1.3; }
+  .b5-amount { font-family: var(--mono); font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+  .b5-sub-list { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
+  .b5-sub-item { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--muted); padding: 3px 0; }
+  .b5-sub-item span:last-child { color: var(--text); }
+
+  /* PC ITEMS */
+  .pc-grid { display: flex; flex-direction: column; gap: 10px; }
+  .pc-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; display: flex; align-items: center; gap: 14px; }
+  .pc-icon { width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .pc-info { flex: 1; }
+  .pc-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .pc-type { font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .pc-amount { font-family: var(--mono); font-size: 13px; font-weight: 500; }
 
   /* RISK CARDS */
   .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -188,8 +281,71 @@
   .crosscheck-badge { font-family: var(--mono); font-size: 11px; color: var(--accent); background: rgba(41,171,226,0.10); border: 1px solid rgba(41,171,226,0.30); border-radius: 4px; padding: 6px 12px; white-space: nowrap; }
   .section-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 10px; padding-left: 2px; }
 
-  /* TRACKER STYLES */
-  .btn { padding: 9px 18px; border: none; border-radius: 5px; font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s; }
+  /* FOOTER */
+  .footer { text-align: center; padding: 20px 40px; font-family: var(--mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 20px; }
+
+  /* ══════════════════════════════════════════
+     SPENDING TRACKER STYLES
+  ══════════════════════════════════════════ */
+
+  /* ENTRY FORM */
+  .tracker-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .form-header {
+    background: #0D2080;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .form-header-title { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: #29ABE2; }
+  .form-body { padding: 20px; }
+  .form-row { display: grid; grid-template-columns: 160px 1fr repeat(8, 1fr) 120px; gap: 10px; align-items: end; margin-bottom: 10px; }
+  .form-row-header { display: grid; grid-template-columns: 160px 1fr repeat(8, 1fr) 120px; gap: 10px; margin-bottom: 6px; }
+  .fh { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .form-field label { display: block; font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 5px; }
+  .form-field input, .form-field select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-field input:focus, .form-field select:focus { border-color: #29ABE2; }
+  .bill-amount-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .bill-amount-input:focus { border-color: #29ABE2; }
+  .btn {
+    padding: 9px 18px;
+    border: none;
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
   .btn-primary { background: #0D2080; color: #fff; }
   .btn-primary:hover { background: #1a35a8; }
   .btn-danger { background: rgba(192,57,43,0.1); color: #c0392b; border: 1px solid rgba(192,57,43,0.3); }
@@ -198,7 +354,7 @@
   .btn-export { background: rgba(41,171,226,0.1); color: #29ABE2; border: 1px solid rgba(41,171,226,0.3); }
   .btn-export:hover { background: rgba(41,171,226,0.2); }
 
-  /* LEDGER */
+  /* LEDGER TABLE */
   .ledger-table { width: 100%; border-collapse: collapse; }
   .ledger-table th { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0 10px 10px 0; text-align: left; border-bottom: 1px solid var(--border); }
   .ledger-table th:last-child { text-align: center; }
@@ -206,8 +362,8 @@
   .ledger-table td:last-child { text-align: center; }
   .ledger-table tr:last-child td { border-bottom: none; }
   .ledger-table tr:hover td { background: rgba(41,171,226,0.03); }
+  .ledger-month { font-size: 11px; color: var(--accent2); font-weight: 500; }
   .ledger-note { font-family: var(--sans); font-size: 12px; color: var(--muted); }
-  .month-badge { display: inline-block; background: rgba(13,32,128,0.08); color: #0D2080; border: 1px solid rgba(13,32,128,0.15); border-radius: 4px; font-family: var(--mono); font-size: 10px; padding: 2px 7px; }
 
   /* VARIANCE TABLE */
   .var-table { width: 100%; border-collapse: collapse; }
@@ -219,14 +375,16 @@
   .var-total td { background: var(--surface2); font-weight: 700; border-top: 2px solid var(--border); }
   .positive { color: #1a8c5a; }
   .negative { color: #c0392b; }
+  .neutral { color: var(--muted); }
+  .pct-bar-cell { width: 120px; }
   .pct-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
-  .pct-bar-spent { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .pct-bar-spent { height: 100%; border-radius: 3px; }
 
-  /* S-CURVE */
+  /* S-CURVE CANVAS */
   #scurve { width: 100%; height: 280px; display: block; }
 
-  /* TRACKER KPIs */
-  .tracker-kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 20px; }
+  /* SUMMARY KPI tracker */
+  .tracker-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
   .tkpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; position: relative; overflow: hidden; }
   .tkpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
   .tkpi.tc1::before { background: #29ABE2; }
@@ -241,24 +399,8 @@
   .tkpi.tc4 .tkpi-value { color: #0D2080; }
   .tkpi-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); }
 
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(13,32,128,0.2); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 28px; width: 520px; box-shadow: 0 20px 60px rgba(13,32,128,0.15); }
-  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--accent2); }
-  .modal p { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 20px; }
-  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-  .modal-field label { display: block; font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 5px; }
-  .modal-field input { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: 5px; font-family: var(--mono); font-size: 11px; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; }
-  .modal-field input:focus { border-color: #29ABE2; }
-  .bill-inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .bil-field label { display: block; font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
-  .bil-field input { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 5px; font-family: var(--mono); font-size: 11px; color: var(--text); background: #fff; outline: none; }
-  .bil-field input:focus { border-color: #29ABE2; }
-  .bil-total-row { background: rgba(41,171,226,0.06); border: 1px solid rgba(41,171,226,0.2); border-radius: 6px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .bil-total-label { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-  .bil-total-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--accent2); }
+  /* MONTH BADGE */
+  .month-badge { display: inline-block; background: rgba(13,32,128,0.08); color: #0D2080; border: 1px solid rgba(13,32,128,0.15); border-radius: 4px; font-family: var(--mono); font-size: 10px; padding: 2px 7px; }
 
   /* EMPTY STATE */
   .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
@@ -269,12 +411,35 @@
   .toast { position: fixed; bottom: 24px; right: 24px; background: #0D2080; color: #fff; padding: 12px 20px; border-radius: 6px; font-family: var(--mono); font-size: 11px; border-left: 3px solid #29ABE2; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; }
   .toast.show { opacity: 1; }
 
-  /* FOOTER */
-  .footer { text-align: center; padding: 20px 40px; font-family: var(--mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 20px; }
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(13,32,128,0.2); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 28px; width: 520px; box-shadow: 0 20px 60px rgba(13,32,128,0.15); }
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--accent2); }
+  .modal p { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-bottom: 20px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-field label { display: block; font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 5px; }
+  .modal-field input, .modal-field select, .modal-field textarea {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: 5px;
+    font-family: var(--mono); font-size: 11px; color: var(--text); background: var(--surface);
+    outline: none; transition: border-color 0.15s;
+  }
+  .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus { border-color: #29ABE2; }
+  .modal-field.full { grid-column: 1 / -1; }
+  .bill-inputs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .bil-field label { display: block; font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .bil-field input { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 5px; font-family: var(--mono); font-size: 11px; color: var(--text); background: #fff; outline: none; }
+  .bil-field input:focus { border-color: #29ABE2; }
+  .bil-total-row { background: rgba(41,171,226,0.06); border: 1px solid rgba(41,171,226,0.2); border-radius: 6px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .bil-total-label { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .bil-total-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--accent2); }
+
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
   <div class="header-left">
     <h1>Budget Tracking Dashboard</h1>
@@ -288,6 +453,7 @@
   </div>
 </div>
 
+<!-- NAV TABS -->
 <div class="nav-tabs">
   <div class="nav-tab active" onclick="switchTab('bq')">BQ Summary</div>
   <div class="nav-tab" onclick="switchTab('tracker')">Monthly Expenditure</div>
@@ -298,53 +464,65 @@
 <div id="tab-bq" class="page active">
 <div class="main">
 
-  <div class="crosscheck" id="crosscheck-bar">
-    <div class="crosscheck-icon" id="cc-icon">✓</div>
-    <div class="crosscheck-text" id="cc-text">
-      Cross-check passed — Bills 1–6 aggregate: <strong id="cc-sum">RM 54,000,000.00</strong> &nbsp;|&nbsp; SOT declared: <strong>RM 54,000,000.00</strong>
+  <!-- CROSS-CHECK -->
+  <div class="crosscheck">
+    <div class="crosscheck-icon">✓</div>
+    <div class="crosscheck-text">
+      Cross-check passed — Bills 1–6 aggregate:
+      <strong>6,789,232 + 3,450,167 + 21,328,751 + 5,001,983 + 794,798 + 6,943,000 + 1,775,500 + 7,916,569 = RM 54,000,000.00</strong>
+      &nbsp;|&nbsp; SOT declared: <strong>RM 54,000,000.00</strong>
     </div>
-    <div class="crosscheck-badge" id="cc-badge">✓ BALANCED</div>
+    <div class="crosscheck-badge">✓ BALANCED</div>
   </div>
 
-  <div class="kpi-row" id="bq-kpi-row">
-    <div class="kpi c1"><div class="kpi-label">Total Contract Sum</div><div class="kpi-value" id="kpi-total">RM 54.0M</div><div class="kpi-sub" id="kpi-total-sub">SOT Addendum TA1 confirmed</div></div>
-    <div class="kpi c2"><div class="kpi-label">Main Structure (B2+B3)</div><div class="kpi-value" id="kpi-struct">RM 24.78M</div><div class="kpi-sub" id="kpi-struct-sub">Piling + Main Building — 45.9%</div></div>
-    <div class="kpi c3"><div class="kpi-label">M&amp;E Services (B5a/b/c)</div><div class="kpi-value" id="kpi-me">RM 9.51M</div><div class="kpi-sub" id="kpi-me-sub">Plumbing + Elec + Fire — 17.6%</div></div>
-    <div class="kpi c4"><div class="kpi-label">Provisional / PC Sums</div><div class="kpi-value" id="kpi-prov">RM 12.92M</div><div class="kpi-sub" id="kpi-prov-sub">Bills 4 + 6 combined — 23.9%</div></div>
-    <div class="kpi c5"><div class="kpi-label">Contingencies (B6)</div><div class="kpi-value" id="kpi-cont">RM 300K</div><div class="kpi-sub">0.56% of contract — monitor adequacy</div></div>
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi c1">
+      <div class="kpi-label">Total Contract Sum</div>
+      <div class="kpi-value">RM 54.0M</div>
+      <div class="kpi-sub">SOT Addendum TA1 confirmed</div>
+    </div>
+    <div class="kpi c2">
+      <div class="kpi-label">Main Structure (B2+B3)</div>
+      <div class="kpi-value">RM 24.78M</div>
+      <div class="kpi-sub">Piling + Main Building — 45.9%</div>
+    </div>
+    <div class="kpi c3">
+      <div class="kpi-label">M&amp;E Services (B5a/b/c)</div>
+      <div class="kpi-value">RM 9.51M</div>
+      <div class="kpi-sub">Plumbing + Elec + Fire — 17.6%</div>
+    </div>
+    <div class="kpi c4">
+      <div class="kpi-label">Provisional / PC Sums</div>
+      <div class="kpi-value">RM 12.92M</div>
+      <div class="kpi-sub">Bills 4 + 6 combined — 23.9%</div>
+    </div>
+    <div class="kpi c5">
+      <div class="kpi-label">Contingencies (B6)</div>
+      <div class="kpi-value">RM 300K</div>
+      <div class="kpi-sub">0.56% of contract — monitor adequacy</div>
+    </div>
   </div>
 
   <div class="grid-2">
-    <!-- BILL TABLE -->
+    <!-- BILL TABLE with expandable sub-items -->
     <div class="panel">
       <div class="panel-header">
         <span class="panel-title">Bill-by-Bill Summary — Addendum TA1</span>
-        <span class="panel-tag" style="cursor:pointer;" onclick="toggleAllSubs()" id="expand-all-btn">▶ Expand All</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="panel-tag" style="cursor:pointer;" onclick="toggleAllSubs()" id="expand-all-btn">▶ Expand All</span>
+          <button class="btn-edit-budget" id="edit-budget-btn" onclick="toggleBudgetEdit()">✏ Edit Budget</button>
+        </div>
       </div>
-      <!-- Budget Edit Toolbar -->
-      <div class="budget-toolbar">
-        <span class="budget-toolbar-label">ADJUSTED TOTAL:</span>
-        <span class="budget-toolbar-total" id="toolbar-total">RM 54,000,000.00</span>
-        <span class="budget-variance-badge balanced" id="toolbar-badge">✓ BALANCED</span>
-        <span style="flex:1"></span>
-        <span class="budget-toolbar-label" style="color:rgba(41,171,226,0.6)">✎ Click any budget figure to edit</span>
-        <button class="btn-export-budget" onclick="exportBudgetCSV()">⬇ Export Adjusted BQ</button>
-        <button class="btn-reset" onclick="resetBudgets()">↺ Reset</button>
+      <!-- EDIT MODE BANNER -->
+      <div class="edit-mode-banner" id="edit-banner">
+        <span style="flex:1;">✏ Budget edit mode — click any amount to adjust. Changes saved to browser.</span>
+        <span>Total: <span class="live-total-display" id="live-total">RM 54,000,000.00</span></span>
+        <button class="btn-reset-budget" onclick="resetBQ()">↺ Reset to SOT</button>
+        <button class="btn-save-budget" onclick="saveBudgetEdits()">✓ Save Changes</button>
       </div>
       <div class="panel-body" style="padding:0 20px;">
-        <table class="bill-table" id="bq-main-table">
-          <thead>
-            <tr>
-              <th style="width:28px;"></th>
-              <th>Bill</th>
-              <th>Description</th>
-              <th>Type</th>
-              <th>% Share</th>
-              <th class="right">BQ Budget (RM) <span class="edit-hint">✎ editable</span></th>
-            </tr>
-          </thead>
-          <tbody id="bq-tbody"></tbody>
-        </table>
+        <div id="bq-table-container"></div>
       </div>
     </div>
 
@@ -354,15 +532,45 @@
         <div class="panel-header"><span class="panel-title">Cost Distribution</span></div>
         <div class="panel-body">
           <div class="chart-wrap">
-            <canvas id="donut-canvas" width="150" height="150" style="flex-shrink:0;width:150px;height:150px;"></canvas>
-            <div class="legend" id="donut-legend"></div>
+            <svg class="donut-svg" width="150" height="150" viewBox="0 0 150 150">
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#eaf0f7" stroke-width="22"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#0D2080" stroke-width="22" stroke-dasharray="138.9 213.1" stroke-dashoffset="88" transform="rotate(-90 75 75)"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#1a6fa8" stroke-width="22" stroke-dasharray="51.6 300.4" stroke-dashoffset="-50.9" transform="rotate(-90 75 75)"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#29ABE2" stroke-width="22" stroke-dasharray="45.5 306.5" stroke-dashoffset="-102.5" transform="rotate(-90 75 75)"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#29ABE2" stroke-width="22" stroke-dasharray="44.2 307.8" stroke-dashoffset="-148" transform="rotate(-90 75 75)" opacity="0.55"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#2668a8" stroke-width="22" stroke-dasharray="32.6 319.4" stroke-dashoffset="-192.2" transform="rotate(-90 75 75)"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#3a82b8" stroke-width="22" stroke-dasharray="22.5 329.5" stroke-dashoffset="-224.8" transform="rotate(-90 75 75)"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#c0392b" stroke-width="22" stroke-dasharray="11.6 340.4" stroke-dashoffset="-247.3" transform="rotate(-90 75 75)"/>
+              <circle cx="75" cy="75" r="56" fill="none" stroke="#1a8c5a" stroke-width="22" stroke-dasharray="5.2 346.8" stroke-dashoffset="-258.9" transform="rotate(-90 75 75)"/>
+              <text x="75" y="70" text-anchor="middle" fill="#0D2080" font-family="EB Garamond,serif" font-size="13" font-weight="800">RM 54M</text>
+              <text x="75" y="84" text-anchor="middle" fill="#58595B" font-family="DM Mono,monospace" font-size="7">CONTRACT</text>
+            </svg>
+            <div class="legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#0D2080"></div><div class="legend-name">B3 Main Building</div><div class="legend-val">21.33M</div><div class="legend-pct">39.5%</div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#1a6fa8"></div><div class="legend-name">B6 PC &amp; Prov</div><div class="legend-val">7.92M</div><div class="legend-pct">14.7%</div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#29ABE2"></div><div class="legend-name">B5b Electrical</div><div class="legend-val">6.94M</div><div class="legend-pct">12.9%</div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#29ABE2;opacity:0.55"></div><div class="legend-name">B1 Preliminaries</div><div class="legend-val">6.79M</div><div class="legend-pct">12.6%</div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#2668a8"></div><div class="legend-name">B4 Infrastructure</div><div class="legend-val">5.00M</div><div class="legend-pct">9.3%</div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#3a82b8"></div><div class="legend-name">B2 Piling</div><div class="legend-val">3.45M</div><div class="legend-pct">6.4%</div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div><div class="legend-name">B5c Fire</div><div class="legend-val">1.78M</div><div class="legend-pct">3.3%</div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#1a8c5a"></div><div class="legend-name">B5a Plumbing</div><div class="legend-val">0.79M</div><div class="legend-pct">1.5%</div></div>
+            </div>
           </div>
         </div>
       </div>
       <div class="panel">
         <div class="panel-header"><span class="panel-title">Bills Ranked by Value</span></div>
         <div class="panel-body">
-          <div class="hbar-list" id="hbar-list"></div>
+          <div class="hbar-list">
+            <div><div class="hbar-top"><span class="hbar-label">B3 — Main Building</span><span class="hbar-val">RM 21,328,751</span></div><div class="hbar-track"><div class="hbar-fill" style="width:100%;background:#0D2080;"></div></div></div>
+            <div><div class="hbar-top"><span class="hbar-label">B6 — PC &amp; Provisional</span><span class="hbar-val">RM 7,916,569</span></div><div class="hbar-track"><div class="hbar-fill" style="width:37.1%;background:#1a6fa8;"></div></div></div>
+            <div><div class="hbar-top"><span class="hbar-label">B5b — Electrical &amp; ELV</span><span class="hbar-val">RM 6,943,000</span></div><div class="hbar-track"><div class="hbar-fill" style="width:32.6%;background:#29ABE2;"></div></div></div>
+            <div><div class="hbar-top"><span class="hbar-label">B1 — Preliminaries</span><span class="hbar-val">RM 6,789,232</span></div><div class="hbar-track"><div class="hbar-fill" style="width:31.8%;background:#29ABE2;opacity:0.6"></div></div></div>
+            <div><div class="hbar-top"><span class="hbar-label">B4 — Infrastructure</span><span class="hbar-val">RM 5,001,983</span></div><div class="hbar-track"><div class="hbar-fill" style="width:23.5%;background:#2668a8;"></div></div></div>
+            <div><div class="hbar-top"><span class="hbar-label">B2 — Piling</span><span class="hbar-val">RM 3,450,167</span></div><div class="hbar-track"><div class="hbar-fill" style="width:16.2%;background:#3a82b8;"></div></div></div>
+            <div><div class="hbar-top"><span class="hbar-label">B5c — Fire Protection</span><span class="hbar-val">RM 1,775,500</span></div><div class="hbar-track"><div class="hbar-fill" style="width:8.3%;background:#c0392b;"></div></div></div>
+            <div><div class="hbar-top"><span class="hbar-label">B5a — Plumbing</span><span class="hbar-val">RM 794,798</span></div><div class="hbar-track"><div class="hbar-fill" style="width:3.7%;background:#1a8c5a;"></div></div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -386,11 +594,14 @@
   </div>
 
 </div>
-</div>
+</div><!-- /tab-bq -->
+
 
 <!-- ══════════════ TAB 2: MONTHLY EXPENDITURE ══════════════ -->
 <div id="tab-tracker" class="page">
 <div class="main">
+
+  <!-- ADD ENTRY BUTTON ROW -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
     <div>
       <div style="font-size:22px;font-weight:700;color:var(--accent2);margin-bottom:3px;">Monthly Expenditure Ledger</div>
@@ -401,6 +612,8 @@
       <button class="btn btn-primary" onclick="openModal()">+ Add Month Entry</button>
     </div>
   </div>
+
+  <!-- LEDGER TABLE -->
   <div class="panel" style="margin-bottom:20px;">
     <div class="panel-header">
       <span class="panel-title">Payment Ledger</span>
@@ -408,63 +621,134 @@
     </div>
     <div class="panel-body" style="padding:0 20px;">
       <div id="ledger-container">
-        <div class="empty-state"><div class="es-icon">📋</div><p>No entries yet. Click "+ Add Month Entry" to record a certified payment.</p></div>
+        <div class="empty-state">
+          <div class="es-icon">📋</div>
+          <p>No entries yet. Click "+ Add Month Entry" to record a certified payment.</p>
+        </div>
       </div>
     </div>
   </div>
+
 </div>
-</div>
+</div><!-- /tab-tracker -->
+
 
 <!-- ══════════════ TAB 3: BUDGET vs ACTUAL ══════════════ -->
 <div id="tab-variance" class="page">
 <div class="main">
+
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
     <div>
       <div style="font-size:22px;font-weight:700;color:var(--accent2);margin-bottom:3px;">Budget vs Actual Expenditure</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Cumulative certified spend versus BQ budget by bill. Uses adjusted budget figures if modified in BQ Summary tab.</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">Cumulative certified spend versus BQ budget by bill. S-curve shows project cash flow trajectory.</div>
     </div>
   </div>
-  <div class="tracker-kpi-row">
-    <div class="tkpi tc1"><div class="tkpi-label">Total BQ Budget</div><div class="tkpi-value" id="tv-budget">RM 54.00M</div><div class="tkpi-sub">SOT Addendum TA1</div></div>
-    <div class="tkpi tc2"><div class="tkpi-label">Total Certified (excl SST)</div><div class="tkpi-value" id="tv-spent">RM 0</div><div class="tkpi-sub" id="tv-spent-pct">0.0% of budget</div></div>
-    <div class="tkpi tc3"><div class="tkpi-label">Remaining Budget</div><div class="tkpi-value" id="tv-remaining">RM 54.00M</div><div class="tkpi-sub" id="tv-remaining-pct">100.0% remaining</div></div>
-    <div class="tkpi" style="border:1px solid var(--border);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden;background:var(--surface);"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:#c0392b;"></div><div class="tkpi-label">SST Paid (PTSSB Labour @ 6%)</div><div class="tkpi-value" id="tv-sst" style="color:#c0392b;">RM 0</div><div class="tkpi-sub">Reg B16-2508-32001462 — labour only</div></div>
-    <div class="tkpi tc4"><div class="tkpi-label">Months Recorded</div><div class="tkpi-value" id="tv-months">0</div><div class="tkpi-sub">of 14 month contract</div></div>
+
+  <!-- TRACKER KPIs -->
+  <div class="tracker-kpi-row" style="grid-template-columns:repeat(5,1fr);">
+    <div class="tkpi tc1">
+      <div class="tkpi-label">Total BQ Budget</div>
+      <div class="tkpi-value" id="tv-budget">RM 54.00M</div>
+      <div class="tkpi-sub">SOT Addendum TA1</div>
+    </div>
+    <div class="tkpi tc2">
+      <div class="tkpi-label">Total Certified (excl SST)</div>
+      <div class="tkpi-value" id="tv-spent">RM 0</div>
+      <div class="tkpi-sub" id="tv-spent-pct">0.0% of budget</div>
+    </div>
+    <div class="tkpi tc3">
+      <div class="tkpi-label">Remaining Budget</div>
+      <div class="tkpi-value" id="tv-remaining">RM 54.00M</div>
+      <div class="tkpi-sub" id="tv-remaining-pct">100.0% remaining</div>
+    </div>
+    <div class="tkpi" style="border:1px solid var(--border);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden;background:var(--surface);">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#c0392b;"></div>
+      <div class="tkpi-label">SST Paid (PTSSB Labour @ 6%)</div>
+      <div class="tkpi-value" id="tv-sst" style="color:#c0392b;">RM 0</div>
+      <div class="tkpi-sub" id="tv-sst-sub">Reg B16-2508-32001462 — labour only</div>
+    </div>
+    <div class="tkpi tc4">
+      <div class="tkpi-label">Months Recorded</div>
+      <div class="tkpi-value" id="tv-months">0</div>
+      <div class="tkpi-sub">of 14 month contract</div>
+    </div>
   </div>
+
+  <!-- S-CURVE -->
   <div class="panel" style="margin-bottom:20px;">
-    <div class="panel-header"><span class="panel-title">Cumulative Expenditure S-Curve — Certified vs Budget</span><span class="panel-tag">Monthly Progression</span></div>
+    <div class="panel-header">
+      <span class="panel-title">Cumulative Expenditure S-Curve — Certified vs Budget</span>
+      <span class="panel-tag">Monthly Progression</span>
+    </div>
     <div class="panel-body">
       <canvas id="scurve"></canvas>
       <div style="display:flex;gap:24px;margin-top:12px;justify-content:center;">
-        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--muted);"><div style="width:28px;height:3px;background:#0D2080;border-radius:2px;"></div> Budget Baseline (linear)</div>
-        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--muted);"><div style="width:28px;height:3px;background:#29ABE2;border-radius:2px;"></div> Actual Certified</div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--muted);">
+          <div style="width:28px;height:3px;background:#0D2080;border-radius:2px;"></div> Budget Baseline (linear)
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--muted);">
+          <div style="width:28px;height:3px;background:#29ABE2;border-radius:2px;"></div> Actual Certified
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- VARIANCE TABLE BY BILL -->
   <div class="panel" style="margin-bottom:20px;">
-    <div class="panel-header"><span class="panel-title">Bill-by-Bill Variance Table</span><span class="panel-tag">Budget vs Certified</span></div>
+    <div class="panel-header">
+      <span class="panel-title">Bill-by-Bill Variance Table</span>
+      <span class="panel-tag">Budget vs Certified</span>
+    </div>
     <div class="panel-body" style="padding:0 20px;">
       <table class="var-table" id="variance-table">
-        <thead><tr><th style="text-align:left">Bill</th><th>BQ Budget (RM)</th><th>Certified to Date (RM)</th><th>Remaining (RM)</th><th>% Spent</th><th>Variance</th></tr></thead>
+        <thead>
+          <tr>
+            <th style="text-align:left">Bill</th>
+            <th>BQ Budget (RM)</th>
+            <th>Certified to Date (RM)</th>
+            <th>Remaining (RM)</th>
+            <th>% Spent</th>
+            <th>Variance</th>
+          </tr>
+        </thead>
         <tbody id="variance-tbody"></tbody>
       </table>
     </div>
   </div>
-  <div class="panel" style="margin-bottom:20px;">
-    <div class="panel-header"><span class="panel-title">Monthly Certified Amounts</span></div>
-    <div class="panel-body" style="padding:0 20px;"><div id="monthly-summary-container"><div class="empty-state" style="padding:30px;"><div class="es-icon">📊</div><p>No expenditure data recorded yet.</p></div></div></div>
-  </div>
-</div>
-</div>
 
-<!-- MODAL -->
+  <!-- MONTHLY BREAKDOWN TABLE -->
+  <div class="panel" style="margin-bottom:20px;">
+    <div class="panel-header">
+      <span class="panel-title">Monthly Certified Amounts</span>
+    </div>
+    <div class="panel-body" style="padding:0 20px;">
+      <div id="monthly-summary-container">
+        <div class="empty-state" style="padding:30px;">
+          <div class="es-icon">📊</div>
+          <p>No expenditure data recorded yet. Add entries in the Monthly Expenditure tab.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /tab-variance -->
+
+
+<!-- ══════════ MODAL: ADD ENTRY ══════════ -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <h3>Add Monthly Entry</h3>
     <p>Enter certified payment amounts for each bill for the selected month.</p>
     <div class="modal-grid">
-      <div class="modal-field"><label>Month / Year</label><input type="month" id="m-month"/></div>
-      <div class="modal-field"><label>Note / Reference</label><input type="text" id="m-note" placeholder="e.g. IPC No. 3"/></div>
+      <div class="modal-field">
+        <label>Month / Year</label>
+        <input type="month" id="m-month" />
+      </div>
+      <div class="modal-field">
+        <label>Note / Reference</label>
+        <input type="text" id="m-note" placeholder="e.g. IPC No. 3" />
+      </div>
     </div>
     <div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Certified Amounts by Bill (RM) — Exclusive of SST</div>
     <div class="bill-inputs-grid">
@@ -477,18 +761,37 @@
       <div class="bil-field"><label>B5c — Fire Protection</label><input type="number" id="mb5c" placeholder="0.00" min="0" step="0.01"/></div>
       <div class="bil-field"><label>B6 — PC &amp; Provisional</label><input type="number" id="mb6" placeholder="0.00" min="0" step="0.01"/></div>
     </div>
+    <!-- SST ROW -->
     <div style="background:rgba(192,57,43,0.05);border:1px solid rgba(192,57,43,0.2);border-radius:6px;padding:12px 14px;margin-bottom:12px;">
-      <div style="font-family:var(--mono);font-size:9px;color:#c0392b;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">SST on PTSSB Works @ 6% (on Labour Component)</div>
+      <div style="font-family:var(--mono);font-size:9px;color:#c0392b;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">SST on PTSSB Works @ 6% (on Labour Component) — Reg B16-2508-32001462</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-        <div class="bil-field"><label style="color:#c0392b;">SST — Labour</label><input type="number" id="msst_lift" placeholder="0.00" min="0" step="0.01"/></div>
-        <div class="bil-field"><label style="color:#c0392b;">SST — Nominated SC</label><input type="number" id="msst_acmv" placeholder="0.00" min="0" step="0.01"/></div>
-        <div class="bil-field"><label style="color:#c0392b;">SST — Other</label><input type="number" id="msst_other" placeholder="0.00" min="0" step="0.01"/></div>
+        <div class="bil-field">
+          <label style="color:#c0392b;">SST — Labour (6% on PTSSB workdone)</label>
+          <input type="number" id="msst_lift" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+        <div class="bil-field">
+          <label style="color:#c0392b;">SST — Nominated SC (Eita/Heross separate inv.)</label>
+          <input type="number" id="msst_acmv" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+        <div class="bil-field">
+          <label style="color:#c0392b;">SST — Other</label>
+          <input type="number" id="msst_other" placeholder="0.00" min="0" step="0.01"/>
+        </div>
       </div>
     </div>
     <div class="bil-total-row">
-      <div><span class="bil-total-label">SUBTOTAL (EXCL SST)</span><br><span class="bil-total-val" id="modal-subtotal">RM 0.00</span></div>
-      <div style="text-align:center;"><span class="bil-total-label">SST TOTAL</span><br><span class="bil-total-val" id="modal-sst" style="color:#c0392b;">RM 0.00</span></div>
-      <div style="text-align:right;"><span class="bil-total-label">TOTAL INCL SST</span><br><span class="bil-total-val" id="modal-total">RM 0.00</span></div>
+      <div>
+        <span class="bil-total-label">SUBTOTAL (EXCL SST)</span>
+        <span class="bil-total-val" id="modal-subtotal">RM 0.00</span>
+      </div>
+      <div style="text-align:center;">
+        <span class="bil-total-label">SST TOTAL</span>
+        <span class="bil-total-val" id="modal-sst" style="color:#c0392b;">RM 0.00</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="bil-total-label">TOTAL INCL SST</span>
+        <span class="bil-total-val" id="modal-total">RM 0.00</span>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);" onclick="closeModal()">Cancel</button>
@@ -497,566 +800,133 @@
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <div class="footer">
-  SYNTEC @ KLANG &nbsp;|&nbsp; Budget Tracking Dashboard v3 &nbsp;|&nbsp; SOT Addendum TA1 · NCQS Consult BQ &nbsp;|&nbsp; Budgets editable — click any figure to adjust &nbsp;|&nbsp; Provisional amounts subject to remeasurement
+  SYNTEC @ KLANG &nbsp;|&nbsp; Budget Tracking Dashboard v2 &nbsp;|&nbsp; SOT Addendum TA1 · NCQS Consult BQ &nbsp;|&nbsp; Cross-check RM 54,000,000.00 ✓ Balanced &nbsp;|&nbsp; Provisional amounts subject to remeasurement
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════
-// ORIGINAL BQ DATA (never mutated — used for reset)
-// ═══════════════════════════════════════════════════════════════════
-const ORIGINAL_BQ = {
-  B1:  { label:'Preliminaries',              budget:6789232.18,  type:'Fixed',       color:'#29ABE2',
-    subs:[
-      {id:'B1-1', label:'Drawings & Scaffolding',                           budget:622925.07},
-      {id:'B1-2', label:'Constructional Plant',                             budget:1504950.00},
-      {id:'B1-3', label:'Temp Lightning & Power',                           budget:812500.00},
-      {id:'B1-4', label:'Site Management & Supervision',                    budget:1054042.00},
-      {id:'B1-5', label:'Worker Amenities & Site Security',                 budget:1033045.96},
-      {id:'B1-6', label:'Hoardings, Temp Buildings & Consultant Office',    budget:432210.00},
-      {id:'B1-7', label:'Insurance, Performance Bond',                      budget:104940.64},
-      {id:'B1-8', label:'CIDB, Stamp Duty, Qlassic',                        budget:144550.00},
-      {id:'B1-9', label:'Other Prelim Items (Env, Survey, DLP etc.)',        budget:1080068.54},
-    ]},
-  B2:  { label:'Piling & Structural',        budget:3450167.02,  type:'Provisional', color:'#3a82b8',
-    subs:[
-      {id:'B2-1', label:'Precast RC Piles — Supply & Drive (150/300/400mm)', budget:2702895.93},
-      {id:'B2-2', label:'Pile Cap (Main Building, Guard House, TNB)',         budget:534721.39},
-      {id:'B2-3', label:'Column Stump, Liftpit Wall & Shearwall',            budget:212549.70},
-    ]},
-  B3:  { label:'Main Building Works',        budget:21328751.16, type:'Fixed',       color:'#0D2080',
-    subs:[
-      {id:'B3-A', label:'A — Work Below Lowest Floor Level', budget:1850981.54},
-      {id:'B3-B', label:'B — Frame',                         budget:2148729.60},
-      {id:'B3-C', label:'C — Staircase',                     budget:124066.31},
-      {id:'B3-D', label:'D — Staircase Finishes',            budget:99875.37},
-      {id:'B3-E', label:'E — Upper Floor Construction',      budget:4289446.06},
-      {id:'B3-F', label:'F — Roof',                          budget:1728176.37},
-      {id:'B3-G', label:'G — External Wall',                 budget:321802.42},
-      {id:'B3-H', label:'H — Internal Wall',                 budget:397170.37},
-      {id:'B3-J', label:'J — Doors',                         budget:240636.15},
-      {id:'B3-K', label:'K — Window & Curtain Wall',         budget:2413055.81},
-      {id:'B3-L', label:'L — Ironmongeries',                 budget:68399.91},
-      {id:'B3-M', label:'M — External Wall Finishes',        budget:146153.04},
-      {id:'B3-N', label:'N — Internal Wall Finishes',        budget:560809.11},
-      {id:'B3-P', label:'P — Floor Finishes',                budget:2247759.17},
-      {id:'B3-Q', label:'Q — Ceiling Finishes',              budget:878130.74},
-      {id:'B3-R', label:'R — Painting',                      budget:293040.76},
-      {id:'B3-S', label:'S — Sanitary Fittings',             budget:541835.42},
-      {id:'B3-T', label:'T — Steel Roof Construction',       budget:2190373.95},
-      {id:'B3-U', label:'U — Wall Cladding',                 budget:766048.63},
-      {id:'B3-V', label:'V — Miscellaneous',                 budget:22397.53},
-    ]},
-  B4:  { label:'Local Infrastructure',       budget:5001983.09,  type:'Provisional', color:'#2668a8',
-    subs:[
-      {id:'B4-A',  label:'A — Earthwork (Cut, Fill, Compaction)',      budget:932111.09},
-      {id:'B4-B',  label:'B — Road Works (Within Boundary)',           budget:863885.11},
-      {id:'B4-C',  label:'C — Road Works (Outside Boundary)',          budget:346160.84},
-      {id:'B4-D',  label:'D — Surface Water Drainage (Within)',        budget:622159.89},
-      {id:'B4-E',  label:'E — Water Reticulation (Outside)',           budget:269681.50},
-      {id:'B4-F1', label:'F1 — Sewerage (Within Boundary)',            budget:174662.40},
-      {id:'B4-F2', label:'F2 — Sewerage (Outside Boundary)',           budget:60375.26},
-      {id:'B4-G',  label:'G — Guard House',                            budget:728138.28},
-      {id:'B4-H',  label:'H — Perimeter Fencing (Anti-climb 1850mm)', budget:120895.28},
-      {id:'B4-J',  label:'J — Retaining Wall',                         budget:475821.88},
-      {id:'B4-K',  label:'K — TNB Substation',                         budget:125842.29},
-      {id:'B4-L',  label:'L — Crusher Run Parking (Lot 76077)',        budget:253746.90},
-    ]},
-  B5a: { label:'Cold Water & Sanitary',      budget:794797.80,   type:'Fixed',       color:'#1a8c5a',
-    subs:[
-      {id:'B5a-1', label:'01 — Preliminaries',                                    budget:36724.00},
-      {id:'B5a-2', label:'02 — Cold Water System (incl. Rain Harvesting & Irrig.)',budget:655564.74},
-      {id:'B5a-3', label:'03 — Sanitary Plumbing System',                          budget:102509.06},
-    ]},
-  B5b: { label:'Electrical, Tel & ELV',      budget:6943000.00,  type:'Fixed',       color:'#29ABE2',
-    subs:[
-      {id:'B5b-1',  label:'Electrical — 01 Preliminaries',                         budget:63969.00},
-      {id:'B5b-2',  label:'Electrical — 02 External & TNB Incoming',               budget:358729.00},
-      {id:'B5b-3',  label:'Electrical — 03 LV Switchboards & Cabling',             budget:3865096.00},
-      {id:'B5b-4',  label:'Electrical — 03 Lighting & Small Power Points',         budget:1074547.00},
-      {id:'B5b-5',  label:'Electrical — 04-05 Telephone Infrastructure & Internal',budget:110345.00},
-      {id:'B5b-6',  label:'Electrical — 06 Standby Diesel Generator (350 KVA)',    budget:144533.00},
-      {id:'B5b-7',  label:'Electrical — 07 Network Infrastructure',                budget:113126.00},
-      {id:'B5b-8',  label:'Electrical — 08 TNB Substation Works',                  budget:38725.00},
-      {id:'B5b-9',  label:'ELV — Barrier Gate & Access Control',                   budget:524631.00},
-      {id:'B5b-10', label:'ELV — CCTV System',                                     budget:384600.00},
-      {id:'B5b-11', label:'ELV — Public Address System',                            budget:159704.00},
-      {id:'B5b-12', label:'ELV — Preliminaries',                                    budget:97065.00},
-    ]},
-  B5c: { label:'Fire Protection',            budget:1775500.00,  type:'Fixed',       color:'#c0392b',
-    subs:[
-      {id:'B5c-1', label:'01 — Preliminaries',                        budget:39200.00},
-      {id:'B5c-2', label:'02 — Automatic Sprinkler System (AV1/2/3)', budget:1214920.00},
-      {id:'B5c-3', label:'03 — Hose Reel System',                     budget:218497.00},
-      {id:'B5c-4', label:'04 — Portable Fire Extinguishers',          budget:8345.00},
-      {id:'B5c-5', label:'05 — Gas Suppression (FK-5-1-12 & CO₂)',   budget:80068.00},
-      {id:'B5c-6', label:'06 — Addressable Fire Alarm System',        budget:208153.00},
-      {id:'B5c-7', label:'07 — Fire Hydrant System',                  budget:6317.00},
-    ]},
-  B6:  { label:'PC & Provisional Sums',      budget:7916568.75,  type:'PC / Prov',   color:'#1a6fa8',
-    subs:[
-      {id:'B6-1', label:'PC — Lift Installation (Eita Elevator)',    budget:1280000.00},
-      {id:'B6-2', label:'PC — ACMV Installation (Heross Sdn Bhd)',  budget:6000949.75},
-      {id:'B6-3', label:'Profit & Attendance on PC (1%+1%)',         budget:145619.00},
-      {id:'B6-4', label:'Provisional — Signage',                     budget:150000.00},
-      {id:'B6-5', label:'Provisional — Upgrade Road Louvers',        budget:40000.00},
-      {id:'B6-6', label:'Provisional — Contingencies Sum',           budget:300000.00},
-    ]},
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const BQ_DEFAULTS = {
+  B1:  { label: 'Preliminaries',               budget: 6789232.18 },
+  B2:  { label: 'Piling & Structural',         budget: 3450167.02 },
+  B3:  { label: 'Main Building Works',         budget: 21328751.16 },
+  B4:  { label: 'Local Infrastructure',        budget: 5001983.09 },
+  B5a: { label: 'Cold Water & Sanitary',       budget: 794797.80 },
+  B5b: { label: 'Electrical, Tel & ELV',       budget: 6943000.00 },
+  B5c: { label: 'Fire Protection',             budget: 1775500.00 },
+  B6:  { label: 'PC & Provisional Sums',       budget: 7916568.75 },
 };
 const BILL_KEYS = ['B1','B2','B3','B4','B5a','B5b','B5c','B6'];
-const TOTAL_ORIGINAL = 54000000.00;
-const STORAGE_KEY_BQ = 'syntec_bq_budgets_v3';
-const STORAGE_KEY_IPC = 'syntec_bq_entries';
-
-// ═══════════════════════════════════════════════════════════════════
-// MUTABLE STATE — loaded from localStorage or from ORIGINAL
-// ═══════════════════════════════════════════════════════════════════
-let BQ = loadBQ();
-let entries = loadEntries();
-let expandState = {};
+const BQ_BUDGET_KEY = 'syntec_bq_budgets';
 
 function loadBQ() {
   try {
-    const s = localStorage.getItem(STORAGE_KEY_BQ);
-    if (s) {
-      const saved = JSON.parse(s);
-      // Merge saved budgets onto original structure (in case subs were added)
-      const result = {};
+    const saved = JSON.parse(localStorage.getItem(BQ_BUDGET_KEY));
+    if (saved) {
+      const merged = {};
       BILL_KEYS.forEach(k => {
-        result[k] = JSON.parse(JSON.stringify(ORIGINAL_BQ[k]));
-        if (saved[k]) {
-          result[k].budget = saved[k].budget;
-          if (saved[k].subs) {
-            result[k].subs.forEach(s => {
-              const sv = saved[k].subs.find(x => x.id === s.id);
-              if (sv) s.budget = sv.budget;
-            });
-          }
-        }
+        merged[k] = { label: BQ_DEFAULTS[k].label, budget: saved[k] !== undefined ? saved[k] : BQ_DEFAULTS[k].budget };
       });
-      return result;
+      return merged;
     }
   } catch(e) {}
-  return JSON.parse(JSON.stringify(ORIGINAL_BQ));
+  return JSON.parse(JSON.stringify(BQ_DEFAULTS));
 }
 function saveBQ() {
-  const save = {};
-  BILL_KEYS.forEach(k => {
-    save[k] = { budget: BQ[k].budget, subs: BQ[k].subs.map(s => ({id:s.id, budget:s.budget})) };
-  });
-  localStorage.setItem(STORAGE_KEY_BQ, JSON.stringify(save));
+  const out = {};
+  BILL_KEYS.forEach(k => { out[k] = BQ[k].budget; });
+  localStorage.setItem(BQ_BUDGET_KEY, JSON.stringify(out));
 }
-function loadEntries() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY_IPC)) || []; } catch(e) { return []; }
+function resetBQ() {
+  if (!confirm('Reset all bill budgets to original SOT Addendum TA1 figures?')) return;
+  localStorage.removeItem(BQ_BUDGET_KEY);
+  BILL_KEYS.forEach(k => { BQ[k].budget = BQ_DEFAULTS[k].budget; });
+  updateTotalBudget();
+  renderBQTable();
+  renderVariance();
+  showToast('Budgets reset to original SOT values.');
 }
-function saveEntries(e) { localStorage.setItem(STORAGE_KEY_IPC, JSON.stringify(e)); }
-
-// ═══════════════════════════════════════════════════════════════════
-// COMPUTED TOTALS
-// ═══════════════════════════════════════════════════════════════════
-function grandTotal() { return BILL_KEYS.reduce((s,k)=>s+BQ[k].budget,0); }
-
-// ═══════════════════════════════════════════════════════════════════
-// TAB SWITCH
-// ═══════════════════════════════════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  const tabs = ['bq','tracker','variance'];
-  document.querySelectorAll('.nav-tab')[tabs.indexOf(tab)].classList.add('active');
-  if (tab==='variance') renderVariance();
+function updateTotalBudget() {
+  TOTAL_BUDGET = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// BQ TABLE RENDER
-// ═══════════════════════════════════════════════════════════════════
-const BILL_DISPLAY = {
-  B1:  {ref:'B1',  name:'Preliminaries',                      sub:'Ref F1/14 — click ▶ to expand',     tag:'tag-fixed',       pctOriginal:12.6, barW:32,  barC:'#29ABE2'},
-  B2:  {ref:'B2',  name:'Piling, Pilecap, Stump, Liftpit & Shearwall', sub:'Ref F2/4/1 — All Provisional', tag:'tag-provisional', pctOriginal:6.4,  barW:16,  barC:'#2668a8'},
-  B3:  {ref:'B3',  name:'Main Building Works',                sub:'Ref F3/21/1 — 20 elements',          tag:'tag-fixed',       pctOriginal:39.5, barW:100, barC:'#0D2080'},
-  B4:  {ref:'B4',  name:'Local Infrastructure Works',         sub:'Ref F4/12/1 — All Provisional',      tag:'tag-provisional', pctOriginal:9.3,  barW:24,  barC:'#2668a8'},
-  B5a: {ref:'B5a', name:'Cold Water & Sanitary Plumbing',     sub:'3 sections',                          tag:'tag-fixed',       pctOriginal:1.5,  barW:4,   barC:'#29ABE2'},
-  B5b: {ref:'B5b', name:'Electrical, Telephone & ELV Works',  sub:'8 sections — Electrical + ELV',      tag:'tag-fixed',       pctOriginal:12.9, barW:65,  barC:'#29ABE2'},
-  B5c: {ref:'B5c', name:'Fire Protection Services',           sub:'7 sections',                          tag:'tag-fixed',       pctOriginal:3.3,  barW:17,  barC:'#c0392b'},
-  B6:  {ref:'B6',  name:'Prime Cost & Provisional Sums',      sub:'PC + Provisional + P&A',              tag:'tag-pc',          pctOriginal:14.7, barW:74,  barC:'#1a6fa8'},
+let BQ = loadBQ();
+let TOTAL_BUDGET = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
+const BILL_COLORS = {
+  B1:'#29ABE2', B2:'#3a82b8', B3:'#0D2080', B4:'#2668a8',
+  B5a:'#1a8c5a', B5b:'#29ABE2', B5c:'#c0392b', B6:'#1a6fa8'
 };
 
-function renderBQTable() {
-  const tbody = document.getElementById('bq-tbody');
-  const gt = grandTotal();
-  let html = '';
+const STORAGE_KEY = 'syntec_bq_entries';
 
-  BILL_KEYS.forEach(k => {
-    const b = BQ[k];
-    const d = BILL_DISPLAY[k];
-    const origBudget = ORIGINAL_BQ[k].budget;
-    const isEdited = Math.abs(b.budget - origBudget) > 0.005;
-    const pct = (b.budget / gt * 100).toFixed(1);
-    const barW = (b.budget / gt * 100).toFixed(1);
-    const open = expandState[k];
-    const hasSubs = b.subs && b.subs.length > 0;
-
-    html += `<tr>
-      <td><button class="expand-btn${open?' open':''}" onclick="toggleSub('${k}')" id="btn-${k}">${open?'▼':'▶'}</button></td>
-      <td><span class="bill-ref">${d.ref}</span></td>
-      <td><div class="bill-name">${d.name}</div><div class="bill-sub">${d.sub}</div></td>
-      <td><span class="bill-tag ${d.tag}">${b.type}</span></td>
-      <td>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${barW}%;background:${d.barC};"></div></div>
-        <div class="bill-pct">${pct}%</div>
-      </td>
-      <td class="right">
-        <span class="bill-budget-display${isEdited?' edited':''}"
-          id="disp-${k}"
-          onclick="startEditBill('${k}')"
-          title="Click to edit budget"
-        >${fmt(b.budget)}</span>
-        <input class="bill-budget-input-field"
-          id="inp-${k}"
-          type="number"
-          step="0.01"
-          value="${b.budget.toFixed(2)}"
-          onblur="commitEditBill('${k}', this.value)"
-          onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape'){cancelEditBill('${k}');}"
-        />
-      </td>
-    </tr>`;
-
-    if (hasSubs) {
-      html += `<tbody class="sub-rows${open?' open':''}" id="sub-${k.toLowerCase().replace(/\./g,'')}">`;
-      const subTotal = b.subs.reduce((s,x)=>s+x.budget,0);
-      b.subs.forEach(sub => {
-        const origSub = ORIGINAL_BQ[k].subs.find(x=>x.id===sub.id);
-        const subEdited = origSub && Math.abs(sub.budget - origSub.budget) > 0.005;
-        const subPct = b.budget > 0 ? (sub.budget / b.budget * 100).toFixed(1) : '0.0';
-        html += `<tr class="sub-row">
-          <td></td>
-          <td colspan="2">
-            <span class="sub-label">${sub.label}</span>
-            <span style="font-family:var(--mono);font-size:9px;color:rgba(41,171,226,0.5);margin-left:6px;">${subPct}% of bill</span>
-          </td>
-          <td></td>
-          <td></td>
-          <td style="text-align:right;padding-right:0;">
-            <div class="budget-cell">
-              <span class="budget-display${subEdited?' edited':''}"
-                id="disp-${sub.id}"
-                onclick="startEditSub('${k}','${sub.id}')"
-                title="Click to edit this sub-item budget"
-              >${fmt(sub.budget)}</span>
-              <input class="budget-input-field"
-                id="inp-${sub.id}"
-                type="number"
-                step="0.01"
-                value="${sub.budget.toFixed(2)}"
-                onblur="commitEditSub('${k}','${sub.id}',this.value)"
-                onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape'){cancelEditSub('${k}','${sub.id}');}"
-              />
-            </div>
-          </td>
-        </tr>`;
-      });
-      // Sub-total row
-      const subTotalEdited = Math.abs(subTotal - b.budget) > 0.005;
-      html += `<tr class="sub-row" style="background:rgba(41,171,226,0.06)!important;">
-        <td></td>
-        <td colspan="2" style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.05em;">
-          ∑ Sub-items total
-          ${subTotalEdited ? `<span style="color:#c0392b;font-size:9px;margin-left:8px;">⚠ Differs from bill total by ${fmt(Math.abs(subTotal-b.budget))}</span>` : '<span style="color:#1a8c5a;font-size:9px;margin-left:8px;">✓ Balanced</span>'}
-        </td>
-        <td></td><td></td>
-        <td style="text-align:right;padding-right:0;font-family:var(--mono);font-size:11px;font-weight:500;color:${subTotalEdited?'#c0392b':'#1a8c5a'};">${fmt(subTotal)}</td>
-      </tr>`;
-      html += `</tbody>`;
-    }
-  });
-
-  // Total row
-  html += `<tr class="total-row">
-    <td></td>
-    <td colspan="3"><strong>TOTAL CONTRACT SUM — Conforming Tender</strong></td>
-    <td><span style="font-family:var(--mono);font-size:10px;color:var(--accent)">100.0%</span></td>
-    <td class="right"><span class="bill-amount">${fmt(gt)}</span></td>
-  </tr>`;
-
-  tbody.innerHTML = html;
-  updateToolbar();
-  updateKPIs();
-  renderDonut();
-  renderHBars();
+function loadEntries() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch(e) { return []; }
+}
+function saveEntries(entries) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// INLINE EDITING — BILL LEVEL
-// ═══════════════════════════════════════════════════════════════════
-function startEditBill(k) {
-  document.getElementById('disp-'+k).style.display = 'none';
-  const inp = document.getElementById('inp-'+k);
-  inp.classList.add('active');
-  inp.focus();
-  inp.select();
-}
-function cancelEditBill(k) {
-  document.getElementById('disp-'+k).style.display = '';
-  const inp = document.getElementById('inp-'+k);
-  inp.classList.remove('active');
-  inp.value = BQ[k].budget.toFixed(2);
-}
-function commitEditBill(k, val) {
-  const n = parseFloat(val);
-  if (!isNaN(n) && n >= 0) {
-    BQ[k].budget = n;
-    saveBQ();
-    showToast('B' + k + ' budget updated — RM ' + fmt(n));
-  }
-  renderBQTable();
-  if (document.getElementById('tab-variance').classList.contains('active')) renderVariance();
+let entries = loadEntries();
+
+// ─── TAB SWITCH ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const tabs = ['bq','tracker','variance'];
+  document.querySelectorAll('.nav-tab')[tabs.indexOf(tab)].classList.add('active');
+  if (tab === 'variance') renderVariance();
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// INLINE EDITING — SUB ITEM LEVEL
-// ═══════════════════════════════════════════════════════════════════
-function startEditSub(k, subId) {
-  const dispEl = document.getElementById('disp-'+subId);
-  const inpEl  = document.getElementById('inp-'+subId);
-  if (!dispEl || !inpEl) return;
-  dispEl.style.display = 'none';
-  inpEl.classList.add('active');
-  inpEl.focus();
-  inpEl.select();
-}
-function cancelEditSub(k, subId) {
-  const sub = BQ[k].subs.find(s=>s.id===subId);
-  const dispEl = document.getElementById('disp-'+subId);
-  const inpEl  = document.getElementById('inp-'+subId);
-  if (dispEl) dispEl.style.display = '';
-  if (inpEl) { inpEl.classList.remove('active'); if(sub) inpEl.value = sub.budget.toFixed(2); }
-}
-function commitEditSub(k, subId, val) {
-  const n = parseFloat(val);
-  const sub = BQ[k].subs.find(s=>s.id===subId);
-  if (!isNaN(n) && n >= 0 && sub) {
-    sub.budget = n;
-    // Recalculate bill total from subs
-    BQ[k].budget = BQ[k].subs.reduce((s,x)=>s+x.budget, 0);
-    saveBQ();
-    showToast('Sub-item updated — bill total recalculated to RM ' + fmt(BQ[k].budget));
-  }
-  renderBQTable();
-  // Re-open this bill's subs
-  expandState[k] = true;
-  if (document.getElementById('tab-variance').classList.contains('active')) renderVariance();
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// TOOLBAR + KPI + CROSS-CHECK
-// ═══════════════════════════════════════════════════════════════════
-function updateToolbar() {
-  const gt = grandTotal();
-  const diff = gt - TOTAL_ORIGINAL;
-  const el = document.getElementById('toolbar-total');
-  const badge = document.getElementById('toolbar-badge');
-  el.textContent = 'RM ' + fmt(gt);
-  el.classList.toggle('changed', Math.abs(diff) > 0.005);
-
-  // Cross-check bar
-  document.getElementById('cc-sum').textContent = 'RM ' + fmt(gt);
-  if (Math.abs(diff) < 0.005) {
-    badge.textContent = '✓ BALANCED';
-    badge.className = 'budget-variance-badge balanced';
-    document.getElementById('cc-icon').textContent = '✓';
-    document.getElementById('cc-badge').textContent = '✓ BALANCED';
-    document.getElementById('cc-badge').style.color = '';
-    document.getElementById('crosscheck-bar').style.background = 'rgba(41,171,226,0.06)';
-    document.getElementById('crosscheck-bar').style.borderColor = 'rgba(41,171,226,0.25)';
-  } else {
-    const sign = diff > 0 ? '+' : '';
-    badge.textContent = sign + 'RM ' + fmt(Math.abs(diff)) + ' vs original';
-    badge.className = 'budget-variance-badge changed';
-    document.getElementById('cc-icon').textContent = '✎';
-    document.getElementById('cc-badge').textContent = sign + 'RM ' + fmt(Math.abs(diff)) + ' ADJUSTED';
-    document.getElementById('cc-badge').style.color = '#c0392b';
-    document.getElementById('crosscheck-bar').style.background = 'rgba(192,57,43,0.04)';
-    document.getElementById('crosscheck-bar').style.borderColor = 'rgba(192,57,43,0.2)';
-  }
-}
-
-function updateKPIs() {
-  const gt = grandTotal();
-  document.getElementById('kpi-total').textContent = 'RM ' + fmtM(gt);
-  const struct = BQ['B2'].budget + BQ['B3'].budget;
-  const structPct = (struct/gt*100).toFixed(1);
-  document.getElementById('kpi-struct').textContent = 'RM ' + fmtM(struct);
-  document.getElementById('kpi-struct-sub').textContent = `Piling + Main Building — ${structPct}%`;
-  const me = BQ['B5a'].budget + BQ['B5b'].budget + BQ['B5c'].budget;
-  const mePct = (me/gt*100).toFixed(1);
-  document.getElementById('kpi-me').textContent = 'RM ' + fmtM(me);
-  document.getElementById('kpi-me-sub').textContent = `Plumbing + Elec + Fire — ${mePct}%`;
-  const prov = BQ['B4'].budget + BQ['B6'].budget;
-  const provPct = (prov/gt*100).toFixed(1);
-  document.getElementById('kpi-prov').textContent = 'RM ' + fmtM(prov);
-  document.getElementById('kpi-prov-sub').textContent = `Bills 4 + 6 combined — ${provPct}%`;
-  // Contingency from B6 subs if available
-  const b6Subs = BQ['B6'].subs;
-  const contSub = b6Subs.find(s=>s.label.includes('Contingenc'));
-  const contVal = contSub ? contSub.budget : 300000;
-  document.getElementById('kpi-cont').textContent = 'RM ' + fmtM(contVal);
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// RESET
-// ═══════════════════════════════════════════════════════════════════
-function resetBudgets() {
-  if (!confirm('Reset all budget figures to original BQ Addendum TA1 values?')) return;
-  BQ = JSON.parse(JSON.stringify(ORIGINAL_BQ));
-  saveBQ();
-  expandState = {};
-  renderBQTable();
-  showToast('All budgets reset to original TA1 values.');
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// EXPORT ADJUSTED BQ CSV
-// ═══════════════════════════════════════════════════════════════════
-function exportBudgetCSV() {
-  const gt = grandTotal();
-  let csv = 'Bill,Description,Type,Adjusted Budget (RM),Original Budget (RM),Variance (RM),% of Total\n';
-  BILL_KEYS.forEach(k => {
-    const b = BQ[k]; const o = ORIGINAL_BQ[k];
-    const diff = b.budget - o.budget;
-    csv += `${k},"${BILL_DISPLAY[k].name}","${b.type}",${b.budget.toFixed(2)},${o.budget.toFixed(2)},${diff.toFixed(2)},${(b.budget/gt*100).toFixed(2)}%\n`;
-    b.subs.forEach(s => {
-      const os = o.subs.find(x=>x.id===s.id);
-      const sdiff = os ? s.budget - os.budget : 0;
-      csv += `  ${s.id},"  ${s.label}","",${s.budget.toFixed(2)},${os?os.budget.toFixed(2):''},${sdiff.toFixed(2)},${b.budget>0?(s.budget/b.budget*100).toFixed(2):0}%\n`;
-    });
-  });
-  csv += `TOTAL,"Contract Sum","",${gt.toFixed(2)},${TOTAL_ORIGINAL.toFixed(2)},${(gt-TOTAL_ORIGINAL).toFixed(2)},100.00%\n`;
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download = 'Syntec_Adjusted_BQ.csv';
-  a.click();
-  showToast('Adjusted BQ exported.');
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// DONUT CHART (canvas)
-// ═══════════════════════════════════════════════════════════════════
-function renderDonut() {
-  const canvas = document.getElementById('donut-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = 150, H = 150, CX = 75, CY = 75, R = 55, IR = 35;
-  ctx.clearRect(0,0,W,H);
-
-  const gt = grandTotal();
-  const COLORS = {B1:'#29ABE2',B2:'#3a82b8',B3:'#0D2080',B4:'#2668a8',B5a:'#1a8c5a',B5b:'rgba(41,171,226,0.6)',B5c:'#c0392b',B6:'#1a6fa8'};
-  let angle = -Math.PI/2;
-
-  BILL_KEYS.forEach(k => {
-    const pct = BQ[k].budget / gt;
-    const sweep = pct * 2 * Math.PI;
-    ctx.beginPath();
-    ctx.moveTo(CX,CY);
-    ctx.arc(CX,CY,R,angle,angle+sweep);
-    ctx.closePath();
-    ctx.fillStyle = COLORS[k];
-    ctx.fill();
-    angle += sweep;
-  });
-
-  // Inner circle
-  ctx.beginPath();
-  ctx.arc(CX,CY,IR,0,2*Math.PI);
-  ctx.fillStyle = '#ffffff';
-  ctx.fill();
-
-  // Centre text
-  ctx.fillStyle = '#0D2080';
-  ctx.font = 'bold 11px EB Garamond, serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('RM '+fmtM(gt), CX, CY-5);
-  ctx.fillStyle = '#58595B';
-  ctx.font = '7px DM Mono, monospace';
-  ctx.fillText('CONTRACT', CX, CY+7);
-
-  // Legend
-  const NAMES = {B1:'B1 Preliminaries',B2:'B2 Piling',B3:'B3 Main Building',B4:'B4 Infrastructure',B5a:'B5a Plumbing',B5b:'B5b Electrical',B5c:'B5c Fire',B6:'B6 PC & Prov'};
-  const legendEl = document.getElementById('donut-legend');
-  legendEl.innerHTML = BILL_KEYS.map(k=>`
-    <div class="legend-item">
-      <div class="legend-dot" style="background:${COLORS[k]}"></div>
-      <div class="legend-name">${NAMES[k]}</div>
-      <div class="legend-val">${fmtM(BQ[k].budget)}</div>
-      <div class="legend-pct">${(BQ[k].budget/gt*100).toFixed(1)}%</div>
-    </div>
-  `).join('');
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// H-BARS
-// ═══════════════════════════════════════════════════════════════════
-function renderHBars() {
-  const gt = grandTotal();
-  const sorted = BILL_KEYS.slice().sort((a,b)=>BQ[b].budget-BQ[a].budget);
-  const COLORS = {B1:'#29ABE2',B2:'#3a82b8',B3:'#0D2080',B4:'#2668a8',B5a:'#1a8c5a',B5b:'rgba(41,171,226,0.7)',B5c:'#c0392b',B6:'#1a6fa8'};
-  const maxVal = BQ[sorted[0]].budget;
-  document.getElementById('hbar-list').innerHTML = sorted.map(k=>`
-    <div>
-      <div class="hbar-top">
-        <span class="hbar-label">${k} — ${BILL_DISPLAY[k].name.split('(')[0].trim()}</span>
-        <span class="hbar-val">RM ${fmt(BQ[k].budget)}</span>
-      </div>
-      <div class="hbar-track">
-        <div class="hbar-fill" style="width:${(BQ[k].budget/maxVal*100).toFixed(1)}%;background:${COLORS[k]};"></div>
-      </div>
-    </div>
-  `).join('');
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// EXPAND / COLLAPSE SUBS
-// ═══════════════════════════════════════════════════════════════════
-function toggleSub(k) {
-  expandState[k] = !expandState[k];
-  renderBQTable();
-}
-function toggleAllSubs() {
-  const anyOpen = Object.values(expandState).some(v=>v);
-  BILL_KEYS.forEach(k => expandState[k] = !anyOpen);
-  renderBQTable();
-  document.getElementById('expand-all-btn').textContent = anyOpen ? '▶ Expand All' : '▼ Collapse All';
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// MODAL — IPC ENTRY
-// ═══════════════════════════════════════════════════════════════════
+// ─── MODAL ──────────────────────────────────────────────────────────────────
 function openModal() {
+  // Set default month to current
   const now = new Date();
   document.getElementById('m-month').value = now.toISOString().slice(0,7);
   document.getElementById('m-note').value = '';
-  BILL_KEYS.forEach(k=>{ const el=document.getElementById('m'+k.toLowerCase()); if(el) el.value=''; });
-  ['msst_lift','msst_acmv','msst_other'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  BILL_KEYS.forEach(k => {
+    document.getElementById('m' + k.toLowerCase()).value = '';
+  });
+  document.getElementById('msst_lift').value  = '';
+  document.getElementById('msst_acmv').value  = '';
+  document.getElementById('msst_other').value = '';
   updateModalTotal();
   document.getElementById('modal-overlay').classList.add('open');
 }
-function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
-function closeModalOutside(e) { if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
 
-BILL_KEYS.forEach(k=>{ const el=document.getElementById('m'+k.toLowerCase()); if(el) el.addEventListener('input',updateModalTotal); });
-['msst_lift','msst_acmv','msst_other'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('input',updateModalTotal); });
-
+// Live total in modal
+BILL_KEYS.forEach(k => {
+  const el = document.getElementById('m' + k.toLowerCase());
+  if (el) el.addEventListener('input', updateModalTotal);
+});
+['msst_lift','msst_acmv','msst_other'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateModalTotal);
+});
 function updateModalTotal() {
-  let sub = 0;
-  BILL_KEYS.forEach(k=>{ const el=document.getElementById('m'+k.toLowerCase()); if(el) sub+=parseFloat(el.value)||0; });
+  let subtotal = 0;
+  BILL_KEYS.forEach(k => {
+    const el = document.getElementById('m' + k.toLowerCase());
+    if (el) subtotal += parseFloat(el.value) || 0;
+  });
   let sst = 0;
-  ['msst_lift','msst_acmv','msst_other'].forEach(id=>{ const el=document.getElementById(id); if(el) sst+=parseFloat(el.value)||0; });
-  document.getElementById('modal-subtotal').textContent = 'RM '+fmt(sub);
-  document.getElementById('modal-sst').textContent = 'RM '+fmt(sst);
-  document.getElementById('modal-total').textContent = 'RM '+fmt(sub+sst);
+  ['msst_lift','msst_acmv','msst_other'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) sst += parseFloat(el.value) || 0;
+  });
+  document.getElementById('modal-subtotal').textContent = 'RM ' + fmt(subtotal);
+  document.getElementById('modal-sst').textContent = 'RM ' + fmt(sst);
+  document.getElementById('modal-total').textContent = 'RM ' + fmt(subtotal + sst);
 }
 
 function saveEntry() {
@@ -1065,19 +935,30 @@ function saveEntry() {
   const note = document.getElementById('m-note').value.trim();
   const bills = {};
   let subtotal = 0;
-  BILL_KEYS.forEach(k=>{ const v=parseFloat(document.getElementById('m'+k.toLowerCase()).value)||0; bills[k]=v; subtotal+=v; });
+  BILL_KEYS.forEach(k => {
+    const val = parseFloat(document.getElementById('m' + k.toLowerCase()).value) || 0;
+    bills[k] = val;
+    subtotal += val;
+  });
   const sst = {
-    lift:  parseFloat(document.getElementById('msst_lift').value)||0,
-    acmv:  parseFloat(document.getElementById('msst_acmv').value)||0,
-    other: parseFloat(document.getElementById('msst_other').value)||0,
+    lift:  parseFloat(document.getElementById('msst_lift').value)  || 0,
+    acmv:  parseFloat(document.getElementById('msst_acmv').value)  || 0,
+    other: parseFloat(document.getElementById('msst_other').value) || 0,
   };
-  const sstTotal = sst.lift+sst.acmv+sst.other;
-  const total = subtotal+sstTotal;
-  if (subtotal===0 && sstTotal===0) { showToast('Enter at least one certified amount.'); return; }
-  const existing = entries.findIndex(e=>e.month===month);
-  const entry = {month,note,bills,sst,subtotal,sstTotal,total};
-  if (existing>=0) { entries[existing]=entry; showToast('Entry updated: '+month); }
-  else { entries.push(entry); entries.sort((a,b)=>a.month.localeCompare(b.month)); showToast('Entry saved: '+month); }
+  const sstTotal = sst.lift + sst.acmv + sst.other;
+  const total = subtotal + sstTotal;
+  if (subtotal === 0 && sstTotal === 0) { showToast('Enter at least one certified amount.'); return; }
+
+  const existing = entries.findIndex(e => e.month === month);
+  const entry = { month, note, bills, sst, subtotal, sstTotal, total };
+  if (existing >= 0) {
+    entries[existing] = entry;
+    showToast('Entry updated: ' + month);
+  } else {
+    entries.push(entry);
+    entries.sort((a,b) => a.month.localeCompare(b.month));
+    showToast('Entry saved: ' + month);
+  }
   saveEntries(entries);
   closeModal();
   renderLedger();
@@ -1085,78 +966,120 @@ function saveEntry() {
 }
 
 function deleteEntry(month) {
-  if(!confirm('Delete entry for '+month+'?')) return;
-  entries = entries.filter(e=>e.month!==month);
+  if (!confirm('Delete entry for ' + month + '?')) return;
+  entries = entries.filter(e => e.month !== month);
   saveEntries(entries);
   renderLedger();
   renderVariance();
-  showToast('Deleted: '+month);
+  showToast('Entry deleted: ' + month);
 }
+
 function editEntry(month) {
-  const e = entries.find(x=>x.month===month);
-  if(!e) return;
-  document.getElementById('m-month').value = e.month;
-  document.getElementById('m-note').value = e.note||'';
-  BILL_KEYS.forEach(k=>{ const el=document.getElementById('m'+k.toLowerCase()); if(el) el.value=e.bills[k]||''; });
-  document.getElementById('msst_lift').value  = (e.sst&&e.sst.lift)||'';
-  document.getElementById('msst_acmv').value  = (e.sst&&e.sst.acmv)||'';
-  document.getElementById('msst_other').value = (e.sst&&e.sst.other)||'';
+  const entry = entries.find(e => e.month === month);
+  if (!entry) return;
+  document.getElementById('m-month').value = entry.month;
+  document.getElementById('m-note').value = entry.note || '';
+  BILL_KEYS.forEach(k => {
+    const el = document.getElementById('m' + k.toLowerCase());
+    if (el) el.value = entry.bills[k] || '';
+  });
+  document.getElementById('msst_lift').value  = (entry.sst && entry.sst.lift)  || '';
+  document.getElementById('msst_acmv').value  = (entry.sst && entry.sst.acmv)  || '';
+  document.getElementById('msst_other').value = (entry.sst && entry.sst.other) || '';
   updateModalTotal();
   document.getElementById('modal-overlay').classList.add('open');
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// LEDGER RENDER
-// ═══════════════════════════════════════════════════════════════════
+// ─── LEDGER RENDER ──────────────────────────────────────────────────────────
 function renderLedger() {
-  document.getElementById('entry-count').textContent = entries.length+' entr'+(entries.length===1?'y':'ies');
+  document.getElementById('entry-count').textContent = entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies');
   const container = document.getElementById('ledger-container');
-  if (entries.length===0) { container.innerHTML='<div class="empty-state"><div class="es-icon">📋</div><p>No entries yet. Click "+ Add Month Entry" to record a certified payment.</p></div>'; return; }
-  let html='<table class="ledger-table"><thead><tr><th>Month</th><th>Note</th>';
-  BILL_KEYS.forEach(k=>html+=`<th style="text-align:right">${k}</th>`);
-  html+='<th style="text-align:right;color:#c0392b;">SST</th><th style="text-align:right">Subtotal</th><th style="text-align:right;color:#0D2080;">Total incl SST</th><th>Actions</th></tr></thead><tbody>';
-  entries.forEach(e=>{
-    const sst=(e.sst&&e.sst.lift||0)+(e.sst&&e.sst.acmv||0)+(e.sst&&e.sst.other||0);
-    const sub=e.subtotal||(e.total-sst);
-    html+=`<tr><td><span class="month-badge">${fmtMonth(e.month)}</span></td><td class="ledger-note">${e.note||'—'}</td>`;
-    BILL_KEYS.forEach(k=>{ const v=e.bills[k]||0; html+=`<td style="text-align:right;color:${v>0?'var(--accent2)':v<0?'#c0392b':'var(--muted)'}">${v!==0?fmt(v):'—'}</td>`; });
-    html+=`<td style="text-align:right;color:${sst>0?'#c0392b':'var(--muted)'};font-weight:${sst>0?'600':'400'}">${sst>0?fmt(sst):'—'}</td>`;
-    html+=`<td style="text-align:right;font-family:var(--mono);">${fmt(sub)}</td>`;
-    html+=`<td style="text-align:right;font-weight:700;color:#0D2080">${fmt(e.total)}</td>`;
-    html+=`<td><div style="display:flex;gap:6px;justify-content:center;"><button class="btn btn-sm" style="background:rgba(41,171,226,0.1);color:#29ABE2;border:1px solid rgba(41,171,226,0.25);" onclick="editEntry('${e.month}')">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteEntry('${e.month}')">Del</button></div></td></tr>`;
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="es-icon">📋</div><p>No entries yet. Click "+ Add Month Entry" to record a certified payment.</p></div>';
+    return;
+  }
+
+  let html = '<table class="ledger-table"><thead><tr>';
+  html += '<th>Month</th><th>Note / Ref</th>';
+  BILL_KEYS.forEach(k => { html += `<th style="text-align:right">${k}</th>`; });
+  html += '<th style="text-align:right;color:#c0392b;">SST (Lift)</th>';
+  html += '<th style="text-align:right;color:#c0392b;">SST (ACMV)</th>';
+  html += '<th style="text-align:right;color:#c0392b;">SST Total</th>';
+  html += '<th style="text-align:right">Subtotal (excl SST)</th>';
+  html += '<th style="text-align:right;color:#0D2080;">Total incl SST</th><th>Actions</th></tr></thead><tbody>';
+
+  entries.forEach(e => {
+    const sstLift  = (e.sst && e.sst.lift)  || 0;
+    const sstAcmv  = (e.sst && e.sst.acmv)  || 0;
+    const sstOther = (e.sst && e.sst.other) || 0;
+    const sstTotal = sstLift + sstAcmv + sstOther;
+    const subtotal = e.subtotal || (e.total - sstTotal);
+    html += `<tr>
+      <td><span class="month-badge">${fmtMonth(e.month)}</span></td>
+      <td class="ledger-note">${e.note || '—'}</td>`;
+    BILL_KEYS.forEach(k => {
+      const v = e.bills[k] || 0;
+      html += `<td style="text-align:right;color:${v > 0 ? 'var(--accent2)' : v < 0 ? '#c0392b' : 'var(--muted)'}">${v !== 0 ? fmt(v) : '—'}</td>`;
+    });
+    html += `<td style="text-align:right;color:${sstLift>0?'#c0392b':'var(--muted)'}">${sstLift>0?fmt(sstLift):'—'}</td>`;
+    html += `<td style="text-align:right;color:${sstAcmv>0?'#c0392b':'var(--muted)'}">${sstAcmv>0?fmt(sstAcmv):'—'}</td>`;
+    html += `<td style="text-align:right;font-weight:600;color:${sstTotal>0?'#c0392b':'var(--muted)'}">${sstTotal>0?fmt(sstTotal):'—'}</td>`;
+    html += `<td style="text-align:right;font-family:var(--mono);">${fmt(subtotal)}</td>`;
+    html += `<td style="text-align:right;font-weight:700;color:#0D2080">${fmt(e.total)}</td>
+      <td>
+        <div style="display:flex;gap:6px;justify-content:center;">
+          <button class="btn btn-sm" style="background:rgba(41,171,226,0.1);color:#29ABE2;border:1px solid rgba(41,171,226,0.25);" onclick="editEntry('${e.month}')">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteEntry('${e.month}')">Del</button>
+        </div>
+      </td>
+    </tr>`;
   });
-  // Totals
-  const billTotals={};
-  BILL_KEYS.forEach(k=>billTotals[k]=entries.reduce((s,e)=>s+(e.bills[k]||0),0));
-  const grandSST=entries.reduce((s,e)=>s+(e.sst&&e.sst.lift||0)+(e.sst&&e.sst.acmv||0)+(e.sst&&e.sst.other||0),0);
-  const grandSub=entries.reduce((s,e)=>s+(e.subtotal||(e.total-((e.sst&&e.sst.lift||0)+(e.sst&&e.sst.acmv||0)+(e.sst&&e.sst.other||0)))),0);
-  const grandTot=entries.reduce((s,e)=>s+e.total,0);
-  html+=`<tr style="background:var(--surface2);font-weight:700;"><td colspan="2" style="font-family:var(--mono);font-size:10px;border-top:2px solid var(--border);padding-top:12px;">CUMULATIVE TOTAL</td>`;
-  BILL_KEYS.forEach(k=>html+=`<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;">${billTotals[k]!==0?fmt(billTotals[k]):'—'}</td>`);
-  html+=`<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;font-weight:700;color:#c0392b;">${grandSST>0?fmt(grandSST):'—'}</td>`;
-  html+=`<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;">${fmt(grandSub)}</td>`;
-  html+=`<td style="text-align:right;font-family:var(--mono);color:#0D2080;font-size:14px;border-top:2px solid var(--border);padding-top:12px;">${fmt(grandTot)}</td><td style="border-top:2px solid var(--border);"></td></tr>`;
-  html+='</tbody></table>';
-  container.innerHTML=html;
+
+  // Totals row
+  const billTotals = {};
+  BILL_KEYS.forEach(k => { billTotals[k] = entries.reduce((s,e) => s + (e.bills[k]||0), 0); });
+  const grandSST = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
+  const grandSSTLift = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0), 0);
+  const grandSSTAcmv = entries.reduce((s,e) => s + ((e.sst&&e.sst.acmv)||0), 0);
+  const grandSubtotal = entries.reduce((s,e) => s + (e.subtotal||(e.total-((e.sst&&(e.sst.lift+e.sst.acmv+(e.sst.other||0)))||0))), 0);
+  const grandTotal = entries.reduce((s,e) => s + e.total, 0);
+
+  html += `<tr style="background:var(--surface2);font-weight:700;">
+    <td colspan="2" style="font-family:var(--mono);font-size:10px;border-top:2px solid var(--border);padding-top:12px;">CUMULATIVE TOTAL</td>`;
+  BILL_KEYS.forEach(k => {
+    html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:${billTotals[k]<0?'#c0392b':'inherit'}">${billTotals[k] !== 0 ? fmt(billTotals[k]) : '—'}</td>`;
+  });
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:#c0392b;">${grandSSTLift>0?fmt(grandSSTLift):'—'}</td>`;
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;color:#c0392b;">${grandSSTAcmv>0?fmt(grandSSTAcmv):'—'}</td>`;
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;font-weight:700;color:#c0392b;">${grandSST>0?fmt(grandSST):'—'}</td>`;
+  html += `<td style="text-align:right;font-family:var(--mono);border-top:2px solid var(--border);padding-top:12px;">${fmt(grandSubtotal)}</td>`;
+  html += `<td style="text-align:right;font-family:var(--mono);color:#0D2080;font-size:14px;border-top:2px solid var(--border);padding-top:12px;">${fmt(grandTotal)}</td><td style="border-top:2px solid var(--border);"></td></tr>`;
+  html += '</tbody></table>';
+  container.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// VARIANCE TAB
-// ═══════════════════════════════════════════════════════════════════
+// ─── VARIANCE RENDER ─────────────────────────────────────────────────────────
 function renderVariance() {
-  const gt = grandTotal();
-  const grandSST=entries.reduce((s,e)=>s+(e.sst&&e.sst.lift||0)+(e.sst&&e.sst.acmv||0)+(e.sst&&e.sst.other||0),0);
-  const grandSub=entries.reduce((s,e)=>s+(e.subtotal||(e.total-((e.sst&&e.sst.lift||0)+(e.sst&&e.sst.acmv||0)+(e.sst&&e.sst.other||0)))),0);
-  const remaining=gt-grandSub;
-  const spentPct=grandSub/gt*100;
+  const grandTotal = entries.reduce((s,e) => s + e.total, 0);
+  const grandSST   = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
+  const grandExclSST = grandTotal - grandSST;
+  const remaining = TOTAL_BUDGET - grandExclSST;
+  const spentPct = grandExclSST / TOTAL_BUDGET * 100;
+  const months = entries.length;
 
-  document.getElementById('tv-budget').textContent='RM '+fmtM(gt);
-  document.getElementById('tv-spent').textContent='RM '+fmtM(grandSub);
-  document.getElementById('tv-spent-pct').textContent=spentPct.toFixed(1)+'% of budget (excl SST)';
-  document.getElementById('tv-remaining').textContent='RM '+fmtM(remaining);
-  document.getElementById('tv-remaining-pct').textContent=(100-spentPct).toFixed(1)+'% remaining';
-  document.getElementById('tv-months').textContent=entries.length;
-  document.getElementById('tv-sst').textContent='RM '+fmtM(grandSST);
+  document.getElementById('tv-budget').textContent = 'RM 54.00M';
+  document.getElementById('tv-spent').textContent = 'RM ' + fmtM(grandExclSST);
+  document.getElementById('tv-spent-pct').textContent = spentPct.toFixed(1) + '% of budget (excl SST)';
+  document.getElementById('tv-remaining').textContent = 'RM ' + fmtM(remaining);
+  document.getElementById('tv-remaining-pct').textContent = (100 - spentPct).toFixed(1) + '% remaining';
+  document.getElementById('tv-months').textContent = months;
+
+  // Update SST KPI if element exists
+  const sstEl = document.getElementById('tv-sst');
+  if (sstEl) {
+    sstEl.textContent = 'RM ' + fmtM(grandSST);
+    document.getElementById('tv-sst-sub').textContent = 'Cumul. SST on nominated SCs (6%)';
+  }
 
   renderVarianceTable();
   renderSCurve();
@@ -1165,174 +1088,639 @@ function renderVariance() {
 
 function renderVarianceTable() {
   const tbody = document.getElementById('variance-tbody');
-  const gt = grandTotal();
-  let totalSpent=0;
-  let html='';
-  BILL_KEYS.forEach(k=>{
-    const budget=BQ[k].budget;
-    const spent=entries.reduce((s,e)=>s+(e.bills[k]||0),0);
-    totalSpent+=spent;
-    const rem=budget-spent;
-    const pct=budget>0?spent/budget*100:0;
-    const barCol=pct>100?'#c0392b':pct>80?'#e67e22':'#29ABE2';
-    html+=`<tr onclick="toggleVarSub('${k}')" style="cursor:pointer;">
-      <td><div style="display:flex;align-items:center;gap:8px;"><span style="font-family:var(--mono);font-size:11px;color:var(--accent);" id="varicon-${k}">▶</span><span class="bill-ref">${k}</span><span style="font-size:13px;">${BQ[k].label}</span></div></td>
+
+  // Sub-item definitions: [label, budget, certifiedCumulative]
+  // Certified amounts from QS Certs (cumulative to IPC3)
+  const SUB_ITEMS = {
+    B1: [
+      // Certified amounts estimated proportionally from B1 total cert 1,085,354.92
+      // (QS Cert does not split B1 at sub-item level — uses recurring % formula)
+      ['Drawings & Scaffolding',                         622925.07,   99583.39],
+      ['Constructional Plant',                          1504950.00,  240587.57],
+      ['Temp Lightning & Power',                         812500.00,  129889.63],
+      ['Site Management & Supervision',                 1054042.00,  168503.54],
+      ['Worker Amenities & Site Security',              1033045.96,  165147.03],
+      ['Hoardings, Temp Buildings & Consultant Office',  432210.00,   69094.89],
+      ['Insurance & Performance Bond',                   104940.64,   16776.25],
+      ['CIDB, Stamp Duty, Qlassic',                      144550.00,   23108.36],
+      ['Other Prelim Items',                            1080068.54,  172664.26],
+    ],
+    B2: [
+      ['Precast RC Piles — Supply & Drive (150/300/400mm)', 2702895.93, 1897313.80],
+      ['Pile Cap (Main Building, Guard House, TNB)',          534721.39,  356096.25],
+      ['Column Stump, Liftpit Wall & Shearwall',             212549.70,   41611.68],
+    ],
+    B3: [
+      ['A — Work Below Lowest Floor Level', 1850981.54, 206770.14],
+      ['B — Frame',                         2148729.60,       0],
+      ['C — Staircase',                      124066.31,       0],
+      ['D — Staircase Finishes',              99875.37,       0],
+      ['E — Upper Floor Construction',      4289446.06,       0],
+      ['F — Roof',                          1728176.37,       0],
+      ['G — External Wall',                  321802.42,       0],
+      ['H — Internal Wall',                  397170.37,       0],
+      ['J — Doors',                          240636.15,       0],
+      ['K — Window & Curtain Wall',         2413055.81,       0],
+      ['L — Ironmongeries',                   68399.91,       0],
+      ['M — External Wall Finishes',         146153.04,       0],
+      ['N — Internal Wall Finishes',         560809.11,       0],
+      ['P — Floor Finishes',               2247759.17,       0],
+      ['Q — Ceiling Finishes',              878130.74,       0],
+      ['R — Painting',                       293040.76,       0],
+      ['S — Sanitary Fittings',              541835.42,       0],
+      ['T — Steel Roof Construction',      2190373.95,       0],
+      ['U — Wall Cladding',                  766048.63,       0],
+      ['V — Miscellaneous',                   22397.53,       0],
+    ],
+    B4: [
+      ['A — Earthwork',               932111.09, 211275.56],
+      ['B — Road Works (Within)',     863885.11,       0],
+      ['C — Road Works (Outside)',    346160.84,       0],
+      ['D — Surface Water Drainage',  622159.89,       0],
+      ['E — Water Reticulation',      269681.50,       0],
+      ['F1 — Sewerage (Within)',      174662.40,       0],
+      ['F2 — Sewerage (Outside)',      60375.26,       0],
+      ['G — Guard House',             728138.28,       0],
+      ['H — Fencing',                 120895.28,       0],
+      ['J — Retaining Wall',          475821.88,       0],
+      ['K — TNB Substation',          125842.29,  25168.46],
+      ['L — Crusher Run Parking',     253746.90,       0],
+    ],
+    B5a: [
+      ['01 — Preliminaries',                             36724.00,  0],
+      ['02 — Cold Water System (incl. Rain & Irrigation)',655564.74, 0],
+      ['03 — Sanitary Plumbing System',                  102509.06,  0],
+    ],
+    B5b: [
+      ['Electrical — 01 Preliminaries',                   63969.00,  0],
+      ['Electrical — 02 External & TNB Incoming',        358729.00,  0],
+      ['Electrical — 03 LV Switchboards & Cabling',     3865096.00,  0],
+      ['Electrical — 03 Lighting & Power Points',       1074547.00,  0],
+      ['Electrical — 04-05 Telephone Works',             110345.00,  0],
+      ['Electrical — 06 Standby Generator (350KVA)',     144533.00,  0],
+      ['Electrical — 07 Network Infrastructure',         113126.00,  0],
+      ['Electrical — 08 TNB Substation Works',            38725.00,  0],
+      ['ELV — Barrier Gate & Access Control',            524631.00,  0],
+      ['ELV — CCTV System',                              384600.00,  0],
+      ['ELV — Public Address System',                    159704.00,  0],
+      ['ELV — Preliminaries',                             97065.00,  0],
+    ],
+    B5c: [
+      ['01 — Preliminaries',                              39200.00,  0],
+      ['02 — Auto Sprinkler System (AV1/2/3)',          1214920.00,  0],
+      ['03 — Hose Reel System',                          218497.00,  0],
+      ['04 — Portable Fire Extinguishers',                 8345.00,  0],
+      ['05 — Gas Suppression (FK-5-1-12 & CO₂)',          80068.00,  0],
+      ['06 — Addressable Fire Alarm System',              208153.00,  0],
+      ['07 — Fire Hydrant System',                          6317.00,  0],
+    ],
+    B6: [
+      ['PC — Lift Installation (Eita Elevator)',        1280000.00,  95000.00],
+      ['PC — ACMV Installation (Heross Sdn Bhd)',      6000949.75,       0],
+      ['Profit & Attendance on PC (1%+1%)',              145619.00,   1900.00],
+      ['Provisional — Signage',                          150000.00,       0],
+      ['Provisional — Road Louvers',                      40000.00,       0],
+      ['Provisional — Contingencies Sum',                300000.00,       0],
+    ],
+  };
+
+  let html = '';
+  let totalSpent = 0;
+
+  BILL_KEYS.forEach((k, idx) => {
+    const budget = BQ[k].budget;
+    const spent  = entries.reduce((s,e) => s + (e.bills[k]||0), 0);
+    totalSpent  += spent;
+    const remaining = budget - spent;
+    const pct    = spent / budget * 100;
+    const varClass = remaining >= 0 ? 'positive' : 'negative';
+    const barCol = pct > 100 ? '#c0392b' : pct > 80 ? '#e67e22' : '#29ABE2';
+    const subId  = 'var-sub-' + k.toLowerCase();
+
+    html += `<tr style="cursor:pointer;" onclick="toggleVarSub('${k}')">
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--accent);transition:transform 0.2s;" id="varicon-${k}">▶</span>
+          <span class="bill-ref">${k}</span>
+          <span style="font-size:13px;">${BQ[k].label}</span>
+        </div>
+      </td>
       <td>${fmt(budget)}</td>
-      <td style="color:${spent!==0?(spent<0?'#c0392b':'var(--accent2)'):'var(--muted)'};font-weight:500;">${spent!==0?fmt(spent):'—'}</td>
-      <td class="${rem>=0?'positive':'negative'}">${fmt(Math.abs(rem))}</td>
-      <td><div style="text-align:right;font-size:11px;margin-bottom:3px;">${pct.toFixed(1)}%</div><div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,Math.max(0,pct))}%;background:${barCol};"></div></div></td>
-      <td class="${rem>=0?'positive':'negative'}">${rem>=0?'+':''}${fmt(rem)}</td>
+      <td style="color:${spent!==0?(spent<0?'#c0392b':'var(--accent2)'):'var(--muted)'};font-weight:500;">${spent !== 0 ? fmt(spent) : '—'}</td>
+      <td class="${varClass}">${fmt(Math.abs(remaining))}</td>
+      <td>
+        <div style="text-align:right;font-size:11px;margin-bottom:3px;">${pct.toFixed(1)}%</div>
+        <div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,Math.max(0,pct))}%;background:${barCol};"></div></div>
+      </td>
+      <td class="${varClass}">${remaining>=0?'+':''}${fmt(remaining)}</td>
     </tr>`;
-    html+=`<tr id="var-sub-${k.toLowerCase()}" style="display:none;"><td colspan="6" style="padding:0;">
-      <table style="width:100%;border-collapse:collapse;">
-      <thead><tr style="background:rgba(41,171,226,0.05);">
-        <th style="padding:5px 12px 5px 48px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:left;font-weight:500;">Element</th>
-        <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;text-align:right;font-weight:500;">Budget (RM)</th>
-        <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;text-align:right;font-weight:500;">Certified (RM)</th>
-        <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;text-align:right;font-weight:500;">Remaining (RM)</th>
-        <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;text-align:right;font-weight:500;">% Spent</th>
-      </tr></thead>`;
-    BQ[k].subs.forEach(sub=>{
-      html+=`<tr style="background:rgba(41,171,226,0.02);" onmouseover="this.style.background='rgba(41,171,226,0.06)'" onmouseout="this.style.background='rgba(41,171,226,0.02)'">
-        <td style="padding:7px 12px 7px 48px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(100,120,160,0.08);">${sub.label}</td>
-        <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);">${fmt(sub.budget)}</td>
-        <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:var(--muted);">—</td>
-        <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);">${fmt(sub.budget)}</td>
-        <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:var(--muted);">0.0%</td>
-      </tr>`;
-    });
-    html+=`</table></td></tr>`;
+
+    // Sub-rows (hidden by default)
+    if (SUB_ITEMS[k]) {
+      html += `<tr id="${subId}" style="display:none;"><td colspan="6" style="padding:0;">
+        <table style="width:100%;border-collapse:collapse;">
+        <thead><tr style="background:rgba(41,171,226,0.05);">
+          <th style="padding:5px 12px 5px 48px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:left;font-weight:500;">Element</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Budget (RM)</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Certified (RM)</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Remaining (RM)</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">% Spent</th>
+          <th style="padding:5px 12px;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;text-align:right;font-weight:500;">Variance</th>
+        </tr></thead>`;
+      SUB_ITEMS[k].forEach(([label, subBudget, subCertified]) => {
+        const cert    = subCertified || 0;
+        const rem     = subBudget - cert;
+        const spentPct = cert / subBudget * 100;
+        const barW    = Math.min(100, Math.max(0, spentPct));
+        const barCol  = spentPct > 100 ? '#c0392b' : spentPct > 80 ? '#e67e22' : '#29ABE2';
+        const remCol  = rem >= 0 ? '#1a6fa8' : '#c0392b';
+        const varSign = rem >= 0 ? '+' : '';
+        const varCol  = rem >= 0 ? '#1a8c5a' : '#c0392b';
+        const subPctOfBill = subBudget / budget * 100;
+        html += `<tr style="background:rgba(41,171,226,0.02);" onmouseover="this.style.background='rgba(41,171,226,0.06)'" onmouseout="this.style.background='rgba(41,171,226,0.02)'">
+          <td style="padding:7px 12px 7px 48px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(100,120,160,0.08);">
+            ${label}
+            <span style="font-family:var(--mono);font-size:9px;color:var(--border);margin-left:6px;">${subPctOfBill.toFixed(1)}% of bill</span>
+          </td>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:var(--text);">${fmt(subBudget)}</td>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${cert>0?'var(--accent2)':'var(--muted)'};">${cert > 0 ? fmt(cert) : '—'}</td>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${remCol};">${fmt(Math.abs(rem))}</td>
+          <td style="padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);min-width:100px;">
+            <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+              <div style="font-family:var(--mono);font-size:10px;color:${cert>0?barCol:'var(--muted)'};">${cert > 0 ? spentPct.toFixed(1) + '%' : '0.0%'}</div>
+              <div style="width:60px;height:4px;background:var(--border);border-radius:2px;flex-shrink:0;">
+                <div style="height:100%;width:${cert>0?barW:0}%;background:${barCol};border-radius:2px;"></div>
+              </div>
+            </div>
+          </td>
+          <td style="text-align:right;font-family:var(--mono);font-size:11px;padding:7px 12px;border-bottom:1px solid rgba(100,120,160,0.08);color:${varCol};">${cert > 0 ? varSign + fmt(rem) : '—'}</td>
+        </tr>`;
+      });
+      html += `</table></td></tr>`;
+    }
   });
-  const totalRemaining=gt-totalSpent;
-  const totalPct=totalSpent/gt*100;
-  html+=`<tr class="var-total"><td><strong>TOTAL</strong></td><td><strong>${fmt(gt)}</strong></td><td style="color:var(--accent2);font-weight:700;">${totalSpent>0?fmt(totalSpent):'—'}</td><td class="${totalRemaining>=0?'positive':'negative'}"><strong>${fmt(Math.abs(totalRemaining))}</strong></td><td><div style="text-align:right;font-size:11px;margin-bottom:3px;font-weight:700;">${totalPct.toFixed(1)}%</div><div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,totalPct)}%;background:#0D2080;"></div></div></td><td class="${totalRemaining>=0?'positive':'negative'}"><strong>${totalRemaining>=0?'+':''}${fmt(totalRemaining)}</strong></td></tr>`;
-  tbody.innerHTML=html;
+
+  // Total row
+  const totalRemaining = TOTAL_BUDGET - totalSpent;
+  const totalPct = totalSpent / TOTAL_BUDGET * 100;
+  const tVarClass = totalRemaining >= 0 ? 'positive' : 'negative';
+  html += `<tr class="var-total">
+    <td><strong>TOTAL</strong></td>
+    <td><strong>${fmt(TOTAL_BUDGET)}</strong></td>
+    <td style="color:var(--accent2);font-weight:700;">${totalSpent > 0 ? fmt(totalSpent) : '—'}</td>
+    <td class="${tVarClass}"><strong>${fmt(Math.abs(totalRemaining))}</strong></td>
+    <td>
+      <div style="text-align:right;font-size:11px;margin-bottom:3px;font-weight:700;">${totalPct.toFixed(1)}%</div>
+      <div class="pct-bar-wrap"><div class="pct-bar-spent" style="width:${Math.min(100,totalPct)}%;background:#0D2080;"></div></div>
+    </td>
+    <td class="${tVarClass}"><strong>${totalRemaining>=0?'+':''}${fmt(totalRemaining)}</strong></td>
+  </tr>`;
+  tbody.innerHTML = html;
 }
 
 function toggleVarSub(k) {
-  const row=document.getElementById('var-sub-'+k.toLowerCase());
-  const icon=document.getElementById('varicon-'+k);
-  if(!row) return;
-  const isOpen=row.style.display==='none'||row.style.display==='';
-  row.style.display=isOpen?'table-row':'none';
-  if(icon) icon.textContent=isOpen?'▼':'▶';
+  const row  = document.getElementById('var-sub-' + k.toLowerCase());
+  const icon = document.getElementById('varicon-' + k);
+  if (!row) return;
+  const isOpen = row.style.display === 'none' || row.style.display === '';
+  row.style.display = isOpen ? 'table-row' : 'none';
+  if (icon) icon.textContent = isOpen ? '▼' : '▶';
 }
 
 function renderMonthlySummary() {
-  const container=document.getElementById('monthly-summary-container');
-  const gt=grandTotal();
-  if(entries.length===0){container.innerHTML='<div class="empty-state" style="padding:30px;"><div class="es-icon">📊</div><p>No expenditure data recorded yet.</p></div>';return;}
-  let html=`<table class="ledger-table"><thead><tr><th>Month</th><th style="text-align:right">Certified excl SST</th><th style="text-align:right;color:#c0392b;">SST</th><th style="text-align:right">Total incl SST</th><th style="text-align:right">Cumulative excl SST</th><th style="text-align:right">% of Budget</th><th>Note</th></tr></thead><tbody>`;
-  let cum=0;
-  entries.forEach(e=>{
-    const sst=(e.sst&&e.sst.lift||0)+(e.sst&&e.sst.acmv||0)+(e.sst&&e.sst.other||0);
-    const sub=e.subtotal||(e.total-sst);
-    cum+=sub;
-    const pct=cum/gt*100;
-    html+=`<tr><td><span class="month-badge">${fmtMonth(e.month)}</span></td><td style="text-align:right;font-family:var(--mono);color:var(--accent2);">${fmt(sub)}</td><td style="text-align:right;font-family:var(--mono);color:${sst>0?'#c0392b':'var(--muted)'};">${sst>0?fmt(sst):'—'}</td><td style="text-align:right;font-family:var(--mono);font-weight:700;color:#0D2080;">${fmt(e.total)}</td><td style="text-align:right;font-family:var(--mono);">${fmt(cum)}</td><td style="text-align:right;font-family:var(--mono);">${pct.toFixed(2)}%</td><td style="font-size:12px;color:var(--muted);">${e.note||'—'}</td></tr>`;
+  const container = document.getElementById('monthly-summary-container');
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:30px;"><div class="es-icon">📊</div><p>No expenditure data recorded yet.</p></div>';
+    return;
+  }
+  let html = `<table class="ledger-table"><thead><tr>
+    <th>Month</th>
+    <th style="text-align:right">Certified excl SST (RM)</th>
+    <th style="text-align:right;color:#c0392b;">SST (RM)</th>
+    <th style="text-align:right">Total incl SST (RM)</th>
+    <th style="text-align:right">Cumulative excl SST (RM)</th>
+    <th style="text-align:right">% of Budget</th>
+    <th>Note</th>
+  </tr></thead><tbody>`;
+  let cum = 0;
+  entries.forEach(e => {
+    const sstTotal = ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0);
+    const subtotal = e.subtotal || (e.total - sstTotal);
+    cum += subtotal;
+    const pct = cum / TOTAL_BUDGET * 100;
+    html += `<tr>
+      <td><span class="month-badge">${fmtMonth(e.month)}</span></td>
+      <td style="text-align:right;font-family:var(--mono);color:var(--accent2);">${fmt(subtotal)}</td>
+      <td style="text-align:right;font-family:var(--mono);color:${sstTotal>0?'#c0392b':'var(--muted)'};">${sstTotal>0?fmt(sstTotal):'—'}</td>
+      <td style="text-align:right;font-family:var(--mono);font-weight:700;color:#0D2080;">${fmt(e.total)}</td>
+      <td style="text-align:right;font-family:var(--mono);">${fmt(cum)}</td>
+      <td style="text-align:right;font-family:var(--mono);">${pct.toFixed(2)}%</td>
+      <td style="font-size:12px;color:var(--muted);">${e.note || '—'}</td>
+    </tr>`;
   });
-  html+='</tbody></table>';
-  container.innerHTML=html;
+  html += '</tbody></table>';
+  container.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// S-CURVE
-// ═══════════════════════════════════════════════════════════════════
+// ─── S-CURVE CANVAS ──────────────────────────────────────────────────────────
 function renderSCurve() {
-  const canvas=document.getElementById('scurve');
-  const ctx=canvas.getContext('2d');
-  const dpr=window.devicePixelRatio||1;
-  const W=canvas.offsetWidth, H=280;
-  canvas.width=W*dpr; canvas.height=H*dpr;
-  ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,W,H);
-  const PAD={top:20,right:30,bottom:50,left:80};
-  const cW=W-PAD.left-PAD.right, cH=H-PAD.top-PAD.bottom;
-  const CONTRACT_MONTHS=14;
-  const gt=grandTotal();
-  const budgetPoints=Array.from({length:CONTRACT_MONTHS+1},(_,m)=>({x:m,y:(gt/CONTRACT_MONTHS)*m}));
-  const actualPoints=[{x:0,y:0}];
-  if(entries.length>0){
-    const start=entries[0].month;
-    let cum=0;
-    entries.forEach(e=>{
-      cum+=e.total;
-      const diff=monthDiff(start,e.month)+1;
-      actualPoints.push({x:diff,y:cum});
+  const canvas = document.getElementById('scurve');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth;
+  const H = 280;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  const PAD = { top: 20, right: 30, bottom: 50, left: 80 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+
+  const CONTRACT_MONTHS = 14;
+
+  // Build data points
+  // Budget: linear baseline over 14 months
+  const budgetPoints = [];
+  for (let m = 0; m <= CONTRACT_MONTHS; m++) {
+    budgetPoints.push({ x: m, y: (TOTAL_BUDGET / CONTRACT_MONTHS) * m });
+  }
+
+  // Actual: from entries
+  const actualPoints = [{ x: 0, y: 0 }];
+  if (entries.length > 0) {
+    const startMonth = entries[0].month;
+    let cum = 0;
+    entries.forEach((e, i) => {
+      cum += e.total;
+      const diff = monthDiff(startMonth, e.month) + 1;
+      actualPoints.push({ x: diff, y: cum });
     });
   }
-  function cx(x){return PAD.left+(x/CONTRACT_MONTHS)*cW;}
-  function cy(y){return PAD.top+cH-(y/gt)*cH;}
-  ctx.strokeStyle='#c8d4e3'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
-  for(let m=0;m<=CONTRACT_MONTHS;m++){ctx.beginPath();ctx.moveTo(cx(m),PAD.top);ctx.lineTo(cx(m),PAD.top+cH);ctx.stroke();}
-  for(let i=0;i<=6;i++){const y=(gt/6)*i;ctx.beginPath();ctx.moveTo(PAD.left,cy(y));ctx.lineTo(PAD.left+cW,cy(y));ctx.stroke();}
+
+  const maxX = CONTRACT_MONTHS;
+  const maxY = TOTAL_BUDGET;
+
+  function cx(x) { return PAD.left + (x / maxX) * cW; }
+  function cy(y) { return PAD.top + cH - (y / maxY) * cH; }
+
+  // Grid
+  ctx.strokeStyle = '#c8d4e3';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  for (let m = 0; m <= CONTRACT_MONTHS; m++) {
+    ctx.beginPath(); ctx.moveTo(cx(m), PAD.top); ctx.lineTo(cx(m), PAD.top + cH); ctx.stroke();
+  }
+  const ySteps = 6;
+  for (let i = 0; i <= ySteps; i++) {
+    const y = (maxY / ySteps) * i;
+    ctx.beginPath(); ctx.moveTo(PAD.left, cy(y)); ctx.lineTo(PAD.left + cW, cy(y)); ctx.stroke();
+  }
   ctx.setLineDash([]);
-  ctx.strokeStyle='#c8d4e3'; ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(PAD.left,PAD.top);ctx.lineTo(PAD.left,PAD.top+cH);ctx.lineTo(PAD.left+cW,PAD.top+cH);ctx.stroke();
-  ctx.font=`10px 'DM Mono',monospace`; ctx.fillStyle='#58595B'; ctx.textAlign='right';
-  for(let i=0;i<=6;i++){const y=(gt/6)*i;ctx.fillText('RM '+fmtM(y),PAD.left-8,cy(y)+3);}
-  ctx.textAlign='center';
-  for(let m=0;m<=CONTRACT_MONTHS;m++){ctx.fillText('M'+m,cx(m),PAD.top+cH+18);}
-  ctx.fillStyle='#0D2080'; ctx.font=`bold 10px 'DM Mono',monospace`;
-  ctx.fillText('CONTRACT MONTH',PAD.left+cW/2,H-4);
-  ctx.strokeStyle='#0D2080'; ctx.lineWidth=2; ctx.setLineDash([8,5]);
+
+  // Axes
+  ctx.strokeStyle = '#c8d4e3';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(PAD.left, PAD.top); ctx.lineTo(PAD.left, PAD.top + cH); ctx.lineTo(PAD.left + cW, PAD.top + cH); ctx.stroke();
+
+  // Y-axis labels
+  ctx.font = `10px 'DM Mono', monospace`;
+  ctx.fillStyle = '#58595B';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= ySteps; i++) {
+    const y = (maxY / ySteps) * i;
+    ctx.fillText('RM ' + fmtM(y), PAD.left - 8, cy(y) + 3);
+  }
+
+  // X-axis labels
+  ctx.textAlign = 'center';
+  for (let m = 0; m <= CONTRACT_MONTHS; m++) {
+    ctx.fillStyle = '#58595B';
+    ctx.fillText('M' + m, cx(m), PAD.top + cH + 18);
+  }
+  ctx.fillStyle = '#0D2080';
+  ctx.font = `bold 10px 'DM Mono', monospace`;
+  ctx.fillText('CONTRACT MONTH', PAD.left + cW / 2, H - 4);
+
+  // Budget line (navy dashed)
+  ctx.strokeStyle = '#0D2080';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 5]);
   ctx.beginPath();
-  budgetPoints.forEach((p,i)=>{i===0?ctx.moveTo(cx(p.x),cy(p.y)):ctx.lineTo(cx(p.x),cy(p.y));});
-  ctx.stroke(); ctx.setLineDash([]);
-  if(actualPoints.length>1){
-    ctx.strokeStyle='#29ABE2'; ctx.lineWidth=2.5;
+  budgetPoints.forEach((p, i) => {
+    i === 0 ? ctx.moveTo(cx(p.x), cy(p.y)) : ctx.lineTo(cx(p.x), cy(p.y));
+  });
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Actual line (sky blue solid)
+  if (actualPoints.length > 1) {
+    ctx.strokeStyle = '#29ABE2';
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
-    actualPoints.forEach((p,i)=>{i===0?ctx.moveTo(cx(p.x),cy(p.y)):ctx.lineTo(cx(p.x),cy(p.y));});
+    actualPoints.forEach((p, i) => {
+      i === 0 ? ctx.moveTo(cx(p.x), cy(p.y)) : ctx.lineTo(cx(p.x), cy(p.y));
+    });
     ctx.stroke();
-    ctx.fillStyle='rgba(41,171,226,0.08)';
+
+    // Fill area under actual
+    ctx.fillStyle = 'rgba(41,171,226,0.08)';
     ctx.beginPath();
-    actualPoints.forEach((p,i)=>{i===0?ctx.moveTo(cx(p.x),cy(p.y)):ctx.lineTo(cx(p.x),cy(p.y));});
-    ctx.lineTo(cx(actualPoints[actualPoints.length-1].x),cy(0));ctx.lineTo(cx(0),cy(0));ctx.closePath();ctx.fill();
-    actualPoints.forEach(p=>{ctx.fillStyle='#29ABE2';ctx.beginPath();ctx.arc(cx(p.x),cy(p.y),4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx(p.x),cy(p.y),2,0,Math.PI*2);ctx.fill();});
+    actualPoints.forEach((p, i) => {
+      i === 0 ? ctx.moveTo(cx(p.x), cy(p.y)) : ctx.lineTo(cx(p.x), cy(p.y));
+    });
+    ctx.lineTo(cx(actualPoints[actualPoints.length-1].x), cy(0));
+    ctx.lineTo(cx(0), cy(0));
+    ctx.closePath();
+    ctx.fill();
+
+    // Dots on actual
+    actualPoints.forEach(p => {
+      ctx.fillStyle = '#29ABE2';
+      ctx.beginPath();
+      ctx.arc(cx(p.x), cy(p.y), 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(cx(p.x), cy(p.y), 2, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Variance annotation at last point
+    const last = actualPoints[actualPoints.length - 1];
+    const budgetAtLast = (TOTAL_BUDGET / CONTRACT_MONTHS) * last.x;
+    const diff = last.y - budgetAtLast;
+    const diffLabel = (diff >= 0 ? '+' : '') + 'RM ' + fmtM(Math.abs(diff));
+    ctx.font = `bold 10px 'DM Mono', monospace`;
+    ctx.fillStyle = diff >= 0 ? '#c0392b' : '#1a8c5a';
+    ctx.textAlign = 'left';
+    const lx = cx(last.x) + 8;
+    const ly = cy(last.y) - 4;
+    ctx.fillText(diffLabel, Math.min(lx, W - 80), ly);
+    ctx.font = `9px 'DM Mono', monospace`;
+    ctx.fillStyle = '#58595B';
+    ctx.fillText(diff >= 0 ? 'over baseline' : 'under baseline', Math.min(lx, W - 80), ly + 13);
   } else {
-    ctx.fillStyle='#c8d4e3'; ctx.font=`11px 'EB Garamond',serif`; ctx.textAlign='center';
-    ctx.fillText('No expenditure data yet — add entries in the Monthly Expenditure tab',PAD.left+cW/2,PAD.top+cH/2);
+    // No data message
+    ctx.fillStyle = '#c8d4e3';
+    ctx.font = `11px 'EB Garamond', serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('No expenditure data yet — add entries in the Monthly Expenditure tab', PAD.left + cW/2, PAD.top + cH/2);
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// EXPORT CSV (IPC entries)
-// ═══════════════════════════════════════════════════════════════════
-function exportCSV() {
-  if(entries.length===0){showToast('No data to export.');return;}
-  let csv='Month,Note,'+BILL_KEYS.join(',')+',SST Total,Subtotal excl SST,Total incl SST\n';
-  entries.forEach(e=>{
-    const sst=(e.sst&&e.sst.lift||0)+(e.sst&&e.sst.acmv||0)+(e.sst&&e.sst.other||0);
-    const sub=e.subtotal||(e.total-sst);
-    csv+=fmtMonth(e.month)+',"'+(e.note||'")'+','+BILL_KEYS.map(k=>(e.bills[k]||0).toFixed(2)).join(',')+','+sst.toFixed(2)+','+sub.toFixed(2)+','+e.total.toFixed(2)+'\n';
-  });
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='Syntec_IPC_Expenditure.csv';
-  a.click();
-  showToast('CSV exported.');
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function fmt(n) {
+  return Number(n).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtM(n) {
+  if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(2) + 'M';
+  if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(1) + 'K';
+  return n.toFixed(0);
+}
+function fmtMonth(ym) {
+  const [y, m] = ym.split('-');
+  const names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return names[parseInt(m)-1] + ' ' + y;
+}
+function monthDiff(start, end) {
+  const [sy, sm] = start.split('-').map(Number);
+  const [ey, em] = end.split('-').map(Number);
+  return (ey - sy) * 12 + (em - sm);
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════════════════════════
-function fmt(n){return Number(n).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function fmtM(n){if(Math.abs(n)>=1e6)return(n/1e6).toFixed(2)+'M';if(Math.abs(n)>=1e3)return(n/1e3).toFixed(1)+'K';return n.toFixed(0);}
-function fmtMonth(ym){const[y,m]=ym.split('-');const names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return names[parseInt(m)-1]+' '+y;}
-function monthDiff(start,end){const[sy,sm]=start.split('-').map(Number);const[ey,em]=end.split('-').map(Number);return(ey-sy)*12+(em-sm);}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+// ─── EXPORT CSV ──────────────────────────────────────────────────────────────
+function exportCSV() {
+  if (entries.length === 0) { showToast('No data to export.'); return; }
+  let csv = 'Month,Note,' + BILL_KEYS.join(',') + ',SST Lift,SST ACMV,SST Other,SST Total,Subtotal (excl SST),Total incl SST,Cumulative excl SST\n';
+  let cum = 0;
+  entries.forEach(e => {
+    const sstLift  = (e.sst&&e.sst.lift)  || 0;
+    const sstAcmv  = (e.sst&&e.sst.acmv)  || 0;
+    const sstOther = (e.sst&&e.sst.other) || 0;
+    const sstTotal = sstLift + sstAcmv + sstOther;
+    const subtotal = e.subtotal || (e.total - sstTotal);
+    cum += subtotal;
+    const row = [
+      fmtMonth(e.month), '"' + (e.note||'') + '"',
+      ...BILL_KEYS.map(k => (e.bills[k]||0).toFixed(2)),
+      sstLift.toFixed(2), sstAcmv.toFixed(2), sstOther.toFixed(2),
+      sstTotal.toFixed(2), subtotal.toFixed(2), e.total.toFixed(2), cum.toFixed(2)
+    ];
+    csv += row.join(',') + '\n';
+  });
+  const bTotals = BILL_KEYS.map(k => entries.reduce((s,e) => s + (e.bills[k]||0), 0));
+  const grandSST = entries.reduce((s,e) => s + ((e.sst&&e.sst.lift)||0) + ((e.sst&&e.sst.acmv)||0) + ((e.sst&&e.sst.other)||0), 0);
+  csv += '\nBQ Budget,' + BILL_KEYS.map(k => BQ[k].budget.toFixed(2)).join(',') + ',,,,,' + TOTAL_BUDGET.toFixed(2) + '\n';
+  csv += 'Total Certified,' + bTotals.map(v=>v.toFixed(2)).join(',') + ',,,' + grandSST.toFixed(2) + ',,,' + entries.reduce((s,e)=>s+e.total,0).toFixed(2) + '\n';
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Syntec_BQ_Expenditure_SST.csv';
+  a.click();
+  showToast('CSV exported with SST breakdown.');
+}
 
-// ═══════════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════════
-window.addEventListener('load', ()=>{
+// ─── BQ TABLE RENDER (DYNAMIC + EDITABLE) ────────────────────────────────────
+
+const BILL_META = {
+  B1:  { desc: 'Preliminaries',                    sub: 'Ref F1/14',                       type: 'fixed',  color: '#29ABE2', subId: 'b1' },
+  B2:  { desc: 'Piling, Pilecap, Stump & Shearwall', sub: 'Ref F2/4/1 — All Provisional', type: 'prov',   color: '#3a82b8', subId: 'b2' },
+  B3:  { desc: 'Main Building Works',               sub: 'Ref F3/21/1 — 20 elements',      type: 'fixed',  color: '#0D2080', subId: 'b3' },
+  B4:  { desc: 'Local Infrastructure Works',        sub: 'Ref F4/12/1 — All Provisional',  type: 'prov',   color: '#2668a8', subId: 'b4' },
+  B5a: { desc: 'Cold Water & Sanitary Plumbing',    sub: '3 sections',                      type: 'fixed',  color: '#29ABE2', subId: 'b5a' },
+  B5b: { desc: 'Electrical, Telephone & ELV Works', sub: '8 sections',                     type: 'fixed',  color: '#29ABE2', subId: 'b5b' },
+  B5c: { desc: 'Fire Protection Services',          sub: '7 sections',                      type: 'fixed',  color: '#c0392b', subId: 'b5c' },
+  B6:  { desc: 'Prime Cost & Provisional Sums',     sub: 'PC + Provisional + P&A',          type: 'pc',     color: '#1a6fa8', subId: 'b6' },
+};
+const TYPE_TAG = {
+  fixed: '<span class="bill-tag tag-fixed">Fixed</span>',
+  prov:  '<span class="bill-tag tag-provisional">Provisional</span>',
+  pc:    '<span class="bill-tag tag-pc">PC / Prov</span>',
+};
+
+let budgetEditMode = false;
+
+function renderBQTable() {
+  const total = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
+  const maxBudget = Math.max(...BILL_KEYS.map(k => BQ[k].budget));
+
+  let html = `<table class="bill-table" id="bq-main-table" class="${budgetEditMode?'edit-mode':''}">
+    <thead><tr>
+      <th style="width:28px;"></th>
+      <th>Bill</th><th>Description</th><th>Type</th>
+      <th>% Share</th>
+      <th style="text-align:right">BQ Budget (RM)</th>
+    </tr></thead><tbody>`;
+
+  BILL_KEYS.forEach(k => {
+    const b    = BQ[k].budget;
+    const def  = BQ_DEFAULTS[k].budget;
+    const pct  = total > 0 ? (b / total * 100) : 0;
+    const barW = total > 0 ? (b / maxBudget * 100) : 0;
+    const meta = BILL_META[k];
+    const isChanged = Math.abs(b - def) > 0.01;
+    const changedClass = isChanged ? (b > def ? 'budget-increased' : 'budget-decreased') : '';
+
+    html += `<tr>
+      <td><button class="expand-btn" onclick="toggleSub('${meta.subId}')" id="btn-${meta.subId}">▶</button></td>
+      <td><span class="bill-ref">${k}</span></td>
+      <td>
+        <div class="bill-name">${meta.desc}</div>
+        <div class="bill-sub">${meta.sub}${isChanged ? ' <span style="color:#c0392b;font-size:9px;">● Modified</span>' : ''}</div>
+      </td>
+      <td>${TYPE_TAG[meta.type]}</td>
+      <td>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${barW.toFixed(1)}%;background:${meta.color};"></div></div>
+        <div class="bill-pct">${pct.toFixed(1)}%</div>
+      </td>
+      <td class="bill-amount budget-cell">
+        <span class="budget-display ${changedClass}" style="${isChanged?'color:#c0392b;':''}">${fmt(b)}</span>
+        <input type="number" class="budget-input" id="bi-${k}" value="${b.toFixed(2)}" step="0.01" min="0"
+          onchange="onBudgetInputChange('${k}', this.value)"
+          oninput="onBudgetInputChange('${k}', this.value)"
+          style="${budgetEditMode?'display:inline-block':'display:none'}"/>
+      </td>
+    </tr>`;
+  });
+
+  // Total row
+  const totalChanged = Math.abs(total - 54000000) > 0.01;
+  html += `<tr class="total-row">
+    <td></td>
+    <td colspan="3"><strong>TOTAL CONTRACT SUM</strong>${totalChanged ? ' <span style="font-size:11px;color:#c0392b;">● Adjusted from SOT RM 54,000,000</span>' : ' <span style="font-size:11px;color:var(--muted);">— SOT Addendum TA1</span>'}</td>
+    <td><span style="font-family:var(--mono);font-size:10px;color:var(--accent)">100.0%</span></td>
+    <td class="bill-amount" style="${totalChanged?'color:#c0392b;':''}"><span id="bq-total-amt">${fmt(total)}</span></td>
+  </tr>`;
+
+  html += '</tbody></table>';
+  document.getElementById('bq-table-container').innerHTML = html;
+
+  // Restore sub-row open states
+  document.querySelectorAll('.sub-rows').forEach(el => {
+    if (el.classList.contains('open')) {
+      const id = el.id.replace('sub-', '');
+      const btn = document.getElementById('btn-' + id);
+      if (btn) btn.textContent = '▼';
+    }
+  });
+
+  // Apply edit mode styles
+  if (budgetEditMode) {
+    document.getElementById('bq-main-table').classList.add('edit-mode');
+    document.querySelectorAll('.budget-input').forEach(el => el.style.display = 'inline-block');
+    document.querySelectorAll('.budget-display').forEach(el => el.style.display = 'none');
+  }
+
+  // Update live total in banner
+  updateLiveTotalDisplay();
+}
+
+function onBudgetInputChange(k, val) {
+  const v = parseFloat(val);
+  if (isNaN(v) || v < 0) return;
+  BQ[k].budget = v;
+  updateTotalBudget();
+  updateLiveTotalDisplay();
+}
+
+function updateLiveTotalDisplay() {
+  const total = BILL_KEYS.reduce((s,k) => s + BQ[k].budget, 0);
+  const el = document.getElementById('live-total');
+  if (!el) return;
+  const changed = Math.abs(total - 54000000) > 0.01;
+  el.textContent = 'RM ' + fmt(total);
+  el.className = 'live-total-display' + (changed ? ' changed' : '');
+}
+
+function toggleBudgetEdit() {
+  budgetEditMode = !budgetEditMode;
+  const btn = document.getElementById('edit-budget-btn');
+  const banner = document.getElementById('edit-banner');
+  if (budgetEditMode) {
+    btn.textContent = '✕ Cancel Edit';
+    btn.style.background = 'rgba(192,57,43,0.08)';
+    btn.style.color = '#c0392b';
+    btn.style.borderColor = 'rgba(192,57,43,0.3)';
+    banner.classList.add('visible');
+  } else {
+    // Cancel — reload from localStorage (discard unsaved changes)
+    BQ = loadBQ();
+    updateTotalBudget();
+    btn.textContent = '✏ Edit Budget';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    banner.classList.remove('visible');
+  }
   renderBQTable();
-  renderLedger();
+}
+
+function saveBudgetEdits() {
+  // Read all input values before saving
+  BILL_KEYS.forEach(k => {
+    const el = document.getElementById('bi-' + k);
+    if (el) {
+      const v = parseFloat(el.value);
+      if (!isNaN(v) && v >= 0) BQ[k].budget = v;
+    }
+  });
+  updateTotalBudget();
+  saveBQ();
+  budgetEditMode = false;
+  const btn = document.getElementById('edit-budget-btn');
+  btn.textContent = '✏ Edit Budget';
+  btn.style.background = '';
+  btn.style.color = '';
+  btn.style.borderColor = '';
+  document.getElementById('edit-banner').classList.remove('visible');
+  renderBQTable();
   renderVariance();
-});
-window.addEventListener('resize',()=>{
-  if(document.getElementById('tab-variance').classList.contains('active')) renderSCurve();
-  renderDonut();
+  showToast('Budget updated and saved.');
+}
+
+// ─── SUB-ITEM EXPAND / COLLAPSE ─────────────────────────────────────────────
+function toggleSub(id) {
+  const rows = document.getElementById('sub-' + id);
+  const btn  = document.getElementById('btn-' + id);
+  if (!rows) return;
+  const isOpen = rows.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  btn.textContent = isOpen ? '▼' : '▶';
+  // Update expand-all button state
+  const allSubs = document.querySelectorAll('.sub-rows');
+  const openCount = document.querySelectorAll('.sub-rows.open').length;
+  const expandBtn = document.getElementById('expand-all-btn');
+  if (expandBtn) expandBtn.textContent = openCount === allSubs.length ? '▼ Collapse All' : '▶ Expand All';
+}
+
+function toggleAllSubs() {
+  const allSubs = document.querySelectorAll('.sub-rows');
+  const openCount = document.querySelectorAll('.sub-rows.open').length;
+  const shouldOpen = openCount < allSubs.length;
+  allSubs.forEach(el => {
+    const id = el.id.replace('sub-', '');
+    const btn = document.getElementById('btn-' + id);
+    el.classList.toggle('open', shouldOpen);
+    if (btn) { btn.classList.toggle('open', shouldOpen); btn.textContent = shouldOpen ? '▼' : '▶'; }
+  });
+  const expandBtn = document.getElementById('expand-all-btn');
+  if (expandBtn) expandBtn.textContent = shouldOpen ? '▼ Collapse All' : '▶ Expand All';
+}
+// ─── INIT ────────────────────────────────────────────────────────────────────
+renderBQTable();
+renderLedger();
+renderVariance();
+
+window.addEventListener('resize', () => {
+  if (document.getElementById('tab-variance').classList.contains('active')) renderSCurve();
 });
 </script>
 </body>
