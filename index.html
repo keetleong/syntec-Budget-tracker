@@ -438,6 +438,7 @@ const RISKS = [
 let BQ, PF, APF, bqEM=false, pfEM=false, apfEM=false, bqBk, pfBk, apfBk, lmIdx=null;
 
 function init(){
+  loadSISSTFromLS();
   BQ=JSON.parse(JSON.stringify(SOT_DEF));
   try{const s=JSON.parse(localStorage.getItem('s_bq')||'{}');Object.keys(s).forEach(k=>{if(BQ[k]){BQ[k].budget=s[k].budget??BQ[k].budget;BQ[k].sr=s[k].sr??BQ[k].sr;BQ[k].sm=s[k].sm??null;}});}catch(e){}
   PF=JSON.parse(JSON.stringify(PF_DEF));
@@ -454,6 +455,14 @@ const RM=n=>'RM '+fm(n);
 const pct=(n,d)=>d?(n/d*100).toFixed(1)+'%':'0.0%';
 const fmo=ym=>{if(!ym)return'';const[y,m]=ym.split('-');return['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1]+' '+y;};
 const bqSST=k=>{const b=BQ[k];if(b.sm!=null&&b.sm!=='')return parseFloat(b.sm);return b.budget*(b.sr/100);};
+const siKey=(k,gi,ii)=>`${k}-${gi}-${ii}`;
+// Sub-item SST state: keyed by "B1-0-2" etc.
+let SISST={};  // {key:{sr:6,sm:null}}
+function siSR(k,gi,ii){const x=SISST[siKey(k,gi,ii)];return x?x.sr:6;}
+function siSM(k,gi,ii){const x=SISST[siKey(k,gi,ii)];return x&&x.sm!=null?x.sm:null;}
+function siSSTAmt(k,gi,ii,budget){const sm=siSM(k,gi,ii);if(sm!=null)return parseFloat(sm);return budget*(siSR(k,gi,ii)/100);}
+function loadSISSTFromLS(){try{SISST=JSON.parse(localStorage.getItem('s_bq_si')||'{}');}catch(e){SISST={};}}
+function saveSISSTToLS(){localStorage.setItem('s_bq_si',JSON.stringify(SISST));}
 const pfSST=p=>{if(p.sm!=null&&p.sm!=='')return parseFloat(p.sm);return p.fee*(p.sr/100);};
 const totBQ=()=>Object.values(BQ).reduce((s,b)=>s+b.budget,0);
 const totBQSST=()=>Object.keys(BQ).reduce((s,k)=>s+bqSST(k),0);
@@ -526,12 +535,21 @@ function renderBQ(){
         </tr>`);
         grp.items.forEach((item,ii)=>{
           const ic=item.c||0,ip=item.b?ic/item.b*100:0;
+          const sisr=siSR(k,gi,ii),sism=siSM(k,gi,ii),sista=siSSTAmt(k,gi,ii,item.b);
+          const siSRCell=bqEM
+            ?`<input class="ei eis" id="sisr-${k}-${gi}-${ii}" value="${sisr}" type="number" min="0" max="20" step="1" oninput="onSISR('${k}',${gi},${ii})" style="width:58px">%`
+            :`<span style="color:#795548;font-size:.72rem">${sisr}%</span>`;
+          const siSMCell=bqEM
+            ?`<input class="ei eim" id="sism-${k}-${gi}-${ii}" value="${sism!=null?sism:''}" type="number" step="0.01" placeholder="auto: ${(item.b*sisr/100).toFixed(0)}" oninput="onSISM('${k}',${gi},${ii})" style="width:100px">`
+            :`<span style="color:#795548;font-size:.72rem">${sista>0?RM(sista):'—'}${sism!=null?'<span style="color:var(--amber);font-size:.6rem"> ✎</span>':''}</span>`;
+          const siTotal=bqEM?'<span style="color:var(--mut);font-size:.7rem">—</span>':sista>0?`<span style="font-size:.75rem">${RM(item.b+sista)}</span>`:'—';
           rows.push(`<tr class="ssr h" id="bsi-${k}-${gi}-${ii}">
             <td></td>
             <td style="padding-left:34px;font-size:.77rem">${item.l}</td>
             <td class="r" style="font-size:.77rem">${RM(item.b)}</td>
-            <td class="sc" style="font-size:.72rem">—</td><td class="sc" style="font-size:.72rem">—</td>
-            <td class="r" style="font-size:.77rem">—</td>
+            <td class="sc" style="font-size:.72rem">${siSRCell}</td>
+            <td class="sc" style="font-size:.72rem">${siSMCell}</td>
+            <td class="r" style="font-size:.77rem">${siTotal}</td>
             <td class="r" style="font-size:.72rem">${pct(item.b,b.budget)}</td>
             <td class="r" style="font-size:.77rem">${ic>0?RM(ic):'—'}</td>
             <td class="r"><div style="display:flex;align-items:center;gap:4px"><div class="pw" style="min-width:50px"><div class="pb" style="width:${Math.min(ip,100)}%"></div></div><span style="font-family:'DM Mono',monospace;font-size:.66rem">${ip.toFixed(0)}%</span></div></td>
@@ -569,12 +587,40 @@ function tBS(k){
 }
 
 function toggleBQEdit(){bqBk=JSON.parse(JSON.stringify(BQ));bqEM=true;document.getElementById('bq-ebt').style.display='none';document.getElementById('bq-eb').style.display='flex';document.getElementById('bq-ind').style.display='inline-block';renderBQ();}
+function onSISR(k,gi,ii){
+  const key=siKey(k,gi,ii);if(!SISST[key])SISST[key]={sr:6,sm:null};
+  SISST[key].sr=parseFloat(document.getElementById('sisr-'+k+'-'+gi+'-'+ii).value)||0;
+  SISST[key].sm=null;
+  const el=document.getElementById('sism-'+k+'-'+gi+'-'+ii);
+  if(el){el.value='';el.placeholder='auto: '+(SISST[key].sr*(parseFloat(document.getElementById('bei-'+k)?.value||BQ[k].budget)/Object.keys(SUBS[k]||{}).length).toFixed(0));}
+}
+function onSISM(k,gi,ii){
+  const key=siKey(k,gi,ii);if(!SISST[key])SISST[key]={sr:6,sm:null};
+  const v=document.getElementById('sism-'+k+'-'+gi+'-'+ii).value;
+  SISST[key].sm=v===''?null:parseFloat(v);
+}
 function onBI(k){BQ[k].budget=parseFloat(document.getElementById('bei-'+k).value)||0;updBI();const d=document.getElementById('bdlt-'+k);const dt=BQ[k].budget-SOT_DEF[k].budget;if(d){d.style.color=dt===0?'var(--mut)':dt>0?'var(--green)':'var(--red)';d.textContent=dt===0?'—':(dt>0?'+':'')+RM(dt);}document.getElementById('bq-tot').innerHTML=`<strong>${RM(totBQ())}</strong>`;}
 function onBSR(k){BQ[k].sr=parseFloat(document.getElementById('bsr-'+k).value)||0;BQ[k].sm=null;if(document.getElementById('bsm-'+k))document.getElementById('bsm-'+k).value='';}
 function onBSM(k){const v=document.getElementById('bsm-'+k).value;BQ[k].sm=v===''?null:parseFloat(v);}
 function updBI(){const tb=totBQ(),d=tb-SOT_SUM,el=document.getElementById('bq-ind');if(!el)return;if(Math.abs(d)<0.01){el.className='ind iok';el.textContent=`✓ ${RM(tb)} — matches SOT`;}else{el.className='ind ierr';el.textContent=`⚠ ${RM(tb)} — diverges ${d>0?'+':''}${RM(d)}`;}};
-function saveBQ(){Object.keys(BQ).forEach(k=>{const bi=document.getElementById('bei-'+k);if(bi)BQ[k].budget=parseFloat(bi.value)||0;const sr=document.getElementById('bsr-'+k);if(sr)BQ[k].sr=parseFloat(sr.value)||0;const sm=document.getElementById('bsm-'+k);if(sm)BQ[k].sm=sm.value===''?null:parseFloat(sm.value);});localStorage.setItem('s_bq',JSON.stringify(BQ));exitBQ();renderBQ();}
-function resetBQ(){BQ=JSON.parse(JSON.stringify(SOT_DEF));localStorage.removeItem('s_bq');exitBQ();renderBQ();}
+function saveBQ(){
+  Object.keys(BQ).forEach(k=>{
+    const bi=document.getElementById('bei-'+k);if(bi)BQ[k].budget=parseFloat(bi.value)||0;
+    const sr=document.getElementById('bsr-'+k);if(sr)BQ[k].sr=parseFloat(sr.value)||0;
+    const sm=document.getElementById('bsm-'+k);if(sm)BQ[k].sm=sm.value===''?null:parseFloat(sm.value);
+    // collect sub-item SST inputs
+    if(SUBS[k]){SUBS[k].forEach((grp,gi)=>{grp.items.forEach((item,ii)=>{
+      const key=siKey(k,gi,ii);
+      const sr2=document.getElementById('sisr-'+k+'-'+gi+'-'+ii);
+      const sm2=document.getElementById('sism-'+k+'-'+gi+'-'+ii);
+      if(sr2||sm2){if(!SISST[key])SISST[key]={sr:6,sm:null};if(sr2)SISST[key].sr=parseFloat(sr2.value)||0;if(sm2)SISST[key].sm=sm2.value===''?null:parseFloat(sm2.value);}
+    });});}
+  });
+  localStorage.setItem('s_bq',JSON.stringify(BQ));
+  saveSISSTToLS();
+  exitBQ();renderBQ();
+}
+function resetBQ(){BQ=JSON.parse(JSON.stringify(SOT_DEF));SISST={};localStorage.removeItem('s_bq');localStorage.removeItem('s_bq_si');exitBQ();renderBQ();}
 function cancelBQ(){BQ=bqBk;exitBQ();renderBQ();}
 function exitBQ(){bqEM=false;document.getElementById('bq-ebt').style.display='';document.getElementById('bq-eb').style.display='none';document.getElementById('bq-ind').style.display='none';}
 
