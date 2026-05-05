@@ -498,12 +498,12 @@ const SOT_DEF = {
 
 const SUBS = {
   B1:[{g:'Preliminary Items',items:[
-    {l:'Site Establishment & Facilities',b:380000},{l:'Site Management & Supervision',b:1200000},
-    {l:'Insurance & Performance Bond',b:650000},{l:'Quality Control & Testing',b:285000},
-    {l:'Safety & Environmental Compliance',b:320000},{l:'Temporary Works & Scaffolding',b:890000},
-    {l:'Water & Power for Construction',b:240000},{l:'Cleaning & Waste Disposal',b:180000},
-    {l:'Hoarding & Site Security',b:195000},{l:'Surveying & Setting Out',b:120000},
-    {l:'Defects Liability & Handover',b:330000},{l:'Other Preliminaries',b:1999232.18}
+    {l:'Site Establishment & Facilities',b:380000,c:60748.38},{l:'Site Management & Supervision',b:1200000,c:191837.00},
+    {l:'Insurance & Performance Bond',b:650000,c:103911.71},{l:'Quality Control & Testing',b:285000,c:45561.29},
+    {l:'Safety & Environmental Compliance',b:320000,c:51156.53},{l:'Temporary Works & Scaffolding',b:890000,c:142279.11},
+    {l:'Water & Power for Construction',b:240000,c:38367.40},{l:'Cleaning & Waste Disposal',b:180000,c:28775.55},
+    {l:'Hoarding & Site Security',b:195000,c:31173.51},{l:'Surveying & Setting Out',b:120000,c:19183.70},
+    {l:'Defects Liability & Handover',b:330000,c:52755.17},{l:'Other Preliminaries',b:1999232.18,c:319605.57}
   ]}],
   B2:[{g:'Piling Works',items:[
     {l:'RC Piles Supply & Drive',b:2702895.93,c:1897313.80},
@@ -569,6 +569,20 @@ const SUBS = {
 };
 
 const CERT = {B1:1085354.92,B2:2295021.73,B3:206770.14,B4:236444.02,B5a:0,B5b:0,B5c:0,B6:96900};
+
+// Cross-check: sub-item certified sums vs bill-level CERT
+function getCertCrossCheck(){
+  const results={};
+  Object.keys(CERT).forEach(k=>{
+    const subs=SUBS_STATE&&SUBS_STATE[k]?SUBS_STATE[k]:SUBS[k];
+    const subSum=subs?subs.reduce((s,g)=>s+g.items.reduce((s2,it)=>s2+(it.c||0),0),0):0;
+    const certTotal=CERT[k];
+    const custom=(CUSTOM_BQ_ITEMS[k]||[]).reduce((s,x)=>s+(x.certified||0),0);
+    const totalSubCert=subSum+custom;
+    results[k]={cert:certTotal,subSum:totalSubCert,diff:totalSubCert-certTotal,ok:Math.abs(totalSubCert-certTotal)<0.05};
+  });
+  return results;
+}
 
 // Custom BQ items added by user (extra rows per bill or standalone)
 let CUSTOM_BQ_ITEMS = {}; // {B1:[{id,label,budget,sst_rate,sst_manual,certified}], ...}
@@ -925,6 +939,25 @@ function renderBQ(){
     <td></td>${bqEM?'<td></td>':''}
   </tr>`);
 
+  // Cross-check certified row
+  const ccResults=getCertCrossCheck();
+  const ccFails=Object.entries(ccResults).filter(([k,v])=>!v.ok);
+  if(ccFails.length>0){
+    rows.push(`<tr style="background:#FFF3E0;border-top:1px solid var(--amber)">
+      <td colspan="2" style="font-family:'DM Mono',monospace;font-size:.66rem;color:#E65100;padding:6px 11px">
+        ⚠ CERTIFIED CROSS-CHECK: ${ccFails.map(([k,v])=>`${k} diff ${v.diff>0?'+':''}${RM(v.diff)}`).join(' · ')}
+        <span style="color:var(--mut);margin-left:8px">Sub-item certified sums do not match bill-level QS cert totals</span>
+      </td>
+      <td colspan="9"></td>${bqEM?'<td></td>':''}
+    </tr>`);
+  } else {
+    rows.push(`<tr style="background:#E8F5E9;border-top:1px solid #A5D6A7">
+      <td colspan="2" style="font-family:'DM Mono',monospace;font-size:.66rem;color:#1B5E20;padding:6px 11px">
+        ✓ CERTIFIED CROSS-CHECK PASSED — all bill-level QS cert totals match sub-item certified sums
+      </td>
+      <td colspan="9"></td>${bqEM?'<td></td>':''}
+    </tr>`);
+  }
   document.getElementById('bq-tb').innerHTML=rows.join('');
   document.getElementById('bq-dh').style.display=bqEM?'':'none';
   if(bqEM)updBI();
