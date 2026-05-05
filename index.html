@@ -314,6 +314,28 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
 </div>
 </main>
 
+<!-- SUB-ITEM EDIT MODAL -->
+<div class="overlay" id="si-modal">
+  <div class="modal" style="width:520px">
+    <h3 id="si-ttl">Edit Sub-Item</h3>
+    <div class="fg">
+      <div class="fi f"><label>Description</label>
+        <input type="text" id="si-desc" placeholder="e.g. RC Columns & Beams">
+      </div>
+      <div class="fi"><label>Budget (RM)</label>
+        <input type="number" id="si-budget" value="0" step="1000">
+      </div>
+      <div class="fi"><label>Certified to Date (RM)</label>
+        <input type="number" id="si-cert" value="0" step="0.01">
+      </div>
+    </div>
+    <div class="ma">
+      <button class="btn br2" onclick="closeSIModal()">Cancel</button>
+      <button class="btn ba" id="si-save-btn" onclick="saveSIModal()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- CUSTOM BQ ITEM MODAL -->
 <div class="overlay" id="cbq-modal">
   <div class="modal" style="width:520px">
@@ -613,6 +635,7 @@ let BQ, PF, APF, bqEM=false, pfEM=false, apfEM=false, bqBk, pfBk, apfBk, lmIdx=n
 function init(){
   loadSISSTFromLS();
   loadCustomBQ();
+  initSubsState();
   LL=JSON.parse(JSON.stringify(LL_DEF));
   try{const s=JSON.parse(localStorage.getItem('s_ll')||'[]');s.forEach((x,i)=>{if(LL[i]){LL[i].amtRM=x.amtRM??LL[i].amtRM;LL[i].amtUSD=x.amtUSD??null;LL[i].rate=x.rate??null;LL[i].sst=x.sst??LL[i].sst;}});}catch(e){}
   BQ=JSON.parse(JSON.stringify(SOT_DEF));
@@ -664,6 +687,72 @@ function showTab(n,btn){
 // ════════════════════════════════════
 // BQ
 // ════════════════════════════════════
+// ════════════════════════════════════
+// SUB-ITEM ADD/EDIT/DELETE
+// ════════════════════════════════════
+// SUBS_STATE: mutable copy of SUBS (user edits tracked here)
+let SUBS_STATE;
+function initSubsState(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('s_subs')||'null');
+    SUBS_STATE=saved||JSON.parse(JSON.stringify(
+      Object.fromEntries(Object.entries(SUBS).map(([k,v])=>[k,JSON.parse(JSON.stringify(v))]))
+    ));
+  }catch(e){
+    SUBS_STATE=JSON.parse(JSON.stringify(
+      Object.fromEntries(Object.entries(SUBS).map(([k,v])=>[k,JSON.parse(JSON.stringify(v))]))
+    ));
+  }
+}
+function saveSubsState(){localStorage.setItem('s_subs',JSON.stringify(SUBS_STATE));}
+
+let siK=null,siGi=null,siIi=null; // current modal target
+
+function openSubItemModal(k,gi,ii){
+  siK=k; siGi=gi; siIi=ii!=null?ii:null;
+  const grp=(SUBS_STATE[k]||[])[gi];
+  if(ii!=null&&grp){
+    // edit existing
+    const item=grp.items[ii];
+    document.getElementById('si-ttl').textContent='Edit Sub-Item — '+k+' / '+grp.g;
+    document.getElementById('si-desc').value=item.l;
+    document.getElementById('si-budget').value=item.b;
+    document.getElementById('si-cert').value=item.c||0;
+    document.getElementById('si-save-btn').textContent='Save Changes';
+  }else if(grp){
+    // add new to group
+    document.getElementById('si-ttl').textContent='Add Sub-Item — '+k+' / '+grp.g;
+    document.getElementById('si-desc').value='';
+    document.getElementById('si-budget').value=0;
+    document.getElementById('si-cert').value=0;
+    document.getElementById('si-save-btn').textContent='Add Item';
+  }
+  document.getElementById('si-modal').classList.add('open');
+}
+function closeSIModal(){document.getElementById('si-modal').classList.remove('open');}
+function saveSIModal(){
+  const desc=document.getElementById('si-desc').value.trim();
+  if(!desc){alert('Enter a description.');return;}
+  const budget=parseFloat(document.getElementById('si-budget').value)||0;
+  const cert=parseFloat(document.getElementById('si-cert').value)||0;
+  if(!SUBS_STATE[siK])SUBS_STATE[siK]=[];
+  const grp=SUBS_STATE[siK][siGi];
+  if(!grp)return;
+  if(siIi!=null){
+    grp.items[siIi]={...grp.items[siIi],l:desc,b:budget,c:cert};
+  }else{
+    grp.items.push({l:desc,b:budget,c:cert});
+  }
+  saveSubsState();closeSIModal();renderBQ();
+}
+function delSubItem(k,gi,ii){
+  if(!confirm('Remove this sub-item?'))return;
+  if(SUBS_STATE[k]&&SUBS_STATE[k][gi]&&SUBS_STATE[k][gi].items){
+    SUBS_STATE[k][gi].items.splice(ii,1);
+    saveSubsState();renderBQ();
+  }
+}
+
 // ════════════════════════════════════
 // CUSTOM BQ ITEMS
 // ════════════════════════════════════
@@ -738,7 +827,7 @@ function renderBQ(){
   bills.forEach(k=>{
     const b=BQ[k],cert=CERT[k]||0,sst=bqSST(k),rem=b.budget-cert,pd=b.budget?cert/b.budget*100:0;
     const orig=SOT_DEF[k].budget,delta=b.budget-orig;
-    const hasSubs=SUBS[k]&&SUBS[k].length>0;
+    const hasSubs=(SUBS_STATE[k]||SUBS[k])&&(SUBS_STATE[k]||SUBS[k]).length>0;
     const bc=pd>90?'d':pd>60?'w':'';
     const tb2=b.type==='Fixed'?'bf':b.type==='Provisional'?'bp':'bpc';
 
@@ -750,7 +839,7 @@ function renderBQ(){
 
     rows.push(`<tr class="br${hasSubs?' xp-toggle':''}" id="brow-${k}" onclick="${hasSubs?`tBS('${k}')`:''}" >
       <td><strong>${k}</strong></td>
-      <td>${hasSubs?`<span class="ex" id="bex-${k}">▶</span>`:''}<em style="font-size:.83rem">${b.label}</em></td>
+      <td>${hasSubs?`<span class="ex" id="bex-${k}">▶</span>`:''}<em style="font-size:.83rem">${b.label}</em><button onclick="event.stopPropagation();openCBQModal('${k}')" title="Add item to ${k}" style="background:none;border:1px solid var(--lkl);color:var(--lkl);font-size:.62rem;padding:1px 5px;border-radius:2px;cursor:pointer;margin-left:7px;font-family:'DM Mono',monospace">＋ Add</button></td>
       <td class="r" id="bbc-${k}">${budC}</td>
       <td class="sc" id="bsrc-${k}">${srC}</td>
       <td class="sc" id="bsmc-${k}">${smC}</td>
@@ -764,9 +853,9 @@ function renderBQ(){
     </tr>`);
 
     if(hasSubs){
-      SUBS[k].forEach((grp,gi)=>{
+      (SUBS_STATE[k]||SUBS[k]).forEach((grp,gi)=>{
         rows.push(`<tr class="sr h" id="bsg-${k}-${gi}">
-          <td></td><td colspan="9" style="padding-left:16px;font-weight:600;font-size:.79rem;color:var(--navy);background:#E8EAF6">${grp.g}</td><td></td>${bqEM?'<td></td>':''}
+          <td></td><td colspan="9" style="padding-left:16px;font-weight:600;font-size:.79rem;color:var(--navy);background:#E8EAF6">${grp.g}<button onclick="event.stopPropagation();openSubItemModal('${k}',${gi})" title="Add sub-item to this group" style="background:none;border:1px solid var(--lkl);color:var(--lkl);font-size:.6rem;padding:1px 5px;border-radius:2px;cursor:pointer;margin-left:7px;font-family:'DM Mono',monospace">＋</button></td><td></td>${bqEM?'<td></td>':''}
         </tr>`);
         grp.items.forEach((item,ii)=>{
           const ic=item.c||0,ip=item.b?ic/item.b*100:0;
@@ -780,7 +869,7 @@ function renderBQ(){
           const siTotal=bqEM?'<span style="color:var(--mut);font-size:.7rem">—</span>':sista>0?`<span style="font-size:.75rem">${RM(item.b+sista)}</span>`:'—';
           rows.push(`<tr class="ssr h" id="bsi-${k}-${gi}-${ii}">
             <td></td>
-            <td style="padding-left:34px;font-size:.77rem">${item.l}</td>
+            <td style="padding-left:34px;font-size:.77rem">${item.l}<span style="margin-left:6px"><button class="erb" onclick="openSubItemModal('${k}',${gi},${ii})" title="Edit">✏</button><button class="del" onclick="delSubItem('${k}',${gi},${ii})" title="Remove">✕</button></span></td>
             <td class="r" style="font-size:.77rem">${RM(item.b)}</td>
             <td class="sc" style="font-size:.72rem">${siSRCell}</td>
             <td class="sc" style="font-size:.72rem">${siSMCell}</td>
@@ -847,7 +936,7 @@ function renderBQ(){
 function tBS(k){
   const row=document.getElementById('brow-'+k),icon=document.getElementById('bex-'+k);
   const expanded=row.classList.toggle('xp');
-  document.querySelectorAll(`[id^="bsg-${k}-"],[id^="bsi-${k}-"]`).forEach(r=>r.classList.toggle('h',!expanded));
+  document.querySelectorAll(`tr[id^="bsg-${k}-"],tr[id^="bsi-${k}-"]`).forEach(r=>r.classList.toggle('h',!expanded));
   if(icon)icon.style.transform=expanded?'rotate(90deg)':'';
 }
 
@@ -874,7 +963,7 @@ function saveBQ(){
     const sr=document.getElementById('bsr-'+k);if(sr)BQ[k].sr=parseFloat(sr.value)||0;
     const sm=document.getElementById('bsm-'+k);if(sm)BQ[k].sm=sm.value===''?null:parseFloat(sm.value);
     // collect sub-item SST inputs
-    if(SUBS[k]){SUBS[k].forEach((grp,gi)=>{grp.items.forEach((item,ii)=>{
+    const subsForSave=SUBS_STATE[k]||SUBS[k];if(subsForSave){subsForSave.forEach((grp,gi)=>{grp.items.forEach((item,ii)=>{
       const key=siKey(k,gi,ii);
       const sr2=document.getElementById('sisr-'+k+'-'+gi+'-'+ii);
       const sm2=document.getElementById('sism-'+k+'-'+gi+'-'+ii);
@@ -885,7 +974,7 @@ function saveBQ(){
   saveSISSTToLS();
   exitBQ();renderBQ();
 }
-function resetBQ(){BQ=JSON.parse(JSON.stringify(SOT_DEF));SISST={};localStorage.removeItem('s_bq');localStorage.removeItem('s_bq_si');exitBQ();renderBQ();}
+function resetBQ(){BQ=JSON.parse(JSON.stringify(SOT_DEF));SISST={};SUBS_STATE=JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(SUBS).map(([k,v])=>[k,JSON.parse(JSON.stringify(v))]))));localStorage.removeItem('s_bq');localStorage.removeItem('s_bq_si');localStorage.removeItem('s_subs');exitBQ();renderBQ();}
 function cancelBQ(){BQ=bqBk;exitBQ();renderBQ();}
 function exitBQ(){bqEM=false;document.getElementById('bq-ebt').style.display='';document.getElementById('bq-eb').style.display='none';document.getElementById('bq-ind').style.display='none';}
 
@@ -1370,7 +1459,7 @@ function renderVar(){
   const rows=[];
   Object.keys(BQ).forEach(k=>{
     const b=BQ[k],cert=CERT[k]||0,rem=b.budget-cert,pd=b.budget?cert/b.budget*100:0,v=cert-b.budget;
-    const hs=SUBS[k]&&SUBS[k].length>0,bc=pd>90?'d':pd>60?'w':'';
+    const hs=(SUBS_STATE[k]||SUBS[k])&&(SUBS_STATE[k]||SUBS[k]).length>0,bc=pd>90?'d':pd>60?'w':'';
     rows.push(`<tr class="br${hs?' xp-toggle':''}" onclick="${hs?`tVS('${k}')`:''}" id="vrow-${k}">
       <td><strong>${k}</strong>${hs?` <span class="ex" id="vex-${k}">▶</span>`:''}</td>
       <td><em>${b.label}</em></td>
