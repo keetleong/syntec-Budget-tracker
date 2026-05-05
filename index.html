@@ -99,7 +99,6 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
 </header>
 <div class="tab-bar">
   <button class="tab-btn active" onclick="showTab('bq',this)">BQ Summary</button>
-  <button class="tab-btn" onclick="showTab('profees',this)">Professional Fees</button>
   <button class="tab-btn" onclick="showTab('totalcost',this)">Total Project Cost</button>
   <button class="tab-btn" onclick="showTab('ipc',this)">IPC Ledger</button>
   <button class="tab-btn" onclick="showTab('variance',this)">Budget vs Actual</button>
@@ -120,6 +119,7 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
     <button class="btn bs" onclick="saveBQ()">✓ Save</button>
     <button class="btn br2" onclick="resetBQ()">↺ Reset to SOT</button>
     <button class="btn bc" onclick="cancelBQ()">✕ Cancel</button>
+    <button class="btn ba" onclick="openCBQModal()">+ Add Item</button>
     <span class="nm">SST Rate: auto-calc; leave SST Amount blank for auto</span>
   </div>
   <table id="bq-tbl">
@@ -140,9 +140,9 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
   </table>
   <!-- ── PRO FEES SUMMARY (embedded in BQ tab) ── -->
   <div style="margin-top:28px;border-top:3px solid var(--lkl);padding-top:18px">
-    <div style="background:#FFF8E1;border:1px solid #FFD54F;border-left:4px solid var(--amber);padding:9px 14px;border-radius:2px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <span style="font-family:'DM Mono',monospace;font-size:.68rem;font-weight:600;color:#5D4037">&#9888; DOUBLE-COUNT PREVENTION</span>
-      <span style="font-family:'DM Mono',monospace;font-size:.68rem;color:#5D4037">The RM 54,000,000 Main Contract and Lift Over-Charge delta are marked <strong>EXCLUDED</strong> below &#8212; already captured in the BQ above. Only additional fees are included in the Grand Total.</span>
+    <div style="background:#E8F5E9;border:1px solid #A5D6A7;border-left:4px solid var(--green);padding:9px 14px;border-radius:2px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-family:'DM Mono',monospace;font-size:.68rem;font-weight:600;color:#1B5E20">&#10003; NO DOUBLE-COUNTING</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.68rem;color:#1B5E20">RM 54M Main Contract is captured in the BQ above only. Fees listed here are additional project costs — summed separately into Grand Total.</span>
     </div>
     <div class="sec" style="margin-top:0">
       Professional Fees &amp; Other Costs &#8212; Cross-Check
@@ -154,7 +154,7 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
       <button class="btn bs" onclick="savePF2()">&#10003; Save</button>
       <button class="btn br2" onclick="resetPF()">&#8634; Reset</button>
       <button class="btn bc" onclick="cancelPF2()">&#10005; Cancel</button>
-      <span class="nm">MC RM54M + Lift delta shown for reference only &#8212; EXCLUDED from Grand Total</span>
+      <span class="nm">All listed fees are additional costs — RM 54M MC is in the BQ above, not here</span>
     </div>
         <table id="bq-pf-tbl">
       <thead><tr>
@@ -171,6 +171,36 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
     </table>
   </div>
 
+  <!-- ── LAND & LEGAL COSTS ── -->
+  <div style="margin-top:24px;border-top:2px solid var(--bdr);padding-top:16px">
+    <div class="sec" style="margin-top:0">
+      Land &amp; Legal Costs
+      <button class="btn be2" id="ll-ebt" onclick="toggleLLEdit()">&#9999; Edit</button>
+      <span id="ll-ind" style="display:none" class="ind iok">Edit mode</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.67rem;color:var(--mut);margin-left:8px">Amounts in RM — enter USD + exchange rate to auto-convert</span>
+    </div>
+    <div class="ebar" id="ll-eb" style="display:none">
+      <span style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--navy);font-weight:500">EDIT MODE</span>
+      <button class="btn bs" onclick="saveLL()">&#10003; Save</button>
+      <button class="btn br2" onclick="resetLL()">&#8634; Reset</button>
+      <button class="btn bc" onclick="cancelLL()">&#10005; Cancel</button>
+    </div>
+    <table id="ll-tbl">
+      <thead><tr>
+        <th>Category</th><th>Description</th>
+        <th class="r">Amount (RM)</th>
+        <th class="r" style="background:#1565C0;color:#E3F2FD">Amount (USD)</th>
+        <th class="r" style="background:#1565C0;color:#E3F2FD">USD/MYR Rate</th>
+        <th class="r sh">SST %</th>
+        <th class="r sh">SST (RM)</th>
+        <th class="r">Total incl SST</th>
+        <th>Note</th>
+      </tr></thead>
+      <tbody id="ll-tb"></tbody>
+      <tfoot id="ll-tf"></tfoot>
+    </table>
+  </div>
+
   <!-- ── GRAND TOTAL RECONCILIATION ── -->
   <div class="sec" style="margin-top:4px">Grand Total — All-In Project Cost (No Double-Counting)</div>
   <table id="bq-grand-tbl">
@@ -184,34 +214,6 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
     <tbody id="bq-grand-tb"></tbody>
     <tfoot id="bq-grand-tf"></tfoot>
   </table>
-</div>
-
-<!-- TAB PROFESSIONAL FEES -->
-<div id="tab-profees" class="tab-panel">
-  <div class="kg" id="pf-kg" style="grid-template-columns:repeat(4,1fr)"></div>
-  <div class="sec">Professional Fees &amp; Other Project Costs
-    <button class="btn be2" id="pf-ebt" onclick="togglePFEdit()">✏ Edit Fees</button>
-    <span id="pf-ind" style="display:none" class="ind"></span>
-  </div>
-  <div class="ebar" id="pf-eb" style="display:none">
-    <span style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--navy);font-weight:500">EDIT MODE — adjust fee, SST rate, or override SST amount</span>
-    <button class="btn bs" onclick="savePF()">✓ Save</button>
-    <button class="btn br2" onclick="resetPF()">↺ Reset</button>
-    <button class="btn bc" onclick="cancelPF()">✕ Cancel</button>
-  </div>
-  <table id="pf-tbl">
-    <thead><tr>
-      <th>Category</th><th>Description</th>
-      <th class="r">Fee (RM)</th>
-      <th class="r sh">SST Rate %</th>
-      <th class="r sh">SST Amount (RM)</th>
-      <th class="r">Total incl SST</th>
-      <th>Note</th>
-    </tr></thead>
-    <tbody id="pf-tb"></tbody>
-    <tfoot id="pf-tf"></tfoot>
-  </table>
-  <p class="nm" style="margin-bottom:14px">* 8% SST applies to professional/consultancy services (legal, architectural, engineering, PMC, QS). 6% SST applies to construction/M&amp;E works. 0% for land, statutory fees, insurance. Override SST amount manually if needed.</p>
 </div>
 
 <!-- TAB TOTAL PROJECT COST -->
@@ -307,6 +309,53 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
   <tbody id="risk-tb"></tbody></table>
 </div>
 </main>
+
+<!-- CUSTOM BQ ITEM MODAL -->
+<div class="overlay" id="cbq-modal">
+  <div class="modal" style="width:520px">
+    <h3 id="cbq-ttl">Add Custom BQ Item</h3>
+    <div class="fg">
+      <div class="fi"><label>Bill</label>
+        <select id="cbq-bill">
+          <option value="B1">B1 — Preliminaries</option>
+          <option value="B2">B2 — Piling</option>
+          <option value="B3">B3 — Main Building</option>
+          <option value="B4">B4 — Infrastructure</option>
+          <option value="B5a">B5a — Plumbing</option>
+          <option value="B5b">B5b — Electrical/ELV</option>
+          <option value="B5c">B5c — Fire</option>
+          <option value="B6">B6 — PC/Prov</option>
+        </select>
+      </div>
+      <div class="fi"><label>Type</label>
+        <select id="cbq-type">
+          <option value="Fixed">Fixed</option>
+          <option value="Provisional">Provisional</option>
+          <option value="PC/Prov">PC/Prov</option>
+        </select>
+      </div>
+      <div class="fi f"><label>Description / Item Name</label>
+        <input type="text" id="cbq-desc" placeholder="e.g. Additional prelim items, variation order...">
+      </div>
+      <div class="fi"><label>Budget Amount (RM)</label>
+        <input type="number" id="cbq-budget" value="0" step="1000">
+      </div>
+      <div class="fi"><label>SST Rate %</label>
+        <input type="number" id="cbq-sst-rate" value="6" step="1" min="0" max="20">
+      </div>
+      <div class="fi"><label>SST Amount (RM) — blank = auto</label>
+        <input type="number" id="cbq-sst-amt" placeholder="auto-calculated">
+      </div>
+      <div class="fi"><label>Certified to Date (RM)</label>
+        <input type="number" id="cbq-cert" value="0" step="0.01">
+      </div>
+    </div>
+    <div class="ma">
+      <button class="btn br2" onclick="closeCBQModal()">Cancel</button>
+      <button class="btn ba" onclick="saveCBQItem()">Add Item</button>
+    </div>
+  </div>
+</div>
 
 <!-- LEDGER MODAL -->
 <div class="overlay" id="lm">
@@ -430,25 +479,34 @@ const SUBS = {
 
 const CERT = {B1:1085354.92,B2:2295021.73,B3:206770.14,B4:236444.02,B5a:0,B5b:0,B5c:0,B6:96900};
 
+// Custom BQ items added by user (extra rows per bill or standalone)
+let CUSTOM_BQ_ITEMS = {}; // {B1:[{id,label,budget,sst_rate,sst_manual,certified}], ...}
+function loadCustomBQ(){try{CUSTOM_BQ_ITEMS=JSON.parse(localStorage.getItem('s_bq_custom')||'{}');}catch(e){CUSTOM_BQ_ITEMS={};}}
+function saveCustomBQ(){localStorage.setItem('s_bq_custom',JSON.stringify(CUSTOM_BQ_ITEMS));}
+
 const PF_DEF = [
-  {id:'land',  cat:'Land',          desc:'Land Acquisition Cost',                        fee:36834660, sr:0,  sm:null, note:'No SST on land'},
-  {id:'legal', cat:'Legal',         desc:'Legal Fees (Conveyancing & SPA)',               fee:1597000,  sr:8,  sm:null, note:'8% SST on legal services'},
-  {id:'mc',    cat:'Main Contract', desc:'Main Contract — PTSSB (Addendum TA1)',          fee:54000000, sr:6,  sm:null, note:'6% SST on labour; materials 0%'},
-  {id:'lodc',  cat:'Main Contract', desc:'Lift Over-Charge — PC vs LOA delta',            fee:330000,   sr:0,  sm:null, note:'B6 PC RM1.28M vs Eita LOA RM0.95M; TBC'},
   {id:'id-fee',cat:'ID Design',     desc:'ID Design Fee — MisoSoupDesign (USD → MYR)',    fee:308100,   sr:8,  sm:null, note:'Payment in USD; 8% SST on design services'},
   {id:'id-eng',cat:'ID Design',     desc:'ID Engineering Design Fee (USD → MYR)',         fee:237000,   sr:8,  sm:null, note:'Payment in USD; 8% SST'},
   {id:'arch',  cat:'Architect',     desc:'Architectural Services — CCA',                  fee:1650000,  sr:8,  sm:null, note:'8% SST'},
   {id:'pmc',   cat:'PMC',           desc:'Project Management Consultancy — LKL Design',   fee:518000,   sr:8,  sm:null, note:'8% SST'},
-  {id:'qs',    cat:'QS',            desc:'Quantity Surveying — NCQS Consult',             fee:280000,   sr:8,  sm:null, note:'8% SST'},
   {id:'cs',    cat:'C&S / M&E',     desc:'Civil, Structural & M&E Consultancy',          fee:380000,   sr:8,  sm:null, note:'8% SST'},
   {id:'net',   cat:'Network/IT',    desc:'Network Infrastructure Budget',                 fee:2000000,  sr:6,  sm:null, note:'6% SST; construction scope'},
   {id:'fitout',cat:'ID Fitout',     desc:'Interior Fitout Budget — Studio Kenda',         fee:8000000,  sr:6,  sm:null, note:'6% SST; includes sub-items below'},
   {id:'esd-gf',cat:'ID Fitout',     desc:'  ESD Tile Ground Floor (156/m²)',              fee:141180,   sr:6,  sm:null, note:'Sub-item of fitout budget'},
   {id:'esd-2f',cat:'ID Fitout',     desc:'  ESD Epoxy 2nd Floor (213.45 + 10.78/m² PF)', fee:417000,   sr:6,  sm:null, note:'Sub-item of fitout budget'},
   {id:'ep-up', cat:'ID Fitout',     desc:'  Epoxy 300mm upturn (257m @ 53.90/m)',         fee:13852.30, sr:6,  sm:null, note:'Sub-item of fitout budget'},
-  {id:'ins',   cat:'Insurance',     desc:'Contractor All-Risk (CAR) & Public Liability',  fee:350000,   sr:0,  sm:null, note:'No SST on insurance premium'},
   {id:'cont',  cat:'Other',         desc:'Other / Contingency (TBD)',                     fee:500000,   sr:0,  sm:null, note:'To be defined'}
 ];
+
+// ── LAND & LEGAL (separate table with USD converter) ──
+const LL_DEF = [
+  {id:'land', cat:'Land',  desc:'Land Acquisition Cost',       amtRM:36834660, amtUSD:null, rate:null, sst:0,  note:'No SST on land'},
+  {id:'legal',cat:'Legal', desc:'Legal Fees (Conveyancing & SPA)', amtRM:1597000,  amtUSD:null, rate:null, sst:8,  note:'8% SST on legal services'}
+];
+let LL, llEM=false, llBk;
+function llSSTAmt(item){ return item.amtRM*(item.sst/100); }
+function totLL(){ return LL.reduce((s,x)=>s+x.amtRM,0); }
+function totLLSST(){ return LL.reduce((s,x)=>s+llSSTAmt(x),0); }
 
 const APF_DEF = [
   {no:1,purpose:'KM* — Planning Approval (SRCM)',submitter:'Planner (SRCM)',timeline:'Before KM Approval',note:'Processing fees paid by C&C Architects — reimbursed by SIST',
@@ -485,10 +543,13 @@ let BQ, PF, APF, bqEM=false, pfEM=false, apfEM=false, bqBk, pfBk, apfBk, lmIdx=n
 
 function init(){
   loadSISSTFromLS();
+  loadCustomBQ();
+  LL=JSON.parse(JSON.stringify(LL_DEF));
+  try{const s=JSON.parse(localStorage.getItem('s_ll')||'[]');s.forEach((x,i)=>{if(LL[i]){LL[i].amtRM=x.amtRM??LL[i].amtRM;LL[i].amtUSD=x.amtUSD??null;LL[i].rate=x.rate??null;LL[i].sst=x.sst??LL[i].sst;}});}catch(e){}
   BQ=JSON.parse(JSON.stringify(SOT_DEF));
   try{const s=JSON.parse(localStorage.getItem('s_bq')||'{}');Object.keys(s).forEach(k=>{if(BQ[k]){BQ[k].budget=s[k].budget??BQ[k].budget;BQ[k].sr=s[k].sr??BQ[k].sr;BQ[k].sm=s[k].sm??null;}});}catch(e){}
   PF=JSON.parse(JSON.stringify(PF_DEF));
-  try{const s=JSON.parse(localStorage.getItem('s_pf')||'[]');s.forEach((x,i)=>{if(PF[i]){PF[i].fee=x.fee??PF[i].fee;PF[i].sr=x.sr??PF[i].sr;PF[i].sm=x.sm??null;}});}catch(e){}
+  try{const s=JSON.parse(localStorage.getItem('s_pf')||'{}');if(Array.isArray(s)){localStorage.removeItem('s_pf');}else{PF.forEach(p=>{if(s[p.id]){p.fee=s[p.id].fee??p.fee;p.sr=s[p.id].sr??p.sr;p.sm=s[p.id].sm??null;}});}}catch(e){}
   APF=JSON.parse(JSON.stringify(APF_DEF));
   try{const s=JSON.parse(localStorage.getItem('s_apf')||'[]');s.forEach((x,i)=>{if(APF[i])APF[i].ed=x.ed??APF[i].ed;});}catch(e){}
 }
@@ -534,6 +595,65 @@ function showTab(n,btn){
 // ════════════════════════════════════
 // BQ
 // ════════════════════════════════════
+// ════════════════════════════════════
+// CUSTOM BQ ITEMS
+// ════════════════════════════════════
+let cbqEditBill=null,cbqEditIdx=null;
+
+function openCBQModal(bill,idx){
+  cbqEditBill=bill||null;cbqEditIdx=idx!=null?idx:null;
+  document.getElementById('cbq-ttl').textContent=cbqEditIdx!=null?'Edit Custom Item':'Add Custom BQ Item';
+  if(bill)document.getElementById('cbq-bill').value=bill;
+  if(cbqEditIdx!=null&&cbqEditBill){
+    const item=CUSTOM_BQ_ITEMS[cbqEditBill][cbqEditIdx];
+    document.getElementById('cbq-desc').value=item.label;
+    document.getElementById('cbq-budget').value=item.budget;
+    document.getElementById('cbq-sst-rate').value=item.sr;
+    document.getElementById('cbq-sst-amt').value=item.sm!=null?item.sm:'';
+    document.getElementById('cbq-cert').value=item.certified||0;
+    document.getElementById('cbq-type').value=item.type||'Fixed';
+  }else{
+    document.getElementById('cbq-desc').value='';
+    document.getElementById('cbq-budget').value=0;
+    document.getElementById('cbq-sst-rate').value=6;
+    document.getElementById('cbq-sst-amt').value='';
+    document.getElementById('cbq-cert').value=0;
+    document.getElementById('cbq-type').value='Fixed';
+  }
+  document.getElementById('cbq-modal').classList.add('open');
+}
+function closeCBQModal(){document.getElementById('cbq-modal').classList.remove('open');}
+function saveCBQItem(){
+  const bill=document.getElementById('cbq-bill').value;
+  const desc=document.getElementById('cbq-desc').value.trim();
+  if(!desc){alert('Enter a description.');return;}
+  const item={
+    id:'custom-'+Date.now(),
+    label:desc,
+    budget:parseFloat(document.getElementById('cbq-budget').value)||0,
+    sr:parseFloat(document.getElementById('cbq-sst-rate').value)||0,
+    sm:document.getElementById('cbq-sst-amt').value===''?null:parseFloat(document.getElementById('cbq-sst-amt').value),
+    certified:parseFloat(document.getElementById('cbq-cert').value)||0,
+    type:document.getElementById('cbq-type').value
+  };
+  if(!CUSTOM_BQ_ITEMS[bill])CUSTOM_BQ_ITEMS[bill]=[];
+  if(cbqEditIdx!=null&&cbqEditBill===bill){
+    CUSTOM_BQ_ITEMS[bill][cbqEditIdx]=item;
+  }else{
+    CUSTOM_BQ_ITEMS[bill].push(item);
+  }
+  saveCustomBQ();closeCBQModal();renderBQ();
+}
+function delCBQItem(bill,idx){
+  if(!confirm('Delete this custom item?'))return;
+  CUSTOM_BQ_ITEMS[bill].splice(idx,1);
+  saveCustomBQ();renderBQ();
+}
+function custSST(item){return item.sm!=null?parseFloat(item.sm):item.budget*(item.sr/100);}
+function totalCustomBudget(){return Object.values(CUSTOM_BQ_ITEMS).flat().reduce((s,x)=>s+x.budget,0);}
+function totalCustomSST(){return Object.values(CUSTOM_BQ_ITEMS).flat().reduce((s,x)=>s+custSST(x),0);}
+function totalCustomCert(){return Object.values(CUSTOM_BQ_ITEMS).flat().reduce((s,x)=>s+(x.certified||0),0);}
+
 function renderBQ(){
   const tb=totBQ(),tc=totCert(),ts=totBQSST();
   document.getElementById('bq-kg').innerHTML=[
@@ -607,22 +727,51 @@ function renderBQ(){
     }
   });
 
-  const ts2=totBQSST();
+  // ── Custom items appended per bill ──
+  Object.keys(BQ).forEach(k=>{
+    const custItems=CUSTOM_BQ_ITEMS[k]||[];
+    custItems.forEach((item,ci)=>{
+      const sst=custSST(item),cert=item.certified||0;
+      const pd=item.budget?cert/item.budget*100:0;
+      const tb3=item.type==='Fixed'?'bf':item.type==='Provisional'?'bp':'bpc';
+      rows.push(`<tr style="background:#F0F4FF" id="cbqi-${k}-${ci}">
+        <td style="color:var(--lkl);font-family:'DM Mono',monospace;font-size:.7rem">${k}+</td>
+        <td style="padding-left:16px;font-size:.81rem;font-style:italic">${item.label}
+          ${bqEM?`<span style="margin-left:6px"><button class="erb" onclick="openCBQModal('${k}',${ci})" title="Edit">✏</button><button class="del" onclick="delCBQItem('${k}',${ci})" title="Delete">✕</button></span>`:''}
+        </td>
+        <td class="r" style="font-size:.8rem">${RM(item.budget)}</td>
+        <td class="sc" style="font-size:.74rem">${item.sr}%</td>
+        <td class="sc" style="font-size:.74rem">${RM(sst)}${item.sm!=null?'<span style="color:var(--amber);font-size:.6rem"> ✎</span>':''}</td>
+        <td class="r" style="font-size:.8rem">${RM(item.budget+sst)}</td>
+        <td class="r" style="font-size:.72rem">${pct(item.budget,totBQ())}</td>
+        <td class="r" style="font-size:.8rem">${cert>0?RM(cert):'—'}</td>
+        <td class="r"><div style="display:flex;align-items:center;gap:4px"><div class="pw" style="min-width:50px"><div class="pb" style="width:${Math.min(pd,100)}%"></div></div><span style="font-family:'DM Mono',monospace;font-size:.66rem">${pd.toFixed(0)}%</span></div></td>
+        <td class="r" style="font-size:.8rem">${RM(item.budget-cert)}</td>
+        <td><span class="bdg ${tb3}">${item.type}</span></td>
+        ${bqEM?'<td></td>':''}
+      </tr>`);
+    });
+  });
+
+  const ts2=totBQSST()+totalCustomSST();
+  const totalBudgetAll=totBQ()+totalCustomBudget();
+  const totalCertAll=totCert()+totalCustomCert();
   rows.push(`<tr class="tr">
-    <td colspan="2"><strong>TOTAL CONTRACT SUM</strong></td>
-    <td class="r" id="bq-tot"><strong>${RM(totBQ())}</strong></td>
+    <td colspan="2"><strong>TOTAL CONTRACT SUM</strong>${totalCustomBudget()>0?`<span style="font-family:'DM Mono',monospace;font-size:.67rem;color:var(--lkl);margin-left:8px">incl. ${Object.values(CUSTOM_BQ_ITEMS).flat().length} custom item(s)</span>`:''}</td>
+    <td class="r" id="bq-tot"><strong>${RM(totalBudgetAll)}</strong></td>
     <td class="sc">—</td><td class="sc"><strong>${RM(ts2)}</strong></td>
-    <td class="r"><strong>${RM(totBQ()+ts2)}</strong></td>
+    <td class="r"><strong>${RM(totalBudgetAll+ts2)}</strong></td>
     <td class="r">100.0%</td>
-    <td class="r"><strong>${RM(totCert())}</strong></td>
-    <td class="r"><strong>${pct(totCert(),totBQ())}</strong></td>
-    <td class="r"><strong>${RM(totBQ()-totCert())}</strong></td>
+    <td class="r"><strong>${RM(totalCertAll)}</strong></td>
+    <td class="r"><strong>${pct(totalCertAll,totalBudgetAll)}</strong></td>
+    <td class="r"><strong>${RM(totalBudgetAll-totalCertAll)}</strong></td>
     <td></td>${bqEM?'<td></td>':''}
   </tr>`);
 
   document.getElementById('bq-tb').innerHTML=rows.join('');
   document.getElementById('bq-dh').style.display=bqEM?'':'none';
   if(bqEM)updBI();
+  renderLL();
   renderBQPF();
 }
 
@@ -714,7 +863,7 @@ function togglePFEdit(){pfBk=JSON.parse(JSON.stringify(PF));pfEM=true;document.g
 function onPFI(i){PF[i].fee=parseFloat(document.getElementById('pfi-'+i).value)||0;}
 function onPFSR(i){PF[i].sr=parseFloat(document.getElementById('pfsr-'+i).value)||0;PF[i].sm=null;const e=document.getElementById('pfsm-'+i);if(e)e.value='';}
 function onPFSM(i){const v=document.getElementById('pfsm-'+i).value;PF[i].sm=v===''?null:parseFloat(v);}
-function savePF(){PF.forEach((p,i)=>{const fi=document.getElementById('pfi-'+i);if(fi)p.fee=parseFloat(fi.value)||0;const sr=document.getElementById('pfsr-'+i);if(sr)p.sr=parseFloat(sr.value)||0;const sm=document.getElementById('pfsm-'+i);if(sm)p.sm=sm.value===''?null:parseFloat(sm.value);});localStorage.setItem('s_pf',JSON.stringify(PF.map(p=>({fee:p.fee,sr:p.sr,sm:p.sm}))));exitPF();renderPF();}
+function savePF(){PF.forEach((p,i)=>{const fi=document.getElementById('pfi-'+i);if(fi)p.fee=parseFloat(fi.value)||0;const sr=document.getElementById('pfsr-'+i);if(sr)p.sr=parseFloat(sr.value)||0;const sm=document.getElementById('pfsm-'+i);if(sm)p.sm=sm.value===''?null:parseFloat(sm.value);});const pfMapS={};PF.forEach(p=>pfMapS[p.id]={fee:p.fee,sr:p.sr,sm:p.sm});localStorage.setItem('s_pf',JSON.stringify(pfMapS));exitPF();renderPF();}
 function resetPF(){PF=JSON.parse(JSON.stringify(PF_DEF));localStorage.removeItem('s_pf');exitPF();renderPF();}
 function cancelPF(){PF=pfBk;exitPF();renderPF();}
 function exitPF(){pfEM=false;document.getElementById('pf-ebt').style.display='';document.getElementById('pf-eb').style.display='none';document.getElementById('pf-ind').style.display='none';}
@@ -724,7 +873,89 @@ let pfEM2=false,pfBk2;
 
 // IDs of PF items that ARE the main contract — exclude from grand total to avoid double-count
 // 'mc' = RM 54M PTSSB contract (already in BQ); 'lodc' = lift delta (in B6 PC)
-const PF_EXCL_FROM_GRAND=['mc','lodc'];
+const PF_EXCL_FROM_GRAND=[];
+
+// ════════════════════════════════════
+// LAND & LEGAL TABLE
+// ════════════════════════════════════
+function renderLL(){
+  const rows=[];
+  LL.forEach((item,i)=>{
+    const sst=llSSTAmt(item);
+    // RM cell
+    const rmC=llEM
+      ?`<input class="ei" id="llrm-${i}" value="${item.amtRM.toFixed(2)}" type="number" step="1000" oninput="onLLRM(${i})">`
+      :`<strong>${RM(item.amtRM)}</strong>`;
+    // USD cell
+    const usdC=llEM
+      ?`<input class="ei" id="llusd-${i}" value="${item.amtUSD!=null?item.amtUSD:''}" type="number" step="1000" placeholder="USD amount" oninput="onLLUSD(${i})" style="background:#E3F2FD;border-color:#1565C0">`
+      :`${item.amtUSD!=null?`<span style="font-family:'DM Mono',monospace;font-size:.78rem;color:#1565C0">USD ${fm(item.amtUSD)}</span>`:'<span style="color:var(--mut)">—</span>'}`;
+    // Rate cell
+    const rateC=llEM
+      ?`<input class="ei" id="llrate-${i}" value="${item.rate!=null?item.rate:''}" type="number" step="0.001" placeholder="e.g. 4.45" oninput="onLLRate(${i})" style="background:#E3F2FD;border-color:#1565C0">`
+      :`${item.rate!=null?`<span style="font-family:'DM Mono',monospace;font-size:.78rem;color:#1565C0">${item.rate}</span>`:'<span style="color:var(--mut)">—</span>'}`;
+    // SST
+    const sstC=llEM
+      ?`<input class="ei eis" id="llsst-${i}" value="${item.sst}" type="number" min="0" max="20" step="1" oninput="onLLSST(${i})">%`
+      :`${item.sst}%`;
+    const convertNote=item.amtUSD&&item.rate
+      ?`<span style="font-family:'DM Mono',monospace;font-size:.67rem;color:#1565C0">USD ${fm(item.amtUSD)} × ${item.rate} = RM ${fm(item.amtUSD*item.rate)}</span>`
+      :'';
+    rows.push(`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--mut)">${item.cat}</td>
+      <td style="font-size:.82rem">${item.desc}<br>${convertNote}</td>
+      <td class="r" id="llrmc-${i}">${rmC}</td>
+      <td style="background:#EEF4FF;text-align:right" id="llusdс-${i}">${usdC}</td>
+      <td style="background:#EEF4FF;text-align:right" id="llratec-${i}">${rateC}</td>
+      <td class="sc" id="llsstc-${i}">${sstC}</td>
+      <td class="sc">${RM(sst)}</td>
+      <td class="r"><strong>${RM(item.amtRM+sst)}</strong></td>
+      <td style="font-size:.77rem;color:var(--mut)">${item.note}</td>
+    </tr>`);
+  });
+  const totR=totLL(),totS=totLLSST();
+  const tb=document.getElementById('ll-tb');
+  const tf=document.getElementById('ll-tf');
+  if(tb)tb.innerHTML=rows.join('');
+  if(tf)tf.innerHTML=`<tr class="tr">
+    <td colspan="2"><strong>TOTAL LAND &amp; LEGAL</strong></td>
+    <td class="r"><strong>${RM(totR)}</strong></td>
+    <td style="background:#EEF4FF"></td><td style="background:#EEF4FF"></td>
+    <td class="sc">—</td><td class="sc"><strong>${RM(totS)}</strong></td>
+    <td class="r"><strong>${RM(totR+totS)}</strong></td>
+    <td></td>
+  </tr>`;
+}
+
+function toggleLLEdit(){llBk=JSON.parse(JSON.stringify(LL));llEM=true;document.getElementById('ll-ebt').style.display='none';document.getElementById('ll-eb').style.display='flex';document.getElementById('ll-ind').style.display='inline-block';renderLL();}
+function onLLRM(i){LL[i].amtRM=parseFloat(document.getElementById('llrm-'+i).value)||0;LL[i].amtUSD=null;LL[i].rate=null;}
+function onLLUSD(i){
+  const usd=parseFloat(document.getElementById('llusd-'+i).value)||null;
+  const rate=parseFloat(document.getElementById('llrate-'+i).value)||null;
+  LL[i].amtUSD=usd;LL[i].rate=rate;
+  if(usd&&rate){LL[i].amtRM=Math.round(usd*rate*100)/100;const el=document.getElementById('llrm-'+i);if(el)el.value=LL[i].amtRM.toFixed(2);}
+}
+function onLLRate(i){
+  const usd=parseFloat(document.getElementById('llusd-'+i).value)||null;
+  const rate=parseFloat(document.getElementById('llrate-'+i).value)||null;
+  LL[i].amtUSD=usd;LL[i].rate=rate;
+  if(usd&&rate){LL[i].amtRM=Math.round(usd*rate*100)/100;const el=document.getElementById('llrm-'+i);if(el)el.value=LL[i].amtRM.toFixed(2);}
+}
+function onLLSST(i){LL[i].sst=parseFloat(document.getElementById('llsst-'+i).value)||0;}
+function saveLL(){
+  LL.forEach((item,i)=>{
+    const rm=document.getElementById('llrm-'+i);if(rm)item.amtRM=parseFloat(rm.value)||0;
+    const usd=document.getElementById('llusd-'+i);if(usd)item.amtUSD=usd.value===''?null:parseFloat(usd.value);
+    const rate=document.getElementById('llrate-'+i);if(rate)item.rate=rate.value===''?null:parseFloat(rate.value);
+    const sst=document.getElementById('llsst-'+i);if(sst)item.sst=parseFloat(sst.value)||0;
+  });
+  localStorage.setItem('s_ll',JSON.stringify(LL));
+  exitLL();renderLL();
+  renderGrandTotal2();
+}
+function resetLL(){LL=JSON.parse(JSON.stringify(LL_DEF));localStorage.removeItem('s_ll');exitLL();renderLL();renderGrandTotal2();}
+function cancelLL(){LL=llBk;exitLL();renderLL();}
+function exitLL(){llEM=false;document.getElementById('ll-ebt').style.display='';document.getElementById('ll-eb').style.display='none';document.getElementById('ll-ind').style.display='none';}
 
 function renderBQPF(){
   const pfEb2=document.getElementById('bq-pf-eb');
@@ -794,22 +1025,26 @@ function renderBQPF(){
   if(tb)tb.innerHTML=rows.join('');
   if(tf)tf.innerHTML=tfoot_html;
 
-  renderGrandTotal(tFeeIncl,tSSTIncl);
+  renderGrandTotal2();
 }
 
-function renderGrandTotal(pfIncl,pfSSTIncl){
+function renderGrandTotal2(){
   const mc=totBQ(),mcSST=totBQSST(),apf=totAPF();
-  const grand=mc+mcSST+pfIncl+pfSSTIncl+apf;
+  const inclPF=PF.filter(p=>!PF_EXCL_FROM_GRAND.includes(p.id));
+  const pfIncl=inclPF.reduce((s,p)=>s+p.fee,0);
+  const pfSSTIncl=inclPF.reduce((s,p)=>s+pfSST(p),0);
+  const llBase=totLL(),llSSTt=totLLSST();
+  const grand=mc+mcSST+pfIncl+pfSSTIncl+llBase+llSSTt+apf;
 
   const rows=[
-    {label:'Main Contract — BQ (Bills B1–B6)',base:mc,sst:mcSST,note:'PTSSB Addendum TA1 · SST @6% on labour',bold:true},
-    {label:'Professional Fees (excl. MC & Lift Delta — already in BQ)',base:pfIncl,sst:pfSSTIncl,note:'Land, Legal, ID Design, Arch, PMC, QS, C&S, Network, Fitout, Insurance etc.',bold:false},
-    {label:'Approval Processing Fees (KM, BP, TNB, C&S)',base:apf,sst:0,note:'Statutory fees — no SST applicable',bold:false}
+    {label:'Main Contract — BQ (Bills B1–B6)',base:mc,sst:mcSST,note:'PTSSB Addendum TA1 · 6% SST on labour',bold:true},
+    {label:'Land & Legal Costs',base:llBase,sst:llSSTt,note:'Land acquisition + legal fees; shown separately above'},
+    {label:'Professional Fees (ID Design, Arch, PMC, C&S, Network, Fitout etc.)',base:pfIncl,sst:pfSSTIncl,note:'8% SST on consultancy; 6% on construction scopes'},
+    {label:'Approval Processing Fees (KM, BP, TNB, C&S)',base:apf,sst:0,note:'Statutory fees — no SST'}
   ];
   const tb=document.getElementById('bq-grand-tb');
   const tf=document.getElementById('bq-grand-tf');
   if(!tb)return;
-
   tb.innerHTML=rows.map(r=>`<tr>
     <td style="font-size:.83rem${r.bold?';font-weight:600':''}">${r.label}</td>
     <td class="r">${RM(r.base)}</td>
@@ -817,16 +1052,16 @@ function renderGrandTotal(pfIncl,pfSSTIncl){
     <td class="r"><strong>${RM(r.base+r.sst)}</strong></td>
     <td style="font-size:.76rem;color:var(--mut)">${r.note}</td>
   </tr>`).join('');
-
   tf.innerHTML=`<tr style="background:#EEF2FF;border-top:3px solid var(--navy)">
-    <td><strong style="font-size:.95rem;color:var(--navy)">GRAND TOTAL — ALL-IN PROJECT COST</strong><br>
-    <span style="font-family:'DM Mono',monospace;font-size:.64rem;color:var(--mut)">No double-counting: RM 54M MC + RM ${(pfIncl/1e6).toFixed(2)}M fees + RM ${(apf/1e6).toFixed(2)}M processing</span></td>
-    <td class="r" style="font-size:.92rem"><strong>${RM(mc+pfIncl+apf)}</strong></td>
-    <td class="sc" style="font-size:.9rem"><strong>${RM(mcSST+pfSSTIncl)}</strong></td>
-    <td class="r" style="font-size:1.05rem;color:var(--navy)"><strong>${RM(grand)}</strong></td>
-    <td style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--green);font-weight:600">✓ Verified — MC RM${(mc/1e6).toFixed(1)}M not duplicated</td>
+    <td><strong style="font-size:.92rem;color:var(--navy)">GRAND TOTAL — ALL-IN PROJECT COST</strong><br>
+    <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mut)">MC RM${(mc/1e6).toFixed(1)}M + Land/Legal RM${((llBase+llSSTt)/1e6).toFixed(2)}M + Fees RM${((pfIncl+pfSSTIncl)/1e6).toFixed(2)}M + Processing RM${(apf/1e6).toFixed(2)}M + SST</span></td>
+    <td class="r" style="font-size:.9rem"><strong>${RM(mc+llBase+pfIncl+apf)}</strong></td>
+    <td class="sc" style="font-size:.88rem"><strong>${RM(mcSST+llSSTt+pfSSTIncl)}</strong></td>
+    <td class="r" style="font-size:1.02rem;color:var(--navy)"><strong>${RM(grand)}</strong></td>
+    <td style="font-family:'DM Mono',monospace;font-size:.67rem;color:var(--green);font-weight:600">&#10003; RM 54M MC not duplicated</td>
   </tr>`;
 }
+function renderGrandTotal(pfIncl,pfSSTIncl){renderGrandTotal2();}
 
 function togglePFEdit2(){pfBk2=JSON.parse(JSON.stringify(PF));pfEM2=true;document.getElementById('bq-pf-ebt').style.display='none';document.getElementById('bq-pf-eb').style.display='flex';document.getElementById('bq-pf-ind').style.display='inline-block';renderBQPF();}
 function onPFI2(i){PF[i].fee=parseFloat(document.getElementById('bpfi-'+i).value)||0;}
@@ -838,7 +1073,7 @@ function savePF2(){
     const sr=document.getElementById('bpsr-'+i);if(sr)p.sr=parseFloat(sr.value)||0;
     const sm=document.getElementById('bpsm-'+i);if(sm)p.sm=sm.value===''?null:parseFloat(sm.value);
   });
-  localStorage.setItem('s_pf',JSON.stringify(PF.map(p=>({fee:p.fee,sr:p.sr,sm:p.sm}))));
+  const pfMap2={};PF.forEach(p=>pfMap2[p.id]={fee:p.fee,sr:p.sr,sm:p.sm});localStorage.setItem('s_pf',JSON.stringify(pfMap2));
   exitPF2();renderBQPF();
   // sync separate PF tab if it has been rendered
   if(document.getElementById('pf-tb').innerHTML) renderPF();
