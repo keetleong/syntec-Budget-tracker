@@ -112,6 +112,7 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
   <div class="kg" id="bq-kg" style="grid-template-columns:repeat(5,1fr)"></div>
   <div class="sec">Bill of Quantities — Full Sub-Category Breakdown
     <button class="btn be2" id="bq-ebt" onclick="toggleBQEdit()">✏ Edit Budget</button>
+    <button class="btn ba" onclick="openCBQModal()" style="background:#1B5E20">＋ Add BQ Item</button>
     <span id="bq-ind" style="display:none" class="ind"></span>
   </div>
   <div class="ebar" id="bq-eb" style="display:none">
@@ -119,7 +120,6 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
     <button class="btn bs" onclick="saveBQ()">✓ Save</button>
     <button class="btn br2" onclick="resetBQ()">↺ Reset to SOT</button>
     <button class="btn bc" onclick="cancelBQ()">✕ Cancel</button>
-    <button class="btn ba" onclick="openCBQModal()">+ Add Item</button>
     <span class="nm">SST Rate: auto-calc; leave SST Amount blank for auto</span>
   </div>
   <table id="bq-tbl">
@@ -146,7 +146,8 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
     </div>
     <div class="sec" style="margin-top:0">
       Professional Fees &amp; Other Costs &#8212; Cross-Check
-      <button class="btn be2" id="bq-pf-ebt" onclick="togglePFEdit2()">&#9999; Edit Fees</button>
+      <button class="btn be2" id="bq-pf-ebt" onclick="togglePFEdit2()">✏ Edit Fees</button>
+      <button class="btn ba" onclick="openPFModal()" style="background:#1B5E20">＋ Add Fee</button>
       <span id="bq-pf-ind" style="display:none" class="ind iok">Edit mode</span>
     </div>
     <div class="ebar" id="bq-pf-eb" style="display:none">
@@ -165,6 +166,7 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
         <th class="r">Total incl SST</th>
         <th>Note</th>
         <th style="width:90px;text-align:center">In Grand Total?</th>
+        <th style="width:52px;text-align:center"></th>
       </tr></thead>
       <tbody id="bq-pf-tb"></tbody>
       <tfoot id="bq-pf-tf"></tfoot>
@@ -175,7 +177,8 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
   <div style="margin-top:24px;border-top:2px solid var(--bdr);padding-top:16px">
     <div class="sec" style="margin-top:0">
       Land &amp; Legal Costs
-      <button class="btn be2" id="ll-ebt" onclick="toggleLLEdit()">&#9999; Edit</button>
+      <button class="btn be2" id="ll-ebt" onclick="toggleLLEdit()">✏ Edit</button>
+      <button class="btn ba" onclick="openLLModal()" style="background:#1B5E20">＋ Add Row</button>
       <span id="ll-ind" style="display:none" class="ind iok">Edit mode</span>
       <span style="font-family:'DM Mono',monospace;font-size:.67rem;color:var(--mut);margin-left:8px">Amounts in RM — enter USD + exchange rate to auto-convert</span>
     </div>
@@ -195,6 +198,7 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
         <th class="r sh">SST (RM)</th>
         <th class="r">Total incl SST</th>
         <th>Note</th>
+        <th style="width:52px;text-align:center"></th>
       </tr></thead>
       <tbody id="ll-tb"></tbody>
       <tfoot id="ll-tf"></tfoot>
@@ -353,6 +357,71 @@ input.eim{width:105px;background:#FFF3E0;border-color:var(--amber);}
     <div class="ma">
       <button class="btn br2" onclick="closeCBQModal()">Cancel</button>
       <button class="btn ba" onclick="saveCBQItem()">Add Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PF ITEM MODAL -->
+<div class="overlay" id="pf-add-modal">
+  <div class="modal" style="width:500px">
+    <h3 id="pfam-ttl">Add Professional Fee Item</h3>
+    <div class="fg">
+      <div class="fi"><label>Category</label>
+        <input type="text" id="pfam-cat" placeholder="e.g. ID Design, PMC, Architect…">
+      </div>
+      <div class="fi"><label>SST Rate %</label>
+        <input type="number" id="pfam-sr" value="8" min="0" max="20" step="1">
+      </div>
+      <div class="fi f"><label>Description</label>
+        <input type="text" id="pfam-desc" placeholder="e.g. Interior Design Consultancy — ABC Sdn Bhd">
+      </div>
+      <div class="fi"><label>Fee Amount (RM)</label>
+        <input type="number" id="pfam-fee" value="0" step="100">
+      </div>
+      <div class="fi"><label>SST Amount (RM) — blank = auto</label>
+        <input type="number" id="pfam-sm" placeholder="auto-calculated">
+      </div>
+      <div class="fi f"><label>Note</label>
+        <input type="text" id="pfam-note" placeholder="e.g. 8% SST on consultancy services">
+      </div>
+    </div>
+    <div class="ma">
+      <button class="btn br2" onclick="closePFModal()">Cancel</button>
+      <button class="btn ba" onclick="savePFModal()">Add Fee</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LL ROW MODAL -->
+<div class="overlay" id="ll-add-modal">
+  <div class="modal" style="width:520px">
+    <h3 id="llam-ttl">Add Land / Legal Item</h3>
+    <div class="fg">
+      <div class="fi"><label>Category</label>
+        <input type="text" id="llam-cat" placeholder="e.g. Land, Legal, Stamp Duty…">
+      </div>
+      <div class="fi"><label>SST %</label>
+        <input type="number" id="llam-sst" value="0" min="0" max="20" step="1">
+      </div>
+      <div class="fi f"><label>Description</label>
+        <input type="text" id="llam-desc" placeholder="e.g. Stamp Duty on SPA">
+      </div>
+      <div class="fi"><label>Amount (RM)</label>
+        <input type="number" id="llam-rm" value="0" step="1000">
+      </div>
+      <div class="fi"><label>Amount (USD) — optional</label>
+        <input type="number" id="llam-usd" placeholder="USD amount" step="1000">
+      </div>
+      <div class="fi"><label>USD/MYR Rate — if USD entered</label>
+        <input type="number" id="llam-rate" placeholder="e.g. 4.45" step="0.001">
+      </div>
+      <div class="fi f"><label>Note</label>
+        <input type="text" id="llam-note" placeholder="Optional note">
+      </div>
+    </div>
+    <div class="ma">
+      <button class="btn br2" onclick="closeLLModal()">Cancel</button>
+      <button class="btn ba" onclick="saveLLModal()">Add Row</button>
     </div>
   </div>
 </div>
@@ -737,7 +806,7 @@ function renderBQ(){
       rows.push(`<tr style="background:#F0F4FF" id="cbqi-${k}-${ci}">
         <td style="color:var(--lkl);font-family:'DM Mono',monospace;font-size:.7rem">${k}+</td>
         <td style="padding-left:16px;font-size:.81rem;font-style:italic">${item.label}
-          ${bqEM?`<span style="margin-left:6px"><button class="erb" onclick="openCBQModal('${k}',${ci})" title="Edit">✏</button><button class="del" onclick="delCBQItem('${k}',${ci})" title="Delete">✕</button></span>`:''}
+          <span style="margin-left:6px"><button class="erb" onclick="openCBQModal('${k}',${ci})" title="Edit">✏</button><button class="del" onclick="delCBQItem('${k}',${ci})" title="Delete">✕</button></span>
         </td>
         <td class="r" style="font-size:.8rem">${RM(item.budget)}</td>
         <td class="sc" style="font-size:.74rem">${item.sr}%</td>
@@ -876,6 +945,109 @@ let pfEM2=false,pfBk2;
 const PF_EXCL_FROM_GRAND=[];
 
 // ════════════════════════════════════
+// PF ADD/REMOVE (always visible)
+// ════════════════════════════════════
+let pfAmIdx=null;
+function openPFModal(idx){
+  pfAmIdx=idx!=null?idx:null;
+  document.getElementById('pfam-ttl').textContent=pfAmIdx!=null?'Edit Fee Item':'Add Professional Fee Item';
+  if(pfAmIdx!=null){
+    const p=PF[pfAmIdx];
+    document.getElementById('pfam-cat').value=p.cat;
+    document.getElementById('pfam-desc').value=p.desc;
+    document.getElementById('pfam-fee').value=p.fee;
+    document.getElementById('pfam-sr').value=p.sr;
+    document.getElementById('pfam-sm').value=p.sm!=null?p.sm:'';
+    document.getElementById('pfam-note').value=p.note||'';
+  }else{
+    ['pfam-cat','pfam-desc','pfam-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('pfam-fee').value=0;
+    document.getElementById('pfam-sr').value=8;
+    document.getElementById('pfam-sm').value='';
+  }
+  document.getElementById('pf-add-modal').classList.add('open');
+}
+function closePFModal(){document.getElementById('pf-add-modal').classList.remove('open');}
+function savePFModal(){
+  const desc=document.getElementById('pfam-desc').value.trim();
+  if(!desc){alert('Enter a description.');return;}
+  const item={
+    id:'pf-'+Date.now(),
+    cat:document.getElementById('pfam-cat').value.trim()||'Other',
+    desc:desc,
+    fee:parseFloat(document.getElementById('pfam-fee').value)||0,
+    sr:parseFloat(document.getElementById('pfam-sr').value)||0,
+    sm:document.getElementById('pfam-sm').value===''?null:parseFloat(document.getElementById('pfam-sm').value),
+    note:document.getElementById('pfam-note').value.trim()
+  };
+  if(pfAmIdx!=null){PF[pfAmIdx]=item;}else{PF.push(item);}
+  const pfMapS={};PF.forEach(p=>pfMapS[p.id]={fee:p.fee,sr:p.sr,sm:p.sm});
+  localStorage.setItem('s_pf',JSON.stringify(pfMapS));
+  closePFModal();renderBQPF();renderGrandTotal2();
+}
+function delPFItem(i){
+  if(!confirm('Remove this fee item?'))return;
+  PF.splice(i,1);
+  const pfMapS={};PF.forEach(p=>pfMapS[p.id]={fee:p.fee,sr:p.sr,sm:p.sm});
+  localStorage.setItem('s_pf',JSON.stringify(pfMapS));
+  renderBQPF();renderGrandTotal2();
+}
+
+// ════════════════════════════════════
+// LL ADD/REMOVE (always visible)
+// ════════════════════════════════════
+let llAmIdx=null;
+function openLLModal(idx){
+  llAmIdx=idx!=null?idx:null;
+  document.getElementById('llam-ttl').textContent=llAmIdx!=null?'Edit Land/Legal Item':'Add Land / Legal Item';
+  if(llAmIdx!=null){
+    const x=LL[llAmIdx];
+    document.getElementById('llam-cat').value=x.cat;
+    document.getElementById('llam-desc').value=x.desc;
+    document.getElementById('llam-rm').value=x.amtRM;
+    document.getElementById('llam-usd').value=x.amtUSD!=null?x.amtUSD:'';
+    document.getElementById('llam-rate').value=x.rate!=null?x.rate:'';
+    document.getElementById('llam-sst').value=x.sst;
+    document.getElementById('llam-note').value=x.note||'';
+  }else{
+    ['llam-cat','llam-desc','llam-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('llam-rm').value=0;
+    document.getElementById('llam-usd').value='';
+    document.getElementById('llam-rate').value='';
+    document.getElementById('llam-sst').value=0;
+  }
+  document.getElementById('ll-add-modal').classList.add('open');
+}
+function closeLLModal(){document.getElementById('ll-add-modal').classList.remove('open');}
+function saveLLModal(){
+  const desc=document.getElementById('llam-desc').value.trim();
+  if(!desc){alert('Enter a description.');return;}
+  const usd=document.getElementById('llam-usd').value===''?null:parseFloat(document.getElementById('llam-usd').value);
+  const rate=document.getElementById('llam-rate').value===''?null:parseFloat(document.getElementById('llam-rate').value);
+  let rm=parseFloat(document.getElementById('llam-rm').value)||0;
+  if(usd&&rate)rm=Math.round(usd*rate*100)/100;
+  const item={
+    id:'ll-'+Date.now(),
+    cat:document.getElementById('llam-cat').value.trim()||'Land/Legal',
+    desc:desc,
+    amtRM:rm,
+    amtUSD:usd,
+    rate:rate,
+    sst:parseFloat(document.getElementById('llam-sst').value)||0,
+    note:document.getElementById('llam-note').value.trim()
+  };
+  if(llAmIdx!=null){LL[llAmIdx]=item;}else{LL.push(item);}
+  localStorage.setItem('s_ll',JSON.stringify(LL));
+  closeLLModal();renderLL();renderGrandTotal2();
+}
+function delLLItem(i){
+  if(!confirm('Remove this land/legal item?'))return;
+  LL.splice(i,1);
+  localStorage.setItem('s_ll',JSON.stringify(LL));
+  renderLL();renderGrandTotal2();
+}
+
+// ════════════════════════════════════
 // LAND & LEGAL TABLE
 // ════════════════════════════════════
 function renderLL(){
@@ -911,6 +1083,10 @@ function renderLL(){
       <td class="sc">${RM(sst)}</td>
       <td class="r"><strong>${RM(item.amtRM+sst)}</strong></td>
       <td style="font-size:.77rem;color:var(--mut)">${item.note}</td>
+      <td style="text-align:center;white-space:nowrap">
+        <button class="erb" onclick="openLLModal(${i})" title="Edit">✏</button>
+        <button class="del" onclick="delLLItem(${i})" title="Remove">✕</button>
+      </td>
     </tr>`);
   });
   const totR=totLL(),totS=totLLSST();
@@ -923,7 +1099,7 @@ function renderLL(){
     <td style="background:#EEF4FF"></td><td style="background:#EEF4FF"></td>
     <td class="sc">—</td><td class="sc"><strong>${RM(totS)}</strong></td>
     <td class="r"><strong>${RM(totR+totS)}</strong></td>
-    <td></td>
+    <td colspan="2"></td>
   </tr>`;
 }
 
@@ -991,6 +1167,10 @@ function renderBQPF(){
           ?`<span style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--red);font-weight:600">EXCLUDED<br><span style="font-weight:400;font-size:.6rem">in BQ</span></span>`
           :`<span style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--green);font-weight:600">✓ INCLUDED</span>`
         }</td>
+        <td style="text-align:center;white-space:nowrap">
+          <button class="erb" onclick="openPFModal(${i})" title="Edit">✏</button>
+          <button class="del" onclick="delPFItem(${i})" title="Remove">✕</button>
+        </td>
       </tr>`);
     });
   });
@@ -1007,7 +1187,7 @@ function renderBQPF(){
     <td class="sc" style="font-size:.72rem;color:var(--mut)">—</td>
     <td class="sc" style="font-size:.72rem;color:var(--mut)">${RM(tSSTAll-tSSTIncl)}</td>
     <td class="r" style="font-size:.78rem;color:var(--mut)">${RM((tFeeAll-tFeeIncl)+(tSSTAll-tSSTIncl))}</td>
-    <td colspan="2"></td>
+    <td colspan="3"></td>
   </tr>`);
 
   const tfoot_html=`<tr class="tr">
@@ -1018,6 +1198,7 @@ function renderBQPF(){
     <td class="r"><strong>${RM(tFeeIncl+tSSTIncl)}</strong></td>
     <td></td>
     <td style="text-align:center"><span style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--green);font-weight:600">✓ INCLUDED</span></td>
+    <td></td>
   </tr>`;
 
   const tb=document.getElementById('bq-pf-tb');
