@@ -573,40 +573,58 @@ const SUBS = {
    {l:'Column Stump / Liftpit / Shearwall',b:212549.70,c:41611.68}
   ]}],
   B3:[
-    {l:'Ground Beams, Slab on Grade, Drainage',b:1850981.54,c:1378799.10},
-    {l:'Columns, Beams & RC Frame Structure',b:2148729.6,c:150691.46},
-    {l:'RC Stairs, Feature Stairs, Car Ramp',b:428500},
-    {l:'Brickwork, Precast, ALC Panels',b:1254820},
-    {l:'Post-Tensioned / Conventional RC Slabs',b:4289446.06,c:26989.08},
-    {l:'RC Flat Roof, Beams & Waterproofing',b:895600},
-    {l:'Brickwork & Partitions',b:680240},
-    {l:'Timber, Glass & Fire Rated Doors',b:542800},
-    {l:'Plaster, Paint, Cladding & Wall Tiles',b:1185640},
-    {l:'Aluminium Windows, Curtain Wall, Louvres',b:2413055.81},
-    {l:'Tiles, Epoxy, Screed & Carpark Markings',b:1456720},
-    {l:'Plasterboard, Exposed & Grid Ceiling',b:625480},
-    {l:'Vanity, Mirror, Cubicle, Accessories',b:384900},
-    {l:'Basement, Roof & Wet Area Waterproofing',b:310440},
-    {l:'Railings, Grilles, Ironmongery',b:425800},
-    {l:'Internal Way-Finding & Signage',b:180000},
-    {l:'Landscape, Fencing & External Finishes',b:612360},
-    {l:'Steel Structure, Purlins, Metal Deck & Roofing',b:2190373.95},
-    {l:'Canopy Glass Roof & Feature Entrance',b:248864.8},
-    {l:'Siphonic HDPE System & Rainwater Outlets',b:203000}
+    {g:'Substructure & Ground Works',items:[
+      {l:'Ground Beams, Slab on Grade, Drainage',b:1850981.54,c:1378799.10}
+    ]},
+    {g:'RC Frame & Upper Floors',items:[
+      {l:'Columns, Beams & RC Frame Structure',b:2148729.6,c:150691.46},
+      {l:'RC Stairs, Feature Stairs, Car Ramp',b:428500},
+      {l:'Post-Tensioned / Conventional RC Slabs',b:4289446.06,c:26989.08},
+      {l:'RC Flat Roof, Beams & Waterproofing',b:895600}
+    ]},
+    {g:'Envelope, Walls & Openings',items:[
+      {l:'Brickwork, Precast, ALC Panels',b:1254820},
+      {l:'Brickwork & Partitions',b:680240},
+      {l:'Timber, Glass & Fire Rated Doors',b:542800},
+      {l:'Aluminium Windows, Curtain Wall, Louvres',b:2413055.81},
+      {l:'Railings, Grilles, Ironmongery',b:425800}
+    ]},
+    {g:'Finishes, Fittings & Waterproofing',items:[
+      {l:'Plaster, Paint, Cladding & Wall Tiles',b:1185640},
+      {l:'Tiles, Epoxy, Screed & Carpark Markings',b:1456720},
+      {l:'Plasterboard, Exposed & Grid Ceiling',b:625480},
+      {l:'Vanity, Mirror, Cubicle, Accessories',b:384900},
+      {l:'Basement, Roof & Wet Area Waterproofing',b:310440},
+      {l:'Internal Way-Finding & Signage',b:180000},
+      {l:'Landscape, Fencing & External Finishes',b:612360}
+    ]},
+    {g:'Steel & Special Structures',items:[
+      {l:'Steel Structure, Purlins, Metal Deck & Roofing',b:2190373.95},
+      {l:'Canopy Glass Roof & Feature Entrance',b:248864.8},
+      {l:'Siphonic HDPE System & Rainwater Outlets',b:203000}
+    ]}
   ],
   B4:[
-    {l:'Cut, Fill, Compaction & Disposal',b:932111.09,c:188521.36},
-    {l:'Asphalt, Kerbs, Road Markings',b:863885.11},
-    {l:'Carpark Slab, Wheel Stoppers, EV Bays',b:380000},
-    {l:'External Drains, Manholes, BOD Tank',b:425000},
-    {l:'External Water Piping & Meter Chambers',b:185000},
-    {l:'RC Boundary Wall, Gate & Security',b:420000},
-    {l:'Guard House Structure & Finishes',b:728138.28},
-    {l:'Perimeter Aluminium Pipe Screen',b:220000},
-    {l:'RC Retaining Wall Structure',b:475821.88},
-    {l:'Substation Building & Civils',b:125842.29,c:88089.60},
-    {l:'Hose Reel Tank Slab & Pump Base',b:54000},
-    {l:'Soft Landscape, Trees & Planters',b:112184.44}
+    {g:'Earthworks',items:[
+      {l:'Cut, Fill, Compaction & Disposal',b:932111.09,c:188521.36}
+    ]},
+    {g:'Roads, Paving & Drainage',items:[
+      {l:'Asphalt, Kerbs, Road Markings',b:863885.11},
+      {l:'Carpark Slab, Wheel Stoppers, EV Bays',b:380000},
+      {l:'External Drains, Manholes, BOD Tank',b:425000},
+      {l:'External Water Piping & Meter Chambers',b:185000}
+    ]},
+    {g:'Boundary, Security & Civil Works',items:[
+      {l:'RC Boundary Wall, Gate & Security',b:420000},
+      {l:'Guard House Structure & Finishes',b:728138.28},
+      {l:'Perimeter Aluminium Pipe Screen',b:220000},
+      {l:'RC Retaining Wall Structure',b:475821.88}
+    ]},
+    {g:'Electrical, Services & Landscape',items:[
+      {l:'Substation Building & Civils',b:125842.29,c:88089.60},
+      {l:'Hose Reel Tank Slab & Pump Base',b:54000},
+      {l:'Soft Landscape, Trees & Planters',b:112184.44}
+    ]}
   ],
   B5a:[
     {g:'Cold Water System',items:[{l:'Preliminary (Plumbing)',b:36724},{l:'Cold Water Piping, Fittings & Storage',b:655564.74}]},
@@ -1702,7 +1720,7 @@ window.injectIPC123=function(){
 // ════════════════════════════════════
 init();renderBQ();renderRisks();
 console.log('%cSyntec Budget Tracker v5','color:#0D2080;font-size:1.1rem;font-weight:bold');
-console.log('injectIPC123() — load IPC 1-4 (CERT state: IPC 4, P.E. 30 Apr 2026)\nlocalStorage.clear(); location.reload() — reset all');
+console.log('injectIPC123() — load IPC 1-4 (CERT state: IPC 4, P.E. 30 Apr 2026)\nlocalStorage.clear(); location.reload() — reset all data (run this first if upgrading from v4)');
 </script>
 </body>
 </html>
