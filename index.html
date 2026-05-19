@@ -693,14 +693,16 @@ function totLL(){ return LL.reduce((s,x)=>s+x.amtRM,0); }
 function totLLSST(){ return LL.reduce((s,x)=>s+llSSTAmt(x),0); }
 
 const APF_DEF = [
-  {no:1,purpose:'KM* — Planning Approval (SRCM)',submitter:'Planner (SRCM)',timeline:'Before KM Approval',note:'Processing fees paid by C&C Architects — reimbursed by SIST',
-   items:[{d:'Processing Fees for submission (reimbursed by SIST)',a:4923},{d:'IFS (Improvement Service Fund)',a:52990.75},{d:'Caj Pemajuan (30% land value increase)',a:0,n:'Subject to Authority'}],total:57913.75,ed:57913.75},
-  {no:2,purpose:'C&S Approvals (ABODE)',submitter:'C&S (ABODE)',timeline:'Refer to Appendix (ii)',note:'',
-   items:[{d:'Earthwork',a:30473.80},{d:'Road & Drainage',a:654.50},{d:'AIS — Air Selangor (excl. Bulk Meter Deposit)',a:45812},{d:'IWK — Processing Fee',a:2040},{d:'IWK — 1% Contribution (est. property value RM 90M × 1%)',a:900000},{d:'JPS',a:100000}],total:1078980.30,ed:1078980.30},
-  {no:3,purpose:'BP* — Building Plan Approval (Architect / CCA)',submitter:'Architect (CCA)',timeline:'After BP OSC submission',note:'',
-   items:[{d:'Processing Fees for submission',a:19499},{d:'Processing Fees for scheme development',a:15194},{d:'Pagar',a:200},{d:'Sanitary',a:840},{d:'Drainage',a:28563},{d:'Advertising (Iklan)',a:100},{d:'Hoarding',a:39859},{d:'Temporary Office',a:3600}],total:107855,ed:107855},
-  {no:4,purpose:'Street Lighting & TNB LV Connection',submitter:'M&E (MPVS)',timeline:'Refer to Appendix',note:'',
-   items:[{d:'Street Lighting — Lamp pole relocation from Majlis',a:20000},{d:'TNB LV connection & meter (application charges)',a:1700000}],total:1720000,ed:1720000}
+  {no:1,purpose:'KM* — Planning Approval (SRCM)',submitter:'Planner (SRCM)',timeline:'Before KM / During AKM submission',note:'Processing fees paid by C&C Architects — reimbursed by SIST',
+   items:[{d:'Processing Fees for submission (reimbursed by SIST)',a:4923,n:'PAID'},{d:'IFS (Improvement Service Fund)',a:52990.75,n:'PAID'},{d:'Caj Pemajuan (30% land value increase)',a:0,n:'Not in KM condition'},{d:'AKM (if required after ABP submission)',a:4923,n:'During AKM submission'}],total:62836.75,ed:62836.75},
+  {no:2,purpose:'C&S Approvals (ABODE)',submitter:'C&S (ABODE)',timeline:'Refer to Appendix',note:'IWK 1% property value contribution (est. RM 900K) excluded — tracked separately',
+   items:[{d:'Earthwork — Majlis Bandaraya Diraja Klang',a:396.70,n:'PAID'},{d:'Road & Drainage',a:654.50},{d:'AIS — Air Selangor (excl. Bulk Meter Deposit)',a:38860.50},{d:'IWK — Processing Fees (excl. 1% property value)',a:2150.00},{d:'JPS (incl. Caruman Parit RM39,800 PAID 22/04/2026)',a:139800.00,n:'Bank Guarantee: Early Site RM50K (done) + Permanent Crossing RM50K (pending)'},{d:'Master Infra. Data & Info Purchase',a:8000.00,n:'PAID'}],total:189861.70,ed:189861.70},
+  {no:3,purpose:'BP* — Building Plan Approval (Architect / CCA)',submitter:'Architect (CCA)',timeline:'After BP OSC submission',note:'Amended BP & BOMBA CCC inspection fees are estimates; final amounts subject to authority',
+   items:[{d:'Processing Fees for submission',a:12472.44,n:'PAID'},{d:'Additional Processing Fees after comments',a:6659.30},{d:'Pagar',a:200,n:'PAID'},{d:'Sanitary',a:765},{d:'Drainage',a:17411.79},{d:'Advertising (Iklan)',a:190},{d:'Hoarding',a:39214.80},{d:'Temporary Office',a:3600},{d:'Amended BP + BP & BOMBA CCC Inspection (est.)',a:10000,n:'Est. RM120/dwgs sheet; CCC inspection below RM10K'},{d:'Landscape — Processing Fee JRD',a:100,n:'PAID'}],total:90613.33,ed:90613.33},
+  {no:4,purpose:'Street Lighting & TNB LV Connection',submitter:'M&E (MPVS)',timeline:'Before installation / After Piat Inspection',note:'',
+   items:[{d:'Street Lighting — Lamp pole relocation from Majlis',a:20000},{d:'TNB LV connection & meter (application charges)',a:1700000}],total:1720000,ed:1720000},
+  {no:5,purpose:'SKMM — Telco Submission (TM)',submitter:'M&E / Contractor',timeline:'Before connection',note:'',
+   items:[{d:'SKMM Processing Fee (TM)',a:5000,n:'PAID'}],total:5000,ed:5000}
 ];
 
 const RISKS = [
@@ -1678,7 +1680,7 @@ function renderAPF(){
     });
   });
   document.getElementById('apf-tb').innerHTML=rows.join('');
-  document.getElementById('apf-tf').innerHTML=`<tr class="tr"><td colspan="4"><strong>Total Processing Fees (Items 1–4)</strong></td><td class="r">—</td><td class="r"><strong>${RM(tot)}</strong></td></tr>`;
+  document.getElementById('apf-tf').innerHTML=`<tr class="tr"><td colspan="4"><strong>Total Processing Fees (Items 1–5)</strong></td><td class="r">—</td><td class="r"><strong>${RM(tot)}</strong></td></tr>`;
 }
 
 function tAS(i){const icon=document.getElementById('apex-'+i),subs=document.querySelectorAll(`[id^="apfs-${i}-"]`),hidden=subs[0]&&subs[0].classList.contains('h');subs.forEach(s=>s.classList.toggle('h',!hidden));if(icon)icon.style.transform=hidden?'rotate(90deg)':'';}
